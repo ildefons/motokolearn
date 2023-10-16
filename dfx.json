@@ -1,0 +1,29 @@
+{
+  "canisters": {
+    "motokolearn_backend": {
+      "main": "src/motokolearn_backend/main.mo",
+      "type": "motoko"
+    },
+    "motokolearn_frontend": {
+      "dependencies": [
+        "motokolearn_backend"
+      ],
+      "frontend": {
+        "entrypoint": "src/motokolearn_frontend/src/index.html"
+      },
+      "source": [
+        "src/motokolearn_frontend/assets",
+        "dist/motokolearn_frontend/"
+      ],
+      "type": "assets"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
