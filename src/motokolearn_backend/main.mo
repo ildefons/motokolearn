@@ -81,6 +81,20 @@ actor {
   // dummy function declaration to train a tree with the right declaration
   // dummy function declaration to make a prediction
   // function: compute, entropy and Gini index for the dataset
+
+  // Develope matrix module inspyred in Array module
+  // 1) understand, to/from vec(vec), filterByListofIndexes, filterbyrowsandcols
+  // https://forum.dfinity.org/t/how-to-index-a-matrix-to-get-a-subset-of-rows-and-or-columns/23887/4?u=ildefons
+  func rows<T>(rs : [Nat], m : [[T]]) : [[T]] {
+    Array.tabulate<[T]>(rs.size(), func r { m[rs[r]] });
+  };
+
+  func cols<T>(cs : [Nat], m : [[T]]) : [[T]] {
+    Array.tabulate<[T]>(m.size(), func r {
+       Array.tabulate<T>(cs.size(), func c { m[r][cs[c]] }) });
+  };
+  // 2) do error checking s.t. indexes fall within matrix dimensions
+
   // function: identify classification or regression problem
   // think what info is necessary in every node of the tree: 
   // 1) row ids of the dataset considered in this node
@@ -113,9 +127,12 @@ actor {
     let matrix : [[Nat]] = [[1,2,3],
                             [4,5,6],
                             [7,8,9],]; 
+
+    let auxr : [[Nat]] = rows([0, 2], matrix);
+    let auxc : [[Nat]] = cols([0, 2], matrix);
     // let aux : [[Nat]] = matrix[[1,2]];
 
     //return "matrix value: " # Nat.toText(aux) ;
-    return matrix;
+    return auxc;
   };
 };
