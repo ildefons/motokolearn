@@ -83,6 +83,14 @@ actor {
   func hashText(key: Text): Nat32 {
     Prim.hashBlob(Prim.encodeUtf8(key)) & 0x3fffffff;
   };
+  func hashNat(key: Nat): Nat32 {
+    var hash = Prim.intToNat64Wrap(key);
+
+    hash := hash >> 30 ^ hash *% 0xbf58476d1ce4e5b9;
+    hash := hash >> 27 ^ hash *% 0x94d049bb133111eb;
+
+    Prim.nat64ToNat32(hash >> 31 ^ hash & 0x3fffffff);
+  };
   // Note: in the end I will make a class but by the time being I just make an actor with functions and vars
   // function: set training dataset
   // dummy function declaration to train a tree with the right declaration
@@ -128,14 +136,19 @@ actor {
     };
     ret;
   };
-  func uniques(rs: [Text]): [Text] {
+  func uniquesNat(rs: [Nat]): [Nat] {
+    let myset = TrieSet.fromArray<Nat>(rs, hashNat, Nat.equal);
+    let uniques = TrieSet.toArray(myset);
+    uniques;
+  };
+  func uniquesText(rs: [Text]): [Text] {
     let myset = TrieSet.fromArray<Text>(rs, hashText, Text.equal);
     let uniques = TrieSet.toArray(myset);
     uniques;
   };
   func entropy(rs: [Text]): Float {
-    let y_uniques = uniques(rs);
-    // NEXT:----> check is type symbol?
+    let y_uniques = uniquesText(rs);
+
     0;
   };
   // are there max min mean median with vector ?
@@ -183,7 +196,16 @@ actor {
     // };
     // let set2 = TrieSet.fromArray<Text>(["1", "2", "3", "1", "2", "3", "1"], hashText, Text.equal);
     // let vals2 = TrieSet.toArray(set2);
-    let myuniques = uniques(["1", "2", "3", "1", "2", "3", "1"]);
+    let textVec = ["is a text", "2", "3", "1", "2", "3", "1"];
+    let aux = textVec[0];
+    switch (aux) {
+      case (Text) {
+        Debug.print("is a text:" # aux);
+      };
+    };
+    // NEXT:----> check is type symbol?
+    // https://internetcomputer.org/docs/current/motoko/main/errors#what-error-type-to-prefer
+    let myuniques = uniquesText(textVec);
     for (element in myuniques.vals()) {
       Debug.print("val:" # element);
     };
