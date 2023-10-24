@@ -4,8 +4,12 @@ import Nat32 "mo:base/Nat32";
 import Float "mo:base/Float";
 import Text "mo:base/Text";
 import Array "mo:base/Array";
+import List "mo:base/List";
+import Buffer "mo:base/Buffer";
+import Iter "mo:base/Iter";
 import TrieSet "mo:base/TrieSet";
 import Debug "mo:base/Debug";
+import Result "mo:base/Result";
 import Prim "mo:prim";
 
 // actor {
@@ -47,8 +51,10 @@ import Prim "mo:prim";
 // };
 
 actor {
+  public type MotokoLearnError = {
+    #notAllYsAreSymbol;
+  };
 
-  // var actor_data: [Nat] = [1,2,3];
   type dataMember = {
     #number : Float; // variant 
     #symbol : Text; 
@@ -83,14 +89,16 @@ actor {
   func hashText(key: Text): Nat32 {
     Prim.hashBlob(Prim.encodeUtf8(key)) & 0x3fffffff;
   };
-  func hashNat(key: Nat): Nat32 {
-    var hash = Prim.intToNat64Wrap(key);
 
-    hash := hash >> 30 ^ hash *% 0xbf58476d1ce4e5b9;
-    hash := hash >> 27 ^ hash *% 0x94d049bb133111eb;
+  // func hashNat(key: Nat): Nat32 {
+  //   var hash = Prim.intToNat64Wrap(key);
 
-    Prim.nat64ToNat32(hash >> 31 ^ hash & 0x3fffffff);
-  };
+  //   hash := hash >> 30 ^ hash *% 0xbf58476d1ce4e5b9;
+  //   hash := hash >> 27 ^ hash *% 0x94d049bb133111eb;
+
+  //   Prim.nat64ToNat32(hash >> 31 ^ hash & 0x3fffffff);
+  // };     
+
   // Note: in the end I will make a class but by the time being I just make an actor with functions and vars
   // function: set training dataset
   // dummy function declaration to train a tree with the right declaration
@@ -101,8 +109,6 @@ actor {
   // 1) understand, to/from vec(vec), filterByListofIndexes, filterbyrowsandcols
   // https://forum.dfinity.org/t/how-to-index-a-matrix-to-get-a-subset-of-rows-and-or-columns/23887/4?u=ildefons
   func rows<T>(rs : [Nat], m : [[T]]) : [[T]] {
-    Debug.print("rs size:" # Nat.toText(rs.size()));
-    Debug.print("m size:" # Nat.toText(m.size()));
     Array.tabulate<[T]>(rs.size(), func r { m[rs[r]] });
   };
 
@@ -110,6 +116,34 @@ actor {
     Array.tabulate<[T]>(m.size(), func r {
       Array.tabulate<T>(cs.size(), func c { m[r][cs[c]] }) });
   };
+
+  func ncols<T>(m : [[T]]) : Nat {
+    // TODO: check all rows habve same number of elements
+    m[0].size();
+  };
+
+  func nrows<T>(m : [[T]]) : Nat {
+    m.size();  
+  };
+//----->IM HERE
+  // func init<X>(sizer : Nat, sizec : Nat, initValue : X) : [var X] {
+  //   let row = Prim.Array_init<X>(sizec, initValue);
+
+  // };
+
+  func transpose<T>(m : [[T]]) : [[T]] {
+    let myncols = ncols(m);
+    let trans = Buffer.Buffer<[T]>(myncols); 
+    for (i in Iter.range(0, myncols - 1)) {
+      let ys = cols([i], m);
+      let ys2 = Array.flatten(ys);
+      trans.add(ys2);
+      //trans := List.push<[dataMember]>(ys2, trans); // <-----IMHERE: List.push<Nat>(0, null) // => ?(0, null);
+    };
+    Buffer.toArray(trans); 
+  };
+
+
   // 2) do error checking s.t. indexes fall within matrix dimensions
   func min(rs: [Float]) : Float {
     let aux = Array.sort(rs, Float.compare);
@@ -136,20 +170,46 @@ actor {
     };
     ret;
   };
-  func uniquesNat(rs: [Nat]): [Nat] {
-    let myset = TrieSet.fromArray<Nat>(rs, hashNat, Nat.equal);
-    let uniques = TrieSet.toArray(myset);
-    uniques;
-  };
+  // func uniquesNat(rs: [Nat]): [Nat] {
+  //   let myset = TrieSet.fromArray<Nat>(rs, hashNat, Nat.equal);
+  //   let uniques = TrieSet.toArray(myset);
+  //   uniques;
+  // };
   func uniquesText(rs: [Text]): [Text] {
     let myset = TrieSet.fromArray<Text>(rs, hashText, Text.equal);
     let uniques = TrieSet.toArray(myset);
-    uniques;
+    return uniques;
   };
   func entropy(rs: [Text]): Float {
     let y_uniques = uniquesText(rs);
 
     0;
+  };
+
+  // func example(a: Nat): Nat {
+  //   if (Nat.equal(a,0)) {
+  //       throw Error.reject("Som");
+  //   };
+  //   return 0;
+  // };
+
+  func symbolVecToTextVec(ys: [dataMember]):  Result.Result<[Text], MotokoLearnError> {
+    let aux = ys[0];
+    let textBuf = Buffer.Buffer<Text>(ys.size());
+    // Debug.print("is a text:" # aux);
+    for (i in Iter.range(0, ys.size() - 1)) {
+      let aux = ys[i];
+      switch (aux) {
+        case (#symbol s) {
+            textBuf.add(s);
+        };
+        case (#number s) { 
+          return #err(#notAllYsAreSymbol);
+        };
+      };
+    };
+
+    return #ok(Buffer.toArray(textBuf));
   };
   // are there max min mean median with vector ?
 
@@ -175,7 +235,7 @@ actor {
     //
   }; 
   
-  public query func greet(name : Text) : async [[Float]] {
+  public query func greet(name : Text) : async [[dataMember]] {
     let c = Counter(1);
     let matrix : [[Float]] = [[1,2,3],
                             [4,5,6],
@@ -183,11 +243,11 @@ actor {
 
     let auxr : [[Float]] = rows([0, 2], matrix);
     let auxc : [[Float]] = cols([0, 2], matrix);
-    Debug.print("min:" # Float.toText(min(matrix[0])) );
-    Debug.print("max:" # Float.toText(max(matrix[0])) );
-    Debug.print("mean:" # Float.toText(mean(matrix[0])) ); 
-    Debug.print("median1:" # Float.toText(median(matrix[0])) );
-    Debug.print("median2:" # Float.toText(median(matrix[1])) );
+    // Debug.print("min:" # Float.toText(min(matrix[0])) );
+    // Debug.print("max:" # Float.toText(max(matrix[0])) );
+    // Debug.print("mean:" # Float.toText(mean(matrix[0])) ); 
+    // Debug.print("median1:" # Float.toText(median(matrix[0])) );
+    // Debug.print("median2:" # Float.toText(median(matrix[1])) );
     // let aux : [[Nat]] = matrix[[1,2]];
     // let set1 = TrieSet.fromArray<Nat>([1, 2, 3, 1, 2, 3, 1], Nat32.fromNat, Nat.equal);
     // let vals1 = TrieSet.toArray(set1);
@@ -196,20 +256,46 @@ actor {
     // };
     // let set2 = TrieSet.fromArray<Text>(["1", "2", "3", "1", "2", "3", "1"], hashText, Text.equal);
     // let vals2 = TrieSet.toArray(set2);
-    let textVec = ["is a text", "2", "3", "1", "2", "3", "1"];
-    let aux = textVec[0];
+    // let textVec = ["is a text", "2", "3", "1", "2", "3", "1"];
+    // let ys = cols([0], actor_data);
+    // let aux: dataMember = ys[0][0];
+    
+    //var trans = List.nil<[dataMember]>();
+    //use buffer and convert: https://internetcomputer.org/docs/current/motoko/main/base/Buffer<<<<<<<<<<--------
+    // let myncols = ncols(actor_data);
+    // let trans = Buffer.Buffer<[dataMember]>(myncols); 
+    // for (i in Iter.range(0, myncols - 1)) {
+    //   let ys = cols([i], actor_data);
+    //   let ys2 = Array.flatten(ys);
+    //   trans.add(ys2);
+    //   //trans := List.push<[dataMember]>(ys2, trans); // <-----IMHERE: List.push<Nat>(0, null) // => ?(0, null);
+    // };
+    let ret = transpose(actor_data);//Buffer.toArray(trans); 
+    //trans := Array(trans);
+    // <-----------------HOW TO ADD ELEMENTS TO A VECTOR
+    let myncols = ncols(actor_data);
+    let ys = cols([myncols-1], actor_data);
+    let ys2 = Array.flatten(ys);
+    let aux = ys2[0];
+    // Debug.print("is a text:" # aux);
     switch (aux) {
-      case (Text) {
-        Debug.print("is a text:" # aux);
-      };
-    };
+       case (#symbol s) { // classification case
+          // 1) convert last column to a vector of text: if something is not a symbol, raise 
+          let ysText: [Text] = symbolVecToTextVec(ys2);   <------IMHERE
+          let myentropy = entropy(ysText);
+          Debug.print("is a text:" # s);
+       };
+       case (#number s) { // regresssion case
+         Debug.print("is a number:" # Float.toText(s));
+       }
+     };
     // NEXT:----> check is type symbol?
     // https://internetcomputer.org/docs/current/motoko/main/errors#what-error-type-to-prefer
-    let myuniques = uniquesText(textVec);
-    for (element in myuniques.vals()) {
-      Debug.print("val:" # element);
-    };
-    //return "matrix value: " # Nat.toText(aux) ;
-    return auxc;
+    // let myuniques = uniquesText(textVec);
+    // for (element in myuniques.vals()) {
+    //   Debug.print("val:" # element);
+    // };
+    // //return "matrix value: " # Nat.toText(aux) ;
+    return ret;
   };
 };
