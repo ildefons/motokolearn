@@ -52,6 +52,16 @@ import Prim "mo:prim";
 // };
 
 actor {
+  // tree
+  // inpyred by list:
+  // https://github.com/dfinity/motoko-base/blob/master/src/List.mo
+  
+  type BinTree<T> = ?(T, BinTree<T>, BinTree<T>);
+  func nilTree<T>() : BinTree<T> = null;
+  func setLeftRightBranch<T>(x : T, leftTree : BinTree<T>, rightTree : BinTree<T>) : BinTree<T> {
+    ?(x, leftTree, rightTree);
+  };
+
   public type MotokoLearnError = {
     #notAllYsAreSymbol;
   };
@@ -303,6 +313,8 @@ actor {
               // compute entropy using "result"
               let y_entropy: Float = entropy(result); 
               Debug.print("The entropy of the target column is:" # Float.toText(y_entropy));
+              // how to gow a decision tree?
+
             };
           };
         };
@@ -317,6 +329,45 @@ actor {
     //   Debug.print("val:" # element);
     // };
     // //return "matrix value: " # Nat.toText(aux) ;
+
+    type BinTree<T> = ?(T, BinTree<T>, BinTree<T>);
+    func nilTree<T>() : BinTree<T> = null;
+    func isTreeNil<T>(bintree : BinTree<T>) : Bool {
+      switch bintree {
+        case null { true };
+        case _ { false }
+      }
+    };
+    func setLeftRightBranch<T>(x : T, leftTree : BinTree<T>, rightTree : BinTree<T>) : BinTree<T> {
+      ?(x, leftTree, rightTree);
+    };
+    
+    func predictTree<T>(x : Nat, bintree : BinTree<T>) : T {
+      // switch (x) {
+      //   case (#symbol s) {
+      //     Debug.print(s);
+      //   };
+      //   case (#numeric n) {
+      //     Debug.print(Float.toText(n));
+      //   };
+      //   case (Any) {
+      //     //
+      //   }
+      Debug.print(Nat.toText(x));
+      if (not(isTreeNil(bintree))) {
+         case true {  ///HOWTOACCESSLEFTANDRIGHT????????????????<-----------IMHERE
+            Prem
+         };
+         case false { false }
+      }
+      x;
+    };
+    
+    
+    let leftTree: BinTree<Nat> = setLeftRightBranch<Nat>(3, nilTree(), nilTree());
+    let rightTree: BinTree<Nat> = setLeftRightBranch<Nat>(2, nilTree(), nilTree());
+    let topTree: BinTree<Nat> = setLeftRightBranch<Nat>(1, leftTree, rightTree);
+
     return ret;
   };
 };
