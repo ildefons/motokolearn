@@ -10,6 +10,7 @@ import Iter "mo:base/Iter";
 import TrieSet "mo:base/TrieSet";
 import Debug "mo:base/Debug";
 import Result "mo:base/Result";
+import Error "mo:base/Error";
 import Prim "mo:prim";
 
 // actor {
@@ -59,10 +60,10 @@ actor {
     #number : Float; // variant 
     #symbol : Text; 
   };
-  var actor_data: [[dataMember]] = [[#number(1), #number(3), #symbol("2")],
-                                    [#number(2), #number(2), #symbol("1")],
-                                    [#number(3), #number(3), #symbol("2")],
-                                    [#number(4), #number(2), #symbol("1")]];
+  var actor_data: [[dataMember]] = [[#number(1), #number(3), #symbol("1")],
+                                    [#number(2), #number(2), #symbol("2")],
+                                    [#number(3), #number(3), #symbol("3")],
+                                    [#number(4), #number(2), #symbol("4")]];
   
   class Counter(init : Nat) {
     var c = init;
@@ -180,10 +181,20 @@ actor {
     let uniques = TrieSet.toArray(myset);
     return uniques;
   };
-  func entropy(rs: [Text]): Float {
+  func log2(n: Float): Float {
+    Float.log(n)/Float.log(2);
+  };
+  func entropy(rs: [Text]): Float { 
     let y_uniques = uniquesText(rs);
+    var h_total: Float = 0.0;
+    for (i in Iter.range(0,y_uniques.size()-1)) {
+      let ys_y =  Array.filter<Text>(rs, func x = x == y_uniques[i]);
+      let p_y = Float.fromInt(ys_y.size()) / Float.fromInt(rs.size()); 
+      let h_y = p_y * log2(p_y);
+      h_total := h_total + h_y;
+    };
 
-    0;
+    -h_total;
   };
 
   // func example(a: Nat): Nat {
@@ -281,13 +292,23 @@ actor {
     switch (aux) {
        case (#symbol s) { // classification case
           // 1) convert last column to a vector of text: if something is not a symbol, raise 
-          let ysText: [Text] = symbolVecToTextVec(ys2);   <------IMHERE
-          let myentropy = entropy(ysText);
-          Debug.print("is a text:" # s);
+          let aux = symbolVecToTextVec(ys2);   // 
+          switch (aux) {
+            case(#err(#notAllYsAreSymbol)){
+              // throw error
+              throw Error.reject("Target column is not totally formed by symbols")
+            }; 
+            case(#ok(result)) {
+              Debug.print("is a text:" # result[0]);
+              // compute entropy using "result"
+              let y_entropy: Float = entropy(result); 
+              Debug.print("The entropy of the target column is:" # Float.toText(y_entropy));
+            };
+          };
+        };
+        case (#number s) { // regresssion case
+          Debug.print("is a number:" # Float.toText(s));
        };
-       case (#number s) { // regresssion case
-         Debug.print("is a number:" # Float.toText(s));
-       }
      };
     // NEXT:----> check is type symbol?
     // https://internetcomputer.org/docs/current/motoko/main/errors#what-error-type-to-prefer
