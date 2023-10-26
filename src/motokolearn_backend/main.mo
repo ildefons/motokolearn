@@ -330,44 +330,52 @@ actor {
     // };
     // //return "matrix value: " # Nat.toText(aux) ;
 
-    type BinTree<T> = ?(T, BinTree<T>, BinTree<T>);
-    func nilTree<T>() : BinTree<T> = null;
-    func isTreeNil<T>(bintree : BinTree<T>) : Bool {
+    // Tree node fields:
+    // 1) 
+    type BinTree = ?(Nat, dataMember, dataMember, BinTree, BinTree); 
+    func nilTree() : BinTree = null;
+    func isTreeNil(bintree : BinTree) : Bool {
       switch bintree {
         case null { true };
         case _ { false }
       }
     };
-    func setLeftRightBranch<T>(x : T, leftTree : BinTree<T>, rightTree : BinTree<T>) : BinTree<T> {
-      ?(x, leftTree, rightTree);
+    func setLeftRightBranch(var_id : Nat,
+                            th : dataMember, 
+                            value : dataMember,
+                            leftTree : BinTree, 
+                            rightTree : BinTree) : BinTree {
+      ?(var_id, th, value, leftTree, rightTree);
     };
     
-    func predictTree<T>(x : Nat, bintree : BinTree<T>) : T {
-      // switch (x) {
-      //   case (#symbol s) {
-      //     Debug.print(s);
-      //   };
-      //   case (#numeric n) {
-      //     Debug.print(Float.toText(n));
-      //   };
-      //   case (Any) {
-      //     //
-      //   }
-      Debug.print(Nat.toText(x));
-      if (not(isTreeNil(bintree))) {
-         case true {  ///HOWTOACCESSLEFTANDRIGHT????????????????<-----------IMHERE
-            Prem
-         };
-         case false { false }
-      }
-      x;
-    };
-    
-    
-    let leftTree: BinTree<Nat> = setLeftRightBranch<Nat>(3, nilTree(), nilTree());
-    let rightTree: BinTree<Nat> = setLeftRightBranch<Nat>(2, nilTree(), nilTree());
-    let topTree: BinTree<Nat> = setLeftRightBranch<Nat>(1, leftTree, rightTree);
 
+    //<-----IM HERE!!!!
+    func predictTree(x : [dataMember], bintree : BinTree) : () {
+      // 1) check assert the size of x is > 0
+      // 2) check bintree is not nil
+      // 3) do until bintree in left or right is nil and return "value" (try first iterative , if not possible recursion)
+            
+      switch bintree {
+        case null {Debug.print("Do nothing");};
+        case (?(xvar_id,xth,xvalue,bl,br)) {
+          if (x==xvar_id) {
+            Debug.print("We found the node with the same var_id:" # Nat.toText(xvar_id));
+          };
+          predictTree(x, bl);
+          predictTree(x, br);
+        };
+      };
+    };
+    
+    var data: [[dataMember]] = [[#number(1), #number(2), #symbol("0")],
+                                [#number(2), #number(3), #symbol("0")],
+                                [#number(1), #number(4), #symbol("1")],
+                                [#number(2), #number(5), #symbol("1")]];
+
+    let leftTree: BinTree  = setLeftRightBranch(1, #number(3.5), #symbol("0"), nilTree(), nilTree());
+    let rightTree: BinTree = setLeftRightBranch(1, #number(3.5), #symbol("1"), nilTree(), nilTree());
+    let topTree: BinTree   = setLeftRightBranch(1, #number(3.5), #symbol("0"), leftTree, rightTree);
+    predictTree(21, topTree);
     return ret;
   };
 };
