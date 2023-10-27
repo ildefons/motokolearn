@@ -256,7 +256,7 @@ actor {
     //
   }; 
   
-  public query func greet(name : Text) : async [[dataMember]] {
+  public query func greet(name : Text) : async () {
     let c = Counter(1);
     let matrix : [[Float]] = [[1,2,3],
                             [4,5,6],
@@ -305,7 +305,7 @@ actor {
           let aux = symbolVecToTextVec(ys2);   // 
           switch (aux) {
             case(#err(#notAllYsAreSymbol)){
-              // throw error
+              // throw errortype BinTree = ?(?Nat, ?dataMember, ?dataMember, BinTree, BinTree); 
               throw Error.reject("Target column is not totally formed by symbols")
             }; 
             case(#ok(result)) {
@@ -330,9 +330,13 @@ actor {
     // };
     // //return "matrix value: " # Nat.toText(aux) ;
 
+    // leaf value type: null (non-leaf), Float (leaf regression), [Float] (leaf classoifciation)
+    type leafValue = {#number: Float;
+                      #symbol: [Float]}; 
+
     // Tree node fields:
     // 1) 
-    type BinTree = ?(Nat, dataMember, dataMember, BinTree, BinTree); 
+    type BinTree = ?(?Nat, ?dataMember, leafValue, BinTree, BinTree); 
     func nilTree() : BinTree = null;
     func isTreeNil(bintree : BinTree) : Bool {
       switch bintree {
@@ -340,15 +344,38 @@ actor {
         case _ { false }
       }
     };
-    func setLeftRightBranch(var_id : Nat,
-                            th : dataMember, 
-                            value : dataMember,
+
+    // var_id: feature column in [0, N-1]
+    //         Note: leafs have null
+    // th : in numeric features: <=th samples correspond to the left node
+    //                           >th samples are right node
+    //      in symbolic features: symbol exist in samples of the left sub-tree
+    //                            symbol doesn't exist in samples of the right sub-tree     
+    //      Note: leafs have null
+    //      Note: symbolic features need to be converted into 1HE (function to be done) 
+    // value: Used when node is a leaf: if y numeric then this is the average value of y  
+    //                                  if y symbolic then this is a vector of y class probabilities
+    //        Note: Non-leaf nodes have null   
+    //        Note: Node type is a new type
+    func setLeftRightBranch(var_id : ?Nat,         // can be null when leaf
+                            th : ?dataMember,      // can be null when leaf
+                            value : leafValue,
                             leftTree : BinTree, 
                             rightTree : BinTree) : BinTree {
-      ?(var_id, th, value, leftTree, rightTree);
+      ?(?var_id, th, value, leftTree, rightTree);
     };
     
 
+     
+    var data: [[dataMember]] = [[#number(1), #number(2), #symbol("0")],
+                                [#number(2), #number(3), #symbol("0")],
+                                [#number(1), #number(4), #symbol("1")],
+                                [#number(2), #number(5), #symbol("1")]];
+
+    let leftTree: BinTree  = setLeftRightBranch(null, null, #symbol([1,0]), nilTree(), nilTree());
+    let rightTree: BinTree = setLeftRightBranch(null, null, #symbol([0,1]), nilTree(), nilTree());
+    let topTree: BinTree   = setLeftRightBranch(?1, ?#number(3.5), #symbol([0.5,0.5]), leftTree, rightTree);
+        
     //<-----IM HERE!!!!
     func predictTree(x : [dataMember], bintree : BinTree) : () {
       // 1) check assert the size of x is > 0
@@ -358,24 +385,48 @@ actor {
       switch bintree {
         case null {Debug.print("Do nothing");};
         case (?(xvar_id,xth,xvalue,bl,br)) {
-          if (x==xvar_id) {
-            Debug.print("We found the node with the same var_id:" # Nat.toText(xvar_id));
+          switch xvar_id {
+            case null {
+              // node leaf: return the value
+              switch xvalue {
+                case (#number(val)) {
+                  //TBD
+                  Debug.print("Result: " # Float.toText(val));
+                };
+                case (#symbol(vec)) {
+                  //TBD
+                  Debug.print("Probability of 1: " # Float.toText(vec[1]));
+                };
+                // case null {
+                //   //TBD
+                // };
+              };
+            };
+            case _ {
+              // get feature value
+              let var_id : Nat = switch xvar_id {
+                case null 0;
+                case (?Nat) Nat;
+              };
+              let feature: dataMember = x[var_id]; // <------------------------IMHERE!!!
+
+            }; 
           };
-          predictTree(x, bl);
-          predictTree(x, br);
+          // };
+          // // get sample feature
+          // let sample_feature = x[xvar_id]; 
+          // if (x==xvar_id) {
+          //   Debug.print("We found the node with the same var_id:" # Nat.toText(xvar_id));
+          // };
+          // predictTree(x, bl);
+          // predictTree(x, br);
         };
       };
     };
-    
-    var data: [[dataMember]] = [[#number(1), #number(2), #symbol("0")],
-                                [#number(2), #number(3), #symbol("0")],
-                                [#number(1), #number(4), #symbol("1")],
-                                [#number(2), #number(5), #symbol("1")]];
 
-    let leftTree: BinTree  = setLeftRightBranch(1, #number(3.5), #symbol("0"), nilTree(), nilTree());
-    let rightTree: BinTree = setLeftRightBranch(1, #number(3.5), #symbol("1"), nilTree(), nilTree());
-    let topTree: BinTree   = setLeftRightBranch(1, #number(3.5), #symbol("0"), leftTree, rightTree);
-    predictTree(21, topTree);
-    return ret;
+    let sample: [dataMember] = [#number(1), #number(2), #symbol("0")];   
+    predictTree(sample, topTree);
+  
+  
   };
 };
