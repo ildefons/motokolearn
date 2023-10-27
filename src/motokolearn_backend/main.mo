@@ -362,7 +362,7 @@ actor {
                             value : leafValue,
                             leftTree : BinTree, 
                             rightTree : BinTree) : BinTree {
-      ?(?var_id, th, value, leftTree, rightTree);
+      ?(var_id, th, value, leftTree, rightTree);
     };
     
 
@@ -377,6 +377,11 @@ actor {
     let topTree: BinTree   = setLeftRightBranch(?1, ?#number(3.5), #symbol([0.5,0.5]), leftTree, rightTree);
         
     //<-----IM HERE!!!!
+
+    func isLeftNode(feature: dataMember, th: dataMember): Bool {
+      return true;
+    };
+
     func predictTree(x : [dataMember], bintree : BinTree) : () {
       // 1) check assert the size of x is > 0
       // 2) check bintree is not nil
@@ -409,7 +414,16 @@ actor {
                 case (?Nat) Nat;
               };
               let feature: dataMember = x[var_id]; // <------------------------IMHERE!!!
-
+              let th : dataMember = switch xth {
+                  case (?dataMember) dataMember;
+                  case _ #symbol("FAKENULL");
+              };
+              // if isLeftNode(feature: dataMember, th: dataMember) {
+              //   //predict left
+              // }
+              // else {
+              //    //predict right 
+              // };
             }; 
           };
           // };
