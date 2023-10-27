@@ -349,8 +349,7 @@ actor {
     //               Note: leafs have null
     // th(?float) : in numeric features: <=th samples correspond to the left node
     //                                   >th samples are right node
-    //              in symbolic features: symbol exist in samples of the left sub-tree (1)
-    //                                    symbol doesn't exist in samples of the right sub-tree (0)    
+    //              in symbolic features: Not used becasue left tree is "false cases"~"0", right tree is "true cases"~"1"     
     //              Note: leafs have null
     //              Note: symbolic features need to be converted into 1HE (function to be done) 
     // value(leafValue): Used when node is a leaf: if y numeric then this is the average value of y  
@@ -379,17 +378,26 @@ actor {
     //<-----IM HERE!!!!
 
     func isLeftNode(feature_: dataMember, th_: Float): (Bool) {
-      
       switch feature_ {
         case (#number(num)) {
           //TBD
           Debug.print("Result: " # Float.toText(num));
-          return true;
+          if (num <= th_) {
+            return true;
+          }
+          else {
+            return false;
+          };
         };
         case (#symbol(txt)) {
           Debug.print("Result: " # txt);
-          return true;
-        }
+          if (Text.equal(txt, "0")) {
+            return true;
+          }
+          else {
+            return false;
+          }
+        };
       };
     };
 
