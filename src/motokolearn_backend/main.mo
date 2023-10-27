@@ -378,7 +378,7 @@ actor {
         
     //<-----IM HERE!!!!
 
-    func isLeftNode(feature: dataMember, th: dataMember): Bool {
+    func isLeftNode(feature: dataMember, th: dataMember): (Bool) {
       return true;
     };
 
@@ -392,6 +392,7 @@ actor {
         case (?(xvar_id,xth,xvalue,bl,br)) {
           switch xvar_id {
             case null {
+              Debug.print("I am in leaf node");
               // node leaf: return the value
               switch xvalue {
                 case (#number(val)) {
@@ -408,6 +409,7 @@ actor {
               };
             };
             case _ {
+              Debug.print("I am in a tree node");
               // get feature value
               let var_id : Nat = switch xvar_id {
                 case null 0;
@@ -418,22 +420,16 @@ actor {
                   case (?dataMember) dataMember;
                   case _ #symbol("FAKENULL");
               };
-              // if isLeftNode(feature: dataMember, th: dataMember) {
-              //   //predict left
-              // }
-              // else {
-              //    //predict right 
-              // };
+              if (isLeftNode(feature: dataMember, th: dataMember)) {
+                 //predict left
+                 predictTree(x, bl);
+               }
+              else {
+                 //predict right
+                 predictTree(x, br);
+              };
             }; 
           };
-          // };
-          // // get sample feature
-          // let sample_feature = x[xvar_id]; 
-          // if (x==xvar_id) {
-          //   Debug.print("We found the node with the same var_id:" # Nat.toText(xvar_id));
-          // };
-          // predictTree(x, bl);
-          // predictTree(x, br);
         };
       };
     };
