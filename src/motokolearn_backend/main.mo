@@ -336,7 +336,7 @@ actor {
 
     // Tree node fields:
     // 1) 
-    type BinTree = ?(?Nat, ?dataMember, leafValue, BinTree, BinTree); 
+    type BinTree = ?(?Nat, ?Float, leafValue, BinTree, BinTree); 
     func nilTree() : BinTree = null;
     func isTreeNil(bintree : BinTree) : Bool {
       switch bintree {
@@ -345,20 +345,20 @@ actor {
       }
     };
 
-    // var_id: feature column in [0, N-1]
-    //         Note: leafs have null
-    // th : in numeric features: <=th samples correspond to the left node
-    //                           >th samples are right node
-    //      in symbolic features: symbol exist in samples of the left sub-tree
-    //                            symbol doesn't exist in samples of the right sub-tree     
-    //      Note: leafs have null
-    //      Note: symbolic features need to be converted into 1HE (function to be done) 
-    // value: Used when node is a leaf: if y numeric then this is the average value of y  
+    // var_id(?Nat): feature column in [0, N-1]
+    //               Note: leafs have null
+    // th(?float) : in numeric features: <=th samples correspond to the left node
+    //                                   >th samples are right node
+    //              in symbolic features: symbol exist in samples of the left sub-tree (1)
+    //                                    symbol doesn't exist in samples of the right sub-tree (0)    
+    //              Note: leafs have null
+    //              Note: symbolic features need to be converted into 1HE (function to be done) 
+    // value(leafValue): Used when node is a leaf: if y numeric then this is the average value of y  
     //                                  if y symbolic then this is a vector of y class probabilities
-    //        Note: Non-leaf nodes have null   
-    //        Note: Node type is a new type
+    //                   Note: Non-leaf nodes have null   
+    //                   Note: Node type is a new type
     func setLeftRightBranch(var_id : ?Nat,         // can be null when leaf
-                            th : ?dataMember,      // can be null when leaf
+                            th : ?Float,           // can be null when leaf
                             value : leafValue,
                             leftTree : BinTree, 
                             rightTree : BinTree) : BinTree {
@@ -374,12 +374,23 @@ actor {
 
     let leftTree: BinTree  = setLeftRightBranch(null, null, #symbol([1,0]), nilTree(), nilTree());
     let rightTree: BinTree = setLeftRightBranch(null, null, #symbol([0,1]), nilTree(), nilTree());
-    let topTree: BinTree   = setLeftRightBranch(?1, ?#number(3.5), #symbol([0.5,0.5]), leftTree, rightTree);
+    let topTree: BinTree   = setLeftRightBranch(?1, ?(3.5), #symbol([0.5,0.5]), leftTree, rightTree);
         
     //<-----IM HERE!!!!
 
-    func isLeftNode(feature: dataMember, th: dataMember): (Bool) {
-      return true;
+    func isLeftNode(feature_: dataMember, th_: Float): (Bool) {
+      
+      switch feature_ {
+        case (#number(num)) {
+          //TBD
+          Debug.print("Result: " # Float.toText(num));
+          return true;
+        };
+        case (#symbol(txt)) {
+          Debug.print("Result: " # txt);
+          return true;
+        }
+      };
     };
 
     func predictTree(x : [dataMember], bintree : BinTree) : () {
@@ -416,11 +427,11 @@ actor {
                 case (?Nat) Nat;
               };
               let feature: dataMember = x[var_id]; // <------------------------IMHERE!!!
-              let th : dataMember = switch xth {
-                  case (?dataMember) dataMember;
-                  case _ #symbol("FAKENULL");
+              let th : Float = switch xth {
+                  case null 0;
+                  case (?Float) Float;
               };
-              if (isLeftNode(feature: dataMember, th: dataMember)) {
+              if (isLeftNode(feature: dataMember, th: Float)) {
                  //predict left
                  predictTree(x, bl);
                }
