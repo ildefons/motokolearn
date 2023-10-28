@@ -369,19 +369,47 @@ actor {
     var data: [[dataMember]] = [[#number(1), #number(2), #symbol("0")],
                                 [#number(2), #number(3), #symbol("0")],
                                 [#number(1), #number(4), #symbol("1")],
-                                [#number(2), #number(5), #symbol("1")]];
+                                [#number(2), #number(5), #symbol("1")],
+                                [#number(3), #number(2), #symbol("1")],
+                                [#number(4), #number(3), #symbol("1")],
+                                [#number(3), #number(4), #symbol("0")],
+                                [#number(4), #number(5), #symbol("0")]];
 
-    let leftTree: BinTree  = setLeftRightBranch(null, null, #symbol([1,0]), nilTree(), nilTree());
-    let rightTree: BinTree = setLeftRightBranch(null, null, #symbol([0,1]), nilTree(), nilTree());
-    let topTree: BinTree   = setLeftRightBranch(?1, ?(3.5), #symbol([0.5,0.5]), leftTree, rightTree);
-        
+    let LeftLeftTree: BinTree  = setLeftRightBranch(null, null, #symbol([1,0]), nilTree(), nilTree());
+    let LeftRightTree: BinTree = setLeftRightBranch(null, null, #symbol([0,1]), nilTree(), nilTree());
+    let LeftTopTree: BinTree   = setLeftRightBranch(?1, ?(3.5), #symbol([0.5,0.5]), LeftLeftTree, LeftRightTree);
+    let RightLeftTree: BinTree  = setLeftRightBranch(null, null, #symbol([0,1]), nilTree(), nilTree());
+    let RightRightTree: BinTree = setLeftRightBranch(null, null, #symbol([1,0]), nilTree(), nilTree());
+    let RightTopTree: BinTree   = setLeftRightBranch(?1, ?(3.5), #symbol([0.5,0.5]), RightLeftTree, RightRightTree);
+    let TopTree: BinTree   = setLeftRightBranch(?0, ?(2.5), #symbol([0.5,0.5]), LeftTopTree, RightTopTree);  
     //<-----IM HERE!!!!
 
-    func isLeftNode(feature_: dataMember, th_: Float): (Bool) {
+    //todo:
+    // 1) test that "predict" works
+    // 2) learnTree function (paramters hardcoded btb) <-------------IMHERE
+    // 3) more complex "data" (more features and more samples)
+    //
+
+    func fit(x : [[dataMember]], y : [dataMember]): (BinTree) {
+      // 1) check x,y dimesnions are consistent
+      // 2) call specific function for classification or regression: classwificationFit, regressionFit (these 2 functions are recursive)
+      // 3) When to create a division: number of samples larger than leaf_min_samples and entropy larger than 0 and depth is lower than max depth
+      //    how to know current depth?: function caller passes parameter "current_depth = current_depth+1", later we also pass structure with HPs  
+      //    how to know what data to use? function caller passes only the necessary x rows to each branch
+      //    3.1) determine the var_id to use: it can be  numeric or symbolic
+      //         do we remove a var_id once used?
+      //         how do we compare symbolic with numeric seprability performance? no problem, we always compare according to y
+      //         what order do we follow to test among the available var_ids giving best partition?
+      //         showld we test all var_ids? if more than M, pick only M randomly  
+      //         how do we find the th on numeric features?
+      return TopTree;
+    };
+
+    func isLeftNode(feature_: dataMember, th_: Float): (Bool) { 
       switch feature_ {
         case (#number(num)) {
           //TBD
-          Debug.print("Result: " # Float.toText(num));
+          //Debug.print("numeric feature: " # Float.toText(num));
           if (num <= th_) {
             return true;
           }
@@ -390,7 +418,7 @@ actor {
           };
         };
         case (#symbol(txt)) {
-          Debug.print("Result: " # txt);
+          //Debug.print("symbol feature: " # txt);
           if (Text.equal(txt, "0")) {
             return true;
           }
@@ -407,11 +435,13 @@ actor {
       // 3) do until bintree in left or right is nil and return "value" (try first iterative , if not possible recursion)
             
       switch bintree {
-        case null {Debug.print("Do nothing");};
+        case null {
+          //Debug.print("Do nothing");
+        };
         case (?(xvar_id,xth,xvalue,bl,br)) {
           switch xvar_id {
             case null {
-              Debug.print("I am in leaf node");
+              //Debug.print("I am in leaf node");
               // node leaf: return the value
               switch xvalue {
                 case (#number(val)) {
@@ -428,23 +458,25 @@ actor {
               };
             };
             case _ {
-              Debug.print("I am in a tree node");
+              //Debug.print("I am in a tree node");
               // get feature value
               let var_id : Nat = switch xvar_id {
                 case null 0;
                 case (?Nat) Nat;
               };
+              //Debug.print("var_id:" # Nat.toText(var_id));
               let feature: dataMember = x[var_id]; // <------------------------IMHERE!!!
               let th : Float = switch xth {
                   case null 0;
                   case (?Float) Float;
               };
               if (isLeftNode(feature: dataMember, th: Float)) {
-                 //predict left
+                 //Debug.print("predict left");
                  predictTree(x, bl);
                }
               else {
                  //predict right
+                 //Debug.print("predict right");
                  predictTree(x, br);
               };
             }; 
@@ -453,9 +485,11 @@ actor {
       };
     };
 
-    let sample: [dataMember] = [#number(1), #number(2), #symbol("0")];   
-    predictTree(sample, topTree);
-  
+    let Xtest = cols([0,1], data); 
+    for (i in Iter.range(0, Xtest.size() - 1)) {
+      let sample: [dataMember] = Xtest[i];//[#number(1), #number(2), #symbol("0")];   
+      predictTree(sample, TopTree);
+    };
   
   };
 };
