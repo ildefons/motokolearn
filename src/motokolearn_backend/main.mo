@@ -1,6 +1,6 @@
 import Int "mo:base/Int";
 import Nat "mo:base/Nat";
-import Nat32 "mo:base/Nat32";
+//import Nat32 "mo:base/Nat32";
 import Float "mo:base/Float";
 import Text "mo:base/Text";
 import Array "mo:base/Array";
@@ -12,6 +12,9 @@ import Debug "mo:base/Debug";
 import Result "mo:base/Result";
 import Error "mo:base/Error";
 import Prim "mo:prim";
+import Random "mo:base/Random";
+import Blob "mo:base/Blob";
+import Fuzz "mo:fuzz";
 
 // actor {
 
@@ -97,9 +100,9 @@ actor {
     };
   };
   
-  func hashText(key: Text): Nat32 {
-    Prim.hashBlob(Prim.encodeUtf8(key)) & 0x3fffffff;
-  };
+  // func hashText(key: Text): Nat32 {
+  //   Prim.hashBlob(Prim.encodeUtf8(key)) & 0x3fffffff;
+  // };
 
   // func hashNat(key: Nat): Nat32 {
   //   var hash = Prim.intToNat64Wrap(key);
@@ -187,7 +190,7 @@ actor {
   //   uniques;
   // };
   func uniquesText(rs: [Text]): [Text] {
-    let myset = TrieSet.fromArray<Text>(rs, hashText, Text.equal);
+    let myset = TrieSet.fromArray<Text>(rs, Text.hash, Text.equal);
     let uniques = TrieSet.toArray(myset);
     return uniques;
   };
@@ -390,6 +393,13 @@ actor {
     // 3) more complex "data" (more features and more samples)
     //
 
+    let seed = 123456789;
+    let fuzz = Fuzz.fromSeed(seed);
+    for (i in Iter.range(0, 10)) {
+      let randNat: Nat = fuzz.nat.randomRange(0, 4);
+      Debug.print("RANDOM: " # Nat.toText(randNat));
+    };
+
     func fit(x : [[dataMember]], y : [dataMember]): (BinTree) {
       // 1) check x,y dimesnions are consistent
       // 2) call specific function for classification or regression: classwificationFit, regressionFit (these 2 functions are recursive)
@@ -486,10 +496,10 @@ actor {
     };
 
     let Xtest = cols([0,1], data); 
-    for (i in Iter.range(0, Xtest.size() - 1)) {
-      let sample: [dataMember] = Xtest[i];//[#number(1), #number(2), #symbol("0")];   
-      predictTree(sample, TopTree);
-    };
+    // for (i in Iter.range(0, Xtest.size() - 1)) {
+    //   let sample: [dataMember] = Xtest[i];//[#number(1), #number(2), #symbol("0")];   
+    //   predictTree(sample, TopTree);
+    // };
   
   };
 };
