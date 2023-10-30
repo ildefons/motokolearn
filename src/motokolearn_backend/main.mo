@@ -67,6 +67,8 @@ actor {
 
   public type MotokoLearnError = {
     #notAllYsAreSymbol;
+    #sizeMissmatchXY;
+    #notAllYsymbols;
   };
 
   type dataMember = {
@@ -400,9 +402,61 @@ actor {
       Debug.print("RANDOM: " # Nat.toText(randNat));
     };
 
-    func fit(x : [[dataMember]], y : [dataMember]): (BinTree) {
+    let xtrain = cols([0,1], data); 
+    let ytrain = transpose(cols([2], data));
+
+    func checkAllSymbol(y : [dataMember]): (Bool) {
+      for (i in Iter.range(0, y.size() - 1)) {
+        switch(y[i]) {
+          case (#number(num)) {
+            return false;
+          };
+          case (_) {
+            //donothing
+          };
+        };
+      };
+      return true;
+    };
+
+    func fitClassification(x : [[dataMember]], y : [dataMember], depth : Nat): Result.Result<BinTree, MotokoLearnError> {
+      // check all y values are symbol
+      if (checkAllSymbol(y) == false) {
+        return #err(#notAllYsymbols);
+      };
+      // check size of x is at least the minimum size
+      <<<<<<<<<<----------------IMHERE
+      // create node  
+      // for all features
+      // compute gini index of the
+      // recursive call left and right and connect to node and return 
+      return #ok(TopTree);
+    };
+
+    func fit(x : [[dataMember]], y : [dataMember]): Result.Result<BinTree, MotokoLearnError> {
+      // Algorithm guide: https://machinelearningmastery.com/classification-and-regression-trees-for-machine-learning/
       // 1) check x,y dimesnions are consistent
+      if (x.size() != y.size()) {
+        return #err(#sizeMissmatchXY);
+      };
       // 2) call specific function for classification or regression: classwificationFit, regressionFit (these 2 functions are recursive)
+      let aux: dataMember = y[0];
+      switch(aux) {
+        case (#number(num)) {
+        
+        };
+        case (#symbol(sym)) {
+          let tree_or_error = fitClassification(x, y, 0);
+          switch(tree_or_error) {
+            case(#err(_)) {
+              return tree_or_error;
+            };
+            case(#ok(tree)) {
+              return tree_or_error;
+            };
+          };
+        };
+      };
       // 3) When to create a division: number of samples larger than leaf_min_samples and entropy larger than 0 and depth is lower than max depth
       //    how to know current depth?: function caller passes parameter "current_depth = current_depth+1", later we also pass structure with HPs  
       //    how to know what data to use? function caller passes only the necessary x rows to each branch
@@ -412,7 +466,7 @@ actor {
       //         what order do we follow to test among the available var_ids giving best partition?
       //         showld we test all var_ids? if more than M, pick only M randomly  
       //         how do we find the th on numeric features?
-      return TopTree;
+      return #ok(TopTree);
     };
 
     func isLeftNode(feature_: dataMember, th_: Float): (Bool) { 
