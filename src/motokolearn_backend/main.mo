@@ -59,11 +59,11 @@ actor {
   // inpyred by list:
   // https://github.com/dfinity/motoko-base/blob/master/src/List.mo
   
-  type BinTree<T> = ?(T, BinTree<T>, BinTree<T>);
-  func nilTree<T>() : BinTree<T> = null;
-  func setLeftRightBranch<T>(x : T, leftTree : BinTree<T>, rightTree : BinTree<T>) : BinTree<T> {
-    ?(x, leftTree, rightTree);
-  };
+  // type BinTree<T> = ?(T, BinTree<T>, BinTree<T>);
+  // func nilTree<T>() : BinTree<T> = null;
+  // func setLeftRightBranch<T>(x : T, leftTree : BinTree<T>, rightTree : BinTree<T>) : BinTree<T> {
+  //   ?(x, leftTree, rightTree);
+  // };
 
   public type MotokoLearnError = {
     #notAllYsAreSymbol;
@@ -261,7 +261,18 @@ actor {
     //
   }; 
   
-  public query func greet(name : Text) : async () {
+  type leafValue = {#number: Float;
+                  #symbol: [Float]}; 
+  type BinTree = ?(?Nat, ?Float, leafValue, BinTree, BinTree); 
+  func nilTree() : BinTree = null;
+  func isTreeNil(bintree : BinTree) : Bool {
+    switch bintree {
+      case null { true };
+      case _ { false }
+    }
+  };
+
+  public query func greet(name : Text) : async (BinTree) {
     let c = Counter(1);
     let matrix : [[Float]] = [[1,2,3],
                             [4,5,6],
@@ -336,19 +347,19 @@ actor {
     // //return "matrix value: " # Nat.toText(aux) ;
 
     // leaf value type: null (non-leaf), Float (leaf regression), [Float] (leaf classoifciation)
-    type leafValue = {#number: Float;
-                      #symbol: [Float]}; 
+    // type leafValue = {#number: Float;
+    //                   #symbol: [Float]}; 
 
     // Tree node fields:
     // 1) 
-    type BinTree = ?(?Nat, ?Float, leafValue, BinTree, BinTree); 
-    func nilTree() : BinTree = null;
-    func isTreeNil(bintree : BinTree) : Bool {
-      switch bintree {
-        case null { true };
-        case _ { false }
-      }
-    };
+  // type BinTree = ?(?Nat, ?Float, leafValue, BinTree, BinTree); 
+  // func nilTree() : BinTree = null;
+  // func isTreeNil(bintree : BinTree) : Bool {
+  //   switch bintree {
+  //     case null { true };
+  //     case _ { false }
+  //   }
+  // };
 
     // var_id(?Nat): feature column in [0, N-1]
     //               Note: leafs have null
@@ -419,18 +430,18 @@ actor {
       return true;
     };
 
-    func fitClassification(x : [[dataMember]], y : [dataMember], current_depth : Nat, y_uniques: [Text], max_depth: Nat, min_node_data_size: Nat): Result.Result<BinTree, MotokoLearnError> {
-      // check all y values are symbol
-      if (checkAllSymbol(y) == false) {
-        return #err(#notAllYsymbols);
-      };
-
-
-
+    func fitClassification(x : [[dataMember]], y : [Text], current_depth : Nat, y_uniques: [Text], max_depth: Nat, min_node_data_size: Nat): Result.Result<BinTree, MotokoLearnError> {
       // check size of x is at least the minimum size
-      if (x.size() <= 1) {
-        
-        let leafNode: BinTree  = setLeftRightBranch(null, null, #symbol([0,1]), nilTree(), nilTree());
+      if (x.size() <= min_node_data_size) {
+        let probs = Buffer.Buffer<Float>(y_uniques.size());
+        for (i in Iter.range(0, y_uniques.size() - 1)) { 
+          let num_ys: Nat = Array.filter<Text>(y, func x = x == y_uniques[i]).size();
+          let prob = Float.fromInt(num_ys) / Float.fromInt(y.size());
+          probs.add(prob);
+          Debug.print(Float.toText(prob));
+        };
+
+        let leafNode: BinTree  = setLeftRightBranch(null, null, #symbol(Buffer.toArray(probs)), nilTree(), nilTree());
         return #ok(leafNode);
       };
       // create node  
@@ -438,7 +449,7 @@ actor {
       // compute gini index of the
       // recursive call left and right and connect to node and return 
       return #ok(TopTree);
-    };
+    };   
 
     func dataMemberVectorToTextVector(y: [dataMember]): Result.Result<[Text], MotokoLearnError> {
       let ysize = y.size();
@@ -457,42 +468,61 @@ actor {
       return #ok(Buffer.toArray(ret)); 
     };
 
-    func fit(x : [[dataMember]], y : [dataMember]): Result.Result<BinTree, MotokoLearnError> {
-      // Algorithm guide: https://machinelearningmastery.com/classification-and-regression-trees-for-machine-learning/
-      // 1) check x,y dimesnions are consistent
-      if (x.size() != y.size()) {
-        return #err(#sizeMissmatchXY);
-      };
-      // 2) call specific function for classification or regression: classwificationFit, regressionFit (these 2 functions are recursive)
-      let aux: dataMember = y[0];
-      switch(aux) {
-        case (#number(num)) {
-          return (#ok(TopTree));
-        };
-        case (#symbol(sym)) {
-          let ys = dataMemberVectorToTextVector(y);
-          switch (ys) {
-            case (#ok(ys_text)) {
-               let y_uniques = uniquesText(ys_text);
-               let current_depth = 0;
-               let max_depth = 3;
-               let min_node_data_size = 0;
-               let tree_or_error = fitClassification(x, y, current_depth, y_uniques, max_depth, min_node_data_size);
-               switch(tree_or_error) {
-                case(#err(_)) {
-                   return tree_or_error;
-                };
-                case(#ok(tree)) {
-                   return tree_or_error;
-                };
-              };
-            };
-            case (_) {
-              return #err(#notAllYsymbols); // forward error
-            };
+    let Xtrain = rows([0,1,2,3], data); 
+    let x = cols([0,1], Xtrain);
+    let yaux = transpose(cols([2], Xtrain))[0];
+    let y = dataMemberVectorToTextVector(yaux);
+    switch(y) {
+      case (#ok(yvec)) {
+        let ret_tree = fitClassification(x, yvec, 0, ["0","1"], 2, 4);
+        switch(ret_tree) {
+          case (#ok(mytree)) {
+            return mytree;
           };
-        };
+        }
       };
+      case (_) {
+        //
+      };
+    };
+    return TopTree;
+
+    // func fit(x : [[dataMember]], y : [dataMember]): Result.Result<BinTree, MotokoLearnError> {
+    //   // Algorithm guide: https://machinelearningmastery.com/classification-and-regression-trees-for-machine-learning/
+    //   // 1) check x,y dimesnions are consistent
+    //   if (x.size() != y.size()) {
+    //     return #err(#sizeMissmatchXY);
+    //   };
+    //   // 2) call specific function for classification or regression: classwificationFit, regressionFit (these 2 functions are recursive)
+    //   let aux: dataMember = y[0];
+    //   switch(aux) {
+    //     case (#number(num)) {
+    //       return (#ok(TopTree));
+    //     };
+    //     case (#symbol(sym)) {
+    //       let ys = dataMemberVectorToTextVector(y);
+    //       switch (ys) {
+    //         case (#ok(ys_text)) {
+    //            let y_uniques = uniquesText(ys_text);
+    //            let current_depth = 0;
+    //            let max_depth = 3;
+    //            let min_node_data_size = 0;
+    //            let tree_or_error = fitClassification(x, ys_text, current_depth, y_uniques, max_depth, min_node_data_size);
+    //            switch(tree_or_error) {
+    //             case(#err(_)) {
+    //                return tree_or_error;
+    //             };
+    //             case(#ok(tree)) {
+    //                return tree_or_error;
+    //             };
+    //           };
+    //         };
+    //         case (_) {
+    //           return #err(#notAllYsymbols); // forward error
+    //         };
+    //       };
+    //     };
+    //   };
       // 3) When to create a division: number of samples larger than leaf_min_samples and entropy larger than 0 and depth is lower than max depth
       //    how to know current depth?: function caller passes parameter "current_depth = current_depth+1", later we also pass structure with HPs  
       //    how to know what data to use? function caller passes only the necessary x rows to each branch
@@ -503,89 +533,89 @@ actor {
       //         showld we test all var_ids? if more than M, pick only M randomly  
       //         how do we find the th on numeric features?
       //return #ok(TopTree);
-    };
+    //};
 
-    func isLeftNode(feature_: dataMember, th_: Float): (Bool) { 
-      switch feature_ {
-        case (#number(num)) {
-          //TBD
-          //Debug.print("numeric feature: " # Float.toText(num));
-          if (num <= th_) {
-            return true;
-          }
-          else {
-            return false;
-          };
-        };
-        case (#symbol(txt)) {
-          //Debug.print("symbol feature: " # txt);
-          if (Text.equal(txt, "0")) {
-            return true;
-          }
-          else {
-            return false;
-          }
-        };
-      };
-    };
+    // func isLeftNode(feature_: dataMember, th_: Float): (Bool) { 
+    //   switch feature_ {
+    //     case (#number(num)) {
+    //       //TBD
+    //       //Debug.print("numeric feature: " # Float.toText(num));
+    //       if (num <= th_) {
+    //         return true;
+    //       }
+    //       else {
+    //         return false;
+    //       };
+    //     };
+    //     case (#symbol(txt)) {
+    //       //Debug.print("symbol feature: " # txt);
+    //       if (Text.equal(txt, "0")) {
+    //         return true;
+    //       }
+    //       else {
+    //         return false;
+    //       }
+    //     };
+    //   };
+    // };
 
-    func predictTree(x : [dataMember], bintree : BinTree) : () {
-      // 1) check assert the size of x is > 0
-      // 2) check bintree is not nil
-      // 3) do until bintree in left or right is nil and return "value" (try first iterative , if not possible recursion)
+    // func predictTree(x : [dataMember], bintree : BinTree) : () {
+    //   // 1) check assert the size of x is > 0
+    //   // 2) check bintree is not nil
+    //   // 3) do until bintree in left or right is nil and return "value" (try first iterative , if not possible recursion)
             
-      switch bintree {
-        case null {
-          //Debug.print("Do nothing");
-        };
-        case (?(xvar_id,xth,xvalue,bl,br)) {
-          switch xvar_id {
-            case null {
-              //Debug.print("I am in leaf node");
-              // node leaf: return the value
-              switch xvalue {
-                case (#number(val)) {
-                  //TBD
-                  Debug.print("Result: " # Float.toText(val));
-                };
-                case (#symbol(vec)) {
-                  //TBD
-                  Debug.print("Probability of 1: " # Float.toText(vec[1]));
-                };
-                // case null {
-                //   //TBD
-                // };
-              };
-            };
-            case _ {
-              //Debug.print("I am in a tree node");
-              // get feature value
-              let var_id : Nat = switch xvar_id {
-                case null 0;
-                case (?Nat) Nat;
-              };
-              //Debug.print("var_id:" # Nat.toText(var_id));
-              let feature: dataMember = x[var_id]; // <------------------------IMHERE!!!
-              let th : Float = switch xth {
-                  case null 0;
-                  case (?Float) Float;
-              };
-              if (isLeftNode(feature: dataMember, th: Float)) {
-                 //Debug.print("predict left");
-                 predictTree(x, bl);
-               }
-              else {
-                 //predict right
-                 //Debug.print("predict right");
-                 predictTree(x, br);
-              };
-            }; 
-          };
-        };
-      };
-    };
+    //   switch bintree {
+    //     case null {
+    //       //Debug.print("Do nothing");
+    //     };
+    //     case (?(xvar_id,xth,xvalue,bl,br)) {
+    //       switch xvar_id {
+    //         case null {
+    //           //Debug.print("I am in leaf node");
+    //           // node leaf: return the value
+    //           switch xvalue {
+    //             case (#number(val)) {
+    //               //TBD
+    //               Debug.print("Result: " # Float.toText(val));
+    //             };
+    //             case (#symbol(vec)) {
+    //               //TBD
+    //               Debug.print("Probability of 1: " # Float.toText(vec[1]));
+    //             };
+    //             // case null {
+    //             //   //TBD
+    //             // };
+    //           };
+    //         };
+    //         case _ {
+    //           //Debug.print("I am in a tree node");
+    //           // get feature value
+    //           let var_id : Nat = switch xvar_id {
+    //             case null 0;
+    //             case (?Nat) Nat;
+    //           };
+    //           //Debug.print("var_id:" # Nat.toText(var_id));
+    //           let feature: dataMember = x[var_id]; // <------------------------IMHERE!!!
+    //           let th : Float = switch xth {
+    //               case null 0;
+    //               case (?Float) Float;
+    //           };
+    //           if (isLeftNode(feature: dataMember, th: Float)) {
+    //              //Debug.print("predict left");
+    //              predictTree(x, bl);
+    //            }
+    //           else {
+    //              //predict right
+    //              //Debug.print("predict right");
+    //              predictTree(x, br);
+    //           };
+    //         }; 
+    //       };
+    //     };
+    //   };
+    //};
 
-    let Xtest = cols([0,1], data); 
+    //let Xtest = cols([0,1], data); 
     // for (i in Iter.range(0, Xtest.size() - 1)) {
     //   let sample: [dataMember] = Xtest[i];//[#number(1), #number(2), #symbol("0")];   
     //   predictTree(sample, TopTree);
