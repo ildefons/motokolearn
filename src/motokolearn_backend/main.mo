@@ -431,8 +431,8 @@ actor {
     };
 
     func fitClassification(x : [[dataMember]], y : [Text], current_depth : Nat, y_uniques: [Text], max_depth: Nat, min_node_data_size: Nat): Result.Result<BinTree, MotokoLearnError> {
-      // check size of x is at least the minimum size
-      if (x.size() <= min_node_data_size) {
+      // check size of x is at least the minimum size and we are not at the deepest level allowed
+      if (x.size() <= min_node_data_size or current_depth >= max_depth) {
         let probs = Buffer.Buffer<Float>(y_uniques.size());
         for (i in Iter.range(0, y_uniques.size() - 1)) { 
           let num_ys: Nat = Array.filter<Text>(y, func x = x == y_uniques[i]).size();
@@ -440,12 +440,18 @@ actor {
           probs.add(prob);
           Debug.print(Float.toText(prob));
         };
-
         let leafNode: BinTree  = setLeftRightBranch(null, null, #symbol(Buffer.toArray(probs)), nilTree(), nilTree());
         return #ok(leafNode);
       };
       // create node  
       // for all features
+      let xt = transpose(x);
+      let ginis = Buffer.Buffer<Float>(xt.size());
+      for (i in Iter.range(0, xt.size() - 1)) {
+        let xcol = xt[i];
+        let gini = computeGini(xcol,y); <----------------------IMHERE
+        ginis.add(gini);
+      }; 
       // compute gini index of the
       // recursive call left and right and connect to node and return 
       return #ok(TopTree);
