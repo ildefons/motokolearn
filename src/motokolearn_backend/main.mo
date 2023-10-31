@@ -419,18 +419,42 @@ actor {
       return true;
     };
 
-    func fitClassification(x : [[dataMember]], y : [dataMember], depth : Nat): Result.Result<BinTree, MotokoLearnError> {
+    func fitClassification(x : [[dataMember]], y : [dataMember], current_depth : Nat, y_uniques: [Text], max_depth: Nat, min_node_data_size: Nat): Result.Result<BinTree, MotokoLearnError> {
       // check all y values are symbol
       if (checkAllSymbol(y) == false) {
         return #err(#notAllYsymbols);
       };
+
+
+
       // check size of x is at least the minimum size
-      <<<<<<<<<<----------------IMHERE
+      if (x.size() <= 1) {
+        
+        let leafNode: BinTree  = setLeftRightBranch(null, null, #symbol([0,1]), nilTree(), nilTree());
+        return #ok(leafNode);
+      };
       // create node  
       // for all features
       // compute gini index of the
       // recursive call left and right and connect to node and return 
       return #ok(TopTree);
+    };
+
+    func dataMemberVectorToTextVector(y: [dataMember]): Result.Result<[Text], MotokoLearnError> {
+      let ysize = y.size();
+      let ret = Buffer.Buffer<Text>(ysize); 
+      for (i in Iter.range(0, ysize - 1)) {
+        let aux = y[i];
+        switch(aux) {
+          case (#symbol(sym)) {
+            ret.add(sym);
+          };
+          case (_) {
+            return #err(#notAllYsymbols);
+          };
+        };
+      };   
+      return #ok(Buffer.toArray(ret)); 
     };
 
     func fit(x : [[dataMember]], y : [dataMember]): Result.Result<BinTree, MotokoLearnError> {
@@ -443,16 +467,28 @@ actor {
       let aux: dataMember = y[0];
       switch(aux) {
         case (#number(num)) {
-        
+          return (#ok(TopTree));
         };
         case (#symbol(sym)) {
-          let tree_or_error = fitClassification(x, y, 0);
-          switch(tree_or_error) {
-            case(#err(_)) {
-              return tree_or_error;
+          let ys = dataMemberVectorToTextVector(y);
+          switch (ys) {
+            case (#ok(ys_text)) {
+               let y_uniques = uniquesText(ys_text);
+               let current_depth = 0;
+               let max_depth = 3;
+               let min_node_data_size = 0;
+               let tree_or_error = fitClassification(x, y, current_depth, y_uniques, max_depth, min_node_data_size);
+               switch(tree_or_error) {
+                case(#err(_)) {
+                   return tree_or_error;
+                };
+                case(#ok(tree)) {
+                   return tree_or_error;
+                };
+              };
             };
-            case(#ok(tree)) {
-              return tree_or_error;
+            case (_) {
+              return #err(#notAllYsymbols); // forward error
             };
           };
         };
@@ -466,7 +502,7 @@ actor {
       //         what order do we follow to test among the available var_ids giving best partition?
       //         showld we test all var_ids? if more than M, pick only M randomly  
       //         how do we find the th on numeric features?
-      return #ok(TopTree);
+      //return #ok(TopTree);
     };
 
     func isLeftNode(feature_: dataMember, th_: Float): (Bool) { 
