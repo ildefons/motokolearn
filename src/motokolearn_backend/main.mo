@@ -70,6 +70,7 @@ actor {
     #sizeMissmatchXY;
     #notAllYsymbols;
     #notExactly2UniqueXSymbols;
+    #notAllNumbers;
   };
 
   type dataMember = {
@@ -162,6 +163,14 @@ actor {
 
 
   // 2) do error checking s.t. indexes fall within matrix dimensions
+  func linspace(xs_min: Float, xs_max: Float, num: Nat): [Float] {
+    let ret = Buffer.Buffer<Float>(num);
+    let A: Float = (xs_max-xs_min)/Float.fromInt(num);
+    for (i in Iter.range(0, num - 1)) {
+      ret.add(xs_min + Float.fromInt(i)*A)
+    }; 
+    Buffer.toArray(ret);
+  };
   func min(rs: [Float]) : Float {
     let aux = Array.sort(rs, Float.compare);
     aux[0];
@@ -383,14 +392,14 @@ actor {
     
 
      
-    var data: [[dataMember]] = [[#number(1), #number(2), #symbol("0")],
-                                [#number(2), #number(3), #symbol("0")],
-                                [#number(1), #number(4), #symbol("1")],
-                                [#number(2), #number(5), #symbol("1")],
-                                [#number(3), #number(2), #symbol("1")],
-                                [#number(4), #number(3), #symbol("1")],
-                                [#number(3), #number(4), #symbol("0")],
-                                [#number(4), #number(5), #symbol("0")]];
+    var data: [[dataMember]] = [[#symbol("0"), #number(1), #number(2), #symbol("0")],
+                                [#symbol("0"), #number(2), #number(3), #symbol("0")],
+                                [#symbol("0"), #number(1), #number(4), #symbol("1")],
+                                [#symbol("0"), #number(2), #number(5), #symbol("1")],
+                                [#symbol("1"), #number(3), #number(2), #symbol("1")],
+                                [#symbol("1"), #number(4), #number(3), #symbol("1")],
+                                [#symbol("1"), #number(3), #number(4), #symbol("0")],
+                                [#symbol("1"), #number(4), #number(5), #symbol("0")]];
 
     let LeftLeftTree: BinTree  = setLeftRightBranch(null, null, #symbol([1,0]), nilTree(), nilTree());
     let LeftRightTree: BinTree = setLeftRightBranch(null, null, #symbol([0,1]), nilTree(), nilTree());
@@ -448,6 +457,19 @@ actor {
       let aux: dataMember = xcol[0];
       switch(aux) {
         case (#number(num)) {
+          let xs = dataMemberVectorToFloatVector(xcol);
+          switch (xs) {
+            case (#ok(xs_num)) {
+              let xs_min = min(xs_num);
+              let xs_max = max(xs_num);
+              let th_vec: [Float] = linspace(xs_min,xs_max,10);
+              for 
+            };
+            case (#err(err)) {
+              // TBD
+            }
+          };
+
           return (#ok(0)); //TBD
         };
         case (#symbol(sym)) {
@@ -455,28 +477,35 @@ actor {
           switch (xs) {
             case (#ok(xs_text)) {
               // check exatly 2 different symbolic features: remeber it will require 
-              let x_uniques = uniquesText(xs_text);
-              if (x_uniques.size() != 2) {
-                return (#err(#notExactly2UniqueXSymbols))
-              };
+              let x_uniques = ["0","1"];   // NOTE: x_uniques is always ["0","1"], y_uniques is problem dependent. E.g. has 4 classes
+              // if (x_uniques.size() != 2) {
+              //   return (#err(#notExactly2UniqueXSymbols))
+              // };
               // for each unique x get the corresponding y vector and compute gini and weight
-              let ginis = Buffer.Buffer<Float>(x_uniques.size());
-              let weigths = Buffer.Buffer<Float>(x_uniques.size());
-              for (i in Iter.range(0, x_uniques.size() - 1)) {
+              let ginis = Buffer.Buffer<Float>(2);
+              let weigths = Buffer.Buffer<Float>(2);
+              for (i in Iter.range(0, 2 - 1)) {
                 //let num_ys: Nat = Array.filter<Text>(xs_text, func x = x == x_uniques[i]);
-                let ret_xi: [Bool] = Array.mapEntries<Text, Bool>(xs_text, func (x, i) = (x == x_uniques[i]));
-                let ret_xi_size: Nat = Array.filter<Bool>(ret_xi, func x = x == true).size();
-                let ret_yi = Buffer.Buffer<Text>(ret_xi_size);
+                //Debug.print("211:"#Nat.toText(xs_text.size()));
+                let ret_xi = Array.mapEntries<Text, Bool>(xs_text, func (xx, ii) = Text.equal(xx,x_uniques[i]));//Debug.print("2111");
+                let ret_xi_size: Nat = Array.filter<Bool>(ret_xi, func xx = xx == true).size();//Debug.print("21:"#Nat.toText(ret_xi_size));
+                let ret_yi = Buffer.Buffer<Text>(ret_xi_size);//Debug.print("212");
                 if (ret_xi_size > 0) {
-                  for (j in Iter.range(0, ret_xi_size - 1)) {
+                  for (j in Iter.range(0, ret_xi.size() - 1)) {
+                    //Debug.print("j"#Nat.toText(j));
                     if (ret_xi[j]) {
-                      ret_yi.add(y[j]);
+                      ret_yi.add(y[j]);//Debug.print("214");
                     }
                   };
+                  //Debug.print("219:"#Nat.toText(ret_yi.size()));
+                  let gini_aux: Float = gini(Buffer.toArray(ret_yi), y_uniques);//Debug.print("215");
+                  ginis.add(gini_aux);//Debug.print("216:"#Float.toText(gini_aux)#Float.toText(Float.fromInt(Buffer.toArray(ret_yi).size())/Float.fromInt(y.size())));
+                  weigths.add(Float.fromInt(Buffer.toArray(ret_yi).size())/Float.fromInt(y.size()));//Debug.print("217");
+                }
+                else { // case x_uniques[i] does not exist in xcol, then weight is 0
+                  ginis.add(0);
+                  weigths.add(0);
                 };
-                let gini_aux: Float = gini(Buffer.toArray(ret_yi), y_uniques);
-                ginis.add(gini_aux);
-                weigths.add(Float.fromInt(Buffer.toArray(ret_yi).size())/Float.fromInt(y.size()));
               };
               let ws = Buffer.toArray(weigths);
               let gs = Buffer.toArray(ginis);
@@ -489,6 +518,68 @@ actor {
         };
       };
     };
+    
+    func dataMemberVectorToTextVector(y: [dataMember]): Result.Result<[Text], MotokoLearnError> {
+      let ysize = y.size();
+      let ret = Buffer.Buffer<Text>(ysize); 
+      for (i in Iter.range(0, ysize - 1)) {
+        let aux = y[i];
+        switch(aux) {
+          case (#symbol(sym)) {
+            ret.add(sym);
+          };
+          case (_) {
+            return #err(#notAllYsymbols);
+          };
+        };
+      };   
+      return #ok(Buffer.toArray(ret)); 
+    };
+
+    func dataMemberVectorToFloatVector(y: [dataMember]): Result.Result<[Float], MotokoLearnError> {
+      let ysize = y.size();
+      let ret = Buffer.Buffer<Float>(ysize); 
+      for (i in Iter.range(0, ysize - 1)) {
+        let aux = y[i];
+        switch(aux) {
+          case (#number(num)) {
+            ret.add(num);
+          };
+          case (_) {
+            return #err(#notAllNumbers);
+          };
+        };
+      };   
+      return #ok(Buffer.toArray(ret)); 
+    };
+
+    // let x = transpose(cols([0],data));
+    // let ycol = cols([3],data);
+    // let yvec = transpose(ycol);
+    // let y_txt = dataMemberVectorToTextVector(yvec[0]);
+    // Debug.print("1");
+    // switch (y_txt) {
+    //   case (#ok(ys_text)) {
+    //     // check exatly 2 different symbolic features: remeber it will require 
+    //     let y_uniques = uniquesText(ys_text);
+    //     Debug.print("2");
+    //     let aux = computeFeatureGini(x[0],ys_text,y_uniques);
+    //     Debug.print("3");
+    //     switch (aux) {
+    //       case (#ok(num)){
+    //         Debug.print("Gini:"#Float.toText(num));
+    //       };
+    //       case (_) {
+    //         //
+    //       };
+    //     };
+    //   };
+    //   case (_) {
+
+    //   };
+    // };
+
+
 
     func fitClassification(x : [[dataMember]], y : [Text], current_depth : Nat, y_uniques: [Text], max_depth: Nat, min_node_data_size: Nat): Result.Result<BinTree, MotokoLearnError> {
       // check size of x is at least the minimum size and we are not at the deepest level allowed
@@ -509,50 +600,41 @@ actor {
       let ginis = Buffer.Buffer<Float>(xt.size());
       for (i in Iter.range(0, xt.size() - 1)) {
         let xcol = xt[i];
-        let gini = computeFeatureGini(xcol,y,y_uniques); 
-        //<----------------------IMHERE: switch ok err
-        ginis.add(gini);
-        Debug.print("gini:"#Float.toText(gini));
+        let gini = computeFeatureGini(xcol,y,y_uniques);
+        switch (gini) {
+          case (#ok(gini_float)) {
+            ginis.add(gini_float);
+            Debug.print("gini:"#Float.toText(gini_float));
+          };
+          case (#err(err)) {
+            return #err(err);
+          };
+        }; 
       }; 
       // compute gini index of the
       // recursive call left and right and connect to node and return 
       return #ok(TopTree);
     };   
 
-    func dataMemberVectorToTextVector(y: [dataMember]): Result.Result<[Text], MotokoLearnError> {
-      let ysize = y.size();
-      let ret = Buffer.Buffer<Text>(ysize); 
-      for (i in Iter.range(0, ysize - 1)) {
-        let aux = y[i];
-        switch(aux) {
-          case (#symbol(sym)) {
-            ret.add(sym);
-          };
-          case (_) {
-            return #err(#notAllYsymbols);
-          };
-        };
-      };   
-      return #ok(Buffer.toArray(ret)); 
-    };
 
-    let Xtrain = rows([0,1,2,3], data); 
-    let x = cols([0,1], Xtrain);
-    let yaux = transpose(cols([2], Xtrain))[0];
-    let y = dataMemberVectorToTextVector(yaux);
-    switch(y) {
-      case (#ok(yvec)) {
-        let ret_tree = fitClassification(x, yvec, 0, ["0","1"], 2, 3);
-        switch(ret_tree) {
-          case (#ok(mytree)) {
-            return mytree;
-          };
-        }
-      };
-      case (_) {
-        //
-      };
-    };
+
+    // let Xtrain = rows([0,1,2,3], data); 
+    // let x = cols([0,1], Xtrain);
+    // let yaux = transpose(cols([2], Xtrain))[0];
+    // let y = dataMemberVectorToTextVector(yaux);
+    // switch(y) {
+    //   case (#ok(yvec)) {
+    //     let ret_tree = fitClassification(x, yvec, 0, ["0","1"], 2, 3);
+    //     switch(ret_tree) {
+    //       case (#ok(mytree)) {
+    //         return mytree;
+    //       };
+    //     }
+    //   };
+    //   case (_) {
+    //     //
+    //   };
+    //};
     return TopTree;
 
     // func fit(x : [[dataMember]], y : [dataMember]): Result.Result<BinTree, MotokoLearnError> {
