@@ -463,7 +463,11 @@ actor {
               let xs_min = min(xs_num);
               let xs_max = max(xs_num);
               let th_vec: [Float] = linspace(xs_min,xs_max,10);
-              for 
+              let ginis = Buffer.Buffer<Float>(th_vec.size());
+              for (i in Iter.range(0, th_vec.size() - 1)) {
+                let th = th_vec[i];
+                // <---------------------------IMHERE
+              }; 
             };
             case (#err(err)) {
               // TBD
