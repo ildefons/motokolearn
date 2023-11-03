@@ -453,7 +453,7 @@ actor {
       return g_total;
     };
   
-
+    let NUM_CHECKS_GINI : Nat = 10;
 
     func computeFeatureGini(xcol: [dataMember],y:[Text],y_uniques:[Text]): Result.Result<Float, MotokoLearnError> {
       // check whether this a nueric or a symbolic feature
@@ -465,7 +465,7 @@ actor {
             case (#ok(xs_num)) {
               let xs_min = min(xs_num);
               let xs_max = max(xs_num);
-              let th_vec: [Float] = linspace(xs_min,xs_max,10); // 10 should be a constant of the future module
+              let th_vec: [Float] = linspace(xs_min,xs_max,NUM_CHECKS_GINI); // NUM_CHECKS_GINI : Nat = 10; it should be a private constant of the future module
               let ginis = Buffer.Buffer<Float>(th_vec.size());
               for (i in Iter.range(0, th_vec.size() - 1)) {
                 let th = th_vec[i];
