@@ -394,10 +394,10 @@ actor {
      
     var data: [[dataMember]] = [[#symbol("0"), #number(1), #number(2), #symbol("0")],
                                 [#symbol("0"), #number(2), #number(3), #symbol("0")],
-                                [#symbol("0"), #number(1), #number(4), #symbol("1")],
-                                [#symbol("0"), #number(2), #number(5), #symbol("1")],
-                                [#symbol("1"), #number(3), #number(2), #symbol("1")],
-                                [#symbol("1"), #number(4), #number(3), #symbol("1")],
+                                [#symbol("0"), #number(5), #number(4), #symbol("1")],
+                                [#symbol("0"), #number(8), #number(5), #symbol("1")],
+                                [#symbol("1"), #number(5), #number(2), #symbol("1")],
+                                [#symbol("1"), #number(6), #number(3), #symbol("1")],
                                 [#symbol("1"), #number(3), #number(4), #symbol("0")],
                                 [#symbol("1"), #number(4), #number(5), #symbol("0")]];
 
@@ -452,6 +452,8 @@ actor {
       return g_total;
     };
   
+
+
     func computeFeatureGini(xcol: [dataMember],y:[Text],y_uniques:[Text]): Result.Result<Float, MotokoLearnError> {
       // check whether this a nueric or a symbolic feature
       let aux: dataMember = xcol[0];
@@ -462,12 +464,39 @@ actor {
             case (#ok(xs_num)) {
               let xs_min = min(xs_num);
               let xs_max = max(xs_num);
-              let th_vec: [Float] = linspace(xs_min,xs_max,10);
+              let th_vec: [Float] = linspace(xs_min,xs_max,10); // 10 should be a constant of the future module
               let ginis = Buffer.Buffer<Float>(th_vec.size());
               for (i in Iter.range(0, th_vec.size() - 1)) {
                 let th = th_vec[i];
-                // <---------------------------IMHERE
+                let ret_xi = Array.mapEntries<Float, Bool>(xs_num, func (xx, ii) = (xx <= th));
+                let ret_xi_size: Nat = Array.filter<Bool>(ret_xi, func xx = xx == true).size();
+                let ret_yi_l = Buffer.Buffer<Text>(ret_xi_size);
+                let ret_yi_r = Buffer.Buffer<Text>(ret_xi.size()-ret_xi_size);
+                var gini_l: Float = 0;
+                var gini_r: Float = 0;
+                var weight_l: Float = 0;
+                var weight_r: Float = 0;
+                if (ret_xi_size > 0) {
+                  for (j in Iter.range(0, ret_xi.size() - 1)) {
+                    if (ret_xi[j]==true) {
+                      ret_yi_l.add(y[j]);
+                    }
+                  };
+                  gini_l := gini(Buffer.toArray(ret_yi_l), y_uniques);
+                  weight_l := Float.fromInt(Buffer.toArray(ret_yi_l).size())/Float.fromInt(y.size());
+                };
+                if ( (ret_xi.size()-ret_xi_size) > 0) {
+                  for (j in Iter.range(0, ret_xi.size() - 1)) {
+                    if (ret_xi[j]==false) {
+                      ret_yi_r.add(y[j]);
+                    }
+                  };
+                  gini_r := gini(Buffer.toArray(ret_yi_r), y_uniques);
+                  weight_r := Float.fromInt(Buffer.toArray(ret_yi_r).size())/Float.fromInt(y.size());
+                };
+                ginis.add(weight_l*gini_l+weight_r*gini_r);
               }; 
+              return #ok(min(Buffer.toArray(ginis)));
             };
             case (#err(err)) {
               // TBD
@@ -557,33 +586,31 @@ actor {
       return #ok(Buffer.toArray(ret)); 
     };
 
-    // let x = transpose(cols([0],data));
-    // let ycol = cols([3],data);
-    // let yvec = transpose(ycol);
-    // let y_txt = dataMemberVectorToTextVector(yvec[0]);
-    // Debug.print("1");
-    // switch (y_txt) {
-    //   case (#ok(ys_text)) {
-    //     // check exatly 2 different symbolic features: remeber it will require 
-    //     let y_uniques = uniquesText(ys_text);
-    //     Debug.print("2");
-    //     let aux = computeFeatureGini(x[0],ys_text,y_uniques);
-    //     Debug.print("3");
-    //     switch (aux) {
-    //       case (#ok(num)){
-    //         Debug.print("Gini:"#Float.toText(num));
-    //       };
-    //       case (_) {
-    //         //
-    //       };
-    //     };
-    //   };
-    //   case (_) {
+    let x = transpose(cols([1],data));
+    let ycol = cols([3],data);
+    let yvec = transpose(ycol);
+    let y_txt = dataMemberVectorToTextVector(yvec[0]);
+    switch (y_txt) {
+      case (#ok(ys_text)) {
+        // check exatly 2 different symbolic features: remeber it will require 
+        let y_uniques = uniquesText(ys_text);
+        let aux = computeFeatureGini(x[0],ys_text,y_uniques);
+        switch (aux) {
+          case (#ok(num)){
+            Debug.print("Gini:"#Float.toText(num));
+          };
+          case (_) {
+            //
+          };
+        };
+      };
+      case (_) {
 
-    //   };
-    // };
+      };
+    };
 
 
+    // <----------IMHERE: back to understand fitClassification
 
     func fitClassification(x : [[dataMember]], y : [Text], current_depth : Nat, y_uniques: [Text], max_depth: Nat, min_node_data_size: Nat): Result.Result<BinTree, MotokoLearnError> {
       // check size of x is at least the minimum size and we are not at the deepest level allowed
