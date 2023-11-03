@@ -157,7 +157,7 @@ actor {
       let ys = cols([i], m);
       let ys2 = Array.flatten(ys);
       trans.add(ys2);
-      //trans := List.push<[dataMember]>(ys2, trans); // <-----IMHERE: List.push<Nat>(0, null) // => ?(0, null);
+      //trans := List.push<[dataMember]>(ys2, trans); // 
     };
     Buffer.toArray(trans); 
   };
@@ -316,7 +316,7 @@ actor {
     //   let ys = cols([i], actor_data);
     //   let ys2 = Array.flatten(ys);
     //   trans.add(ys2);
-    //   //trans := List.push<[dataMember]>(ys2, trans); // <-----IMHERE: List.push<Nat>(0, null) // => ?(0, null);
+    //   //trans := List.push<[dataMember]>(ys2, trans); 
     // };
     let ret = transpose(actor_data);//Buffer.toArray(trans); 
     //trans := Array(trans);
@@ -413,7 +413,7 @@ actor {
 
     //todo:
     // 1) test that "predict" works
-    // 2) learnTree function (paramters hardcoded btb) <-------------IMHERE
+    // 2) learnTree function (paramters hardcoded btb) 
     // 3) more complex "data" (more features and more samples)
     //
 
@@ -611,7 +611,7 @@ actor {
     // };
 
 
-    // <----------IMHERE: back to understand fitClassification
+  
 
     func fitClassification(x : [[dataMember]], y : [Text], current_depth : Nat, y_uniques: [Text], max_depth: Nat, min_node_data_size: Nat): Result.Result<BinTree, MotokoLearnError> {
       // check size of x is at least the minimum size and we are not at the deepest level allowed
@@ -650,8 +650,10 @@ actor {
       if (bestcol==null) {
         return #err(#noBestGiniError);
       };
-      
+      //<--------IMHERE
       // recursive call left and right and connect to node and return 
+      //----------Cal fer mini funcions per obtenir x_left/right,y_left/right, and th i utilitzarles tambe alcalcul del gini per no duplicar codi
+      //----------cal calcular probs per "thisNode" utilitzant y (facil)
       // let leftNode: BinTree  = fitClassification(x_left, y_left, current_depth + 1, y_uniques, max_depth, min_node_data_size);
       // let rightNode: BinTree  = fitClassification(x_right, y_right, current_depth + 1, y_uniques, max_depth, min_node_data_size);
       // let thisNode: BinTree = setLeftRightBranch(bestcol, th, #symbol(Buffer.toArray(probs)), leftNode, rightNode);
@@ -787,7 +789,7 @@ actor {
     //             case (?Nat) Nat;
     //           };
     //           //Debug.print("var_id:" # Nat.toText(var_id));
-    //           let feature: dataMember = x[var_id]; // <------------------------IMHERE!!!
+    //           let feature: dataMember = x[var_id]; 
     //           let th : Float = switch xth {
     //               case null 0;
     //               case (?Float) Float;
