@@ -586,28 +586,28 @@ actor {
       return #ok(Buffer.toArray(ret)); 
     };
 
-    let x = transpose(cols([1],data));
-    let ycol = cols([3],data);
-    let yvec = transpose(ycol);
-    let y_txt = dataMemberVectorToTextVector(yvec[0]);
-    switch (y_txt) {
-      case (#ok(ys_text)) {
-        // check exatly 2 different symbolic features: remeber it will require 
-        let y_uniques = uniquesText(ys_text);
-        let aux = computeFeatureGini(x[0],ys_text,y_uniques);
-        switch (aux) {
-          case (#ok(num)){
-            Debug.print("Gini:"#Float.toText(num));
-          };
-          case (_) {
-            //
-          };
-        };
-      };
-      case (_) {
+    // let x = transpose(cols([1],data));
+    // let ycol = cols([3],data);
+    // let yvec = transpose(ycol);
+    // let y_txt = dataMemberVectorToTextVector(yvec[0]);
+    // switch (y_txt) {
+    //   case (#ok(ys_text)) {
+    //     // check exatly 2 different symbolic features: remeber it will require 
+    //     let y_uniques = uniquesText(ys_text);
+    //     let aux = computeFeatureGini(x[0],ys_text,y_uniques);
+    //     switch (aux) {
+    //       case (#ok(num)){
+    //         Debug.print("Gini:"#Float.toText(num));
+    //       };
+    //       case (_) {
+    //         //
+    //       };
+    //     };
+    //   };
+    //   case (_) {
 
-      };
-    };
+    //   };
+    // };
 
 
     // <----------IMHERE: back to understand fitClassification
@@ -647,25 +647,24 @@ actor {
       return #ok(TopTree);
     };   
 
-
-
-    // let Xtrain = rows([0,1,2,3], data); 
-    // let x = cols([0,1], Xtrain);
-    // let yaux = transpose(cols([2], Xtrain))[0];
-    // let y = dataMemberVectorToTextVector(yaux);
-    // switch(y) {
-    //   case (#ok(yvec)) {
-    //     let ret_tree = fitClassification(x, yvec, 0, ["0","1"], 2, 3);
-    //     switch(ret_tree) {
-    //       case (#ok(mytree)) {
-    //         return mytree;
-    //       };
-    //     }
-    //   };
-    //   case (_) {
-    //     //
-    //   };
-    //};
+    
+    //let Xtrain = rows([0,1,2,3], data); 
+    let x = cols([0,1,2], data);
+    let yaux = transpose(cols([3], data))[0];
+    let y = dataMemberVectorToTextVector(yaux);
+    switch(y) {
+      case (#ok(yvec)) {
+        let ret_tree = fitClassification(x, yvec, 0, ["0","1"], 2, 3);
+        switch(ret_tree) {
+          case (#ok(mytree)) {
+            return mytree;
+          };
+        }
+      };
+      case (_) {
+        //
+      };
+    };
     return TopTree;
 
     // func fit(x : [[dataMember]], y : [dataMember]): Result.Result<BinTree, MotokoLearnError> {
