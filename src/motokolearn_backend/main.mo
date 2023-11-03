@@ -71,6 +71,7 @@ actor {
     #notAllYsymbols;
     #notExactly2UniqueXSymbols;
     #notAllNumbers;
+    #noBestGiniError;
   };
 
   type dataMember = {
@@ -643,8 +644,19 @@ actor {
         }; 
       }; 
       // compute gini index of the
+      let ginis_array = Buffer.toArray(ginis);
+      let bestgini = min(ginis_array);
+      let bestcol = Array.indexOf<Float>(bestgini, ginis_array, Float.equal);
+      if (bestcol==null) {
+        return #err(#noBestGiniError);
+      };
+      
       // recursive call left and right and connect to node and return 
-      return #ok(TopTree);
+      // let leftNode: BinTree  = fitClassification(x_left, y_left, current_depth + 1, y_uniques, max_depth, min_node_data_size);
+      // let rightNode: BinTree  = fitClassification(x_right, y_right, current_depth + 1, y_uniques, max_depth, min_node_data_size);
+      // let thisNode: BinTree = setLeftRightBranch(bestcol, th, #symbol(Buffer.toArray(probs)), leftNode, rightNode);
+
+      return #ok(thisNode);
     };   
 
     
