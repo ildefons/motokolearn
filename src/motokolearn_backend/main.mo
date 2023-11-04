@@ -130,6 +130,9 @@ actor {
   func rows<T>(rs : [Nat], m : [[T]]) : [[T]] {
     Array.tabulate<[T]>(rs.size(), func r { m[rs[r]] });
   };
+  func rowsVector<T>(rs : [Nat], v : [T]) : [T] {
+    Array.tabulate<T>(rs.size(), func r { v[rs[r]] });
+  };
 
   func cols<T>(cs : [Nat], m : [[T]]) : [[T]] {
     Array.tabulate<[T]>(m.size(), func r {
@@ -462,6 +465,7 @@ actor {
     };
   
     let NUM_CHECKS_GINI : Nat = 10;
+    let X_UNIQUES : [Text] = ["0","1"];
 
     func computeFeatureGini(xcol: [dataMember],y:[Text],y_uniques:[Text]): Result.Result<(Float,Float), MotokoLearnError> {
       // check whether this a nueric or a symbolic feature
@@ -525,7 +529,7 @@ actor {
           switch (xs) {
             case (#ok(xs_text)) {
               // check exatly 2 different symbolic features: remeber it will require 
-              let x_uniques = ["0","1"];   // NOTE: x_uniques is always ["0","1"], y_uniques is problem dependent. E.g. has 4 classes
+              //let x_uniques = ["0","1"];   // NOTE: x_uniques is always ["0","1"], y_uniques is problem dependent. E.g. has 4 classes
               // if (x_uniques.size() != 2) {
               //   return (#err(#notExactly2UniqueXSymbols))
               // };
@@ -535,7 +539,7 @@ actor {
               for (i in Iter.range(0, 2 - 1)) {
                 //let num_ys: Nat = Array.filter<Text>(xs_text, func x = x == x_uniques[i]);
                 //Debug.print("211:"#Nat.toText(xs_text.size()));
-                let ret_xi = Array.mapEntries<Text, Bool>(xs_text, func (xx, ii) = Text.equal(xx,x_uniques[i]));//Debug.print("2111");
+                let ret_xi = Array.mapEntries<Text, Bool>(xs_text, func (xx, ii) = Text.equal(xx,X_UNIQUES[i]));//Debug.print("2111");
                 let ret_xi_size: Nat = Array.filter<Bool>(ret_xi, func xx = xx == true).size();//Debug.print("21:"#Nat.toText(ret_xi_size));
                 let ret_yi = Buffer.Buffer<Text>(ret_xi_size);//Debug.print("212");
                 if (ret_xi_size > 0) {
@@ -584,8 +588,23 @@ actor {
         case (_) {return ([0],[0]);};
       };
     };
+
     func computeLeftRightSymbolic(x: [dataMember], y: [Text], y_uniques: [Text]): ([Nat], [Nat]) {
-      return ([1],[2]);
+      let xs = dataMemberVectorToTextVector(x);
+      switch (xs) {
+        case (#ok(xs_sym)) {
+          let ret_xi: [Bool] = Array.mapEntries<Text, Bool>(xs_sym, func (xx, ii) = Text.equal(xx,X_UNIQUES[0]));
+          let sumtrues = sumTrues(ret_xi);
+          let left_i = Buffer.Buffer<Nat>(sumtrues);
+          let right_i = Buffer.Buffer<Nat>(ret_xi.size()-sumtrues);
+          for (j in Iter.range(0, ret_xi.size() - 1)) {
+            if (ret_xi[j]==true) left_i.add(j)
+            else right_i.add(j);
+          };
+          return (Buffer.toArray(left_i),Buffer.toArray(right_i));
+        };
+        case (_) {return ([0],[0]);};
+      };
     };
 
     func dataMemberVectorToTextVector(y: [dataMember]): Result.Result<[Text], MotokoLearnError> {
@@ -650,14 +669,13 @@ actor {
 
     func fitClassification(x : [[dataMember]], y : [Text], current_depth : Nat, y_uniques: [Text], max_depth: Nat, min_node_data_size: Nat): Result.Result<BinTree, MotokoLearnError> {
       // check size of x is at least the minimum size and we are not at the deepest level allowed
-      if (x.size() <= min_node_data_size or current_depth >= max_depth) {
-        let probs = Buffer.Buffer<Float>(y_uniques.size());
-        for (i in Iter.range(0, y_uniques.size() - 1)) { 
+      let probs = Buffer.Buffer<Float>(y_uniques.size());
+      for (i in Iter.range(0, y_uniques.size() - 1)) { 
           let num_ys: Nat = Array.filter<Text>(y, func x = x == y_uniques[i]).size();
           let prob = Float.fromInt(num_ys) / Float.fromInt(y.size());
           probs.add(prob);
-          Debug.print(Float.toText(prob));
         };
+      if (x.size() <= min_node_data_size or current_depth >= max_depth) {
         let leafNode: BinTree  = setLeftRightBranch(null, null, #symbol(Buffer.toArray(probs)), nilTree(), nilTree());
         return #ok(leafNode);
       };
@@ -683,7 +701,7 @@ actor {
       }; 
       // compute gini index of the
       let ginis_array = Buffer.toArray(ginis);
-      let ths_array = Buffer.toArray(ths);
+      let ths_array: [Float] = Buffer.toArray(ths);
       let bestgini = min(ginis_array);
       let bestcol: ?Nat = Array.indexOf<Float>(bestgini, ginis_array, Float.equal);
       if (bestcol==null) {
@@ -694,24 +712,34 @@ actor {
         case (?Nat) Nat;
       };
       let bestth = ths_array[xbestcol];
-        //<--------IMHERE
-        // recursive call left and right and connect to node and return 
+      // recursive call left and right and connect to node and return 
       let myx = cols<dataMember>([xbestcol], x)[0];
 
       let (left_rows,right_rows) = switch (myx[0]) {
         case (#number(num)) computeThLeftRightNumeric(myx, y, y_uniques, bestth);
         case (#symbol(sym)) computeLeftRightSymbolic(myx, y, y_uniques);
       };
-     
-        //----------Cal fer mini funcions per obtenir x_left/right,y_left/right, and th i utilitzarles tambe alcalcul del gini per no duplicar codi
-        //----------cal calcular probs per "thisNode" utilitzant y (facil)
-        // let leftNode: BinTree  = fitClassification(x_left, y_left, current_depth + 1, y_uniques, max_depth, min_node_data_size);
-        // let rightNode: BinTree  = fitClassification(x_right, y_right, current_depth + 1, y_uniques, max_depth, min_node_data_size);
-        // let thisNode: BinTree = setLeftRightBranch(bestcol, th, #symbol(Buffer.toArray(probs)), leftNode, rightNode);
+      let x_left = rows(left_rows,x);
+      let y_left = rowsVector(left_rows,y);
+      let x_right = rows(right_rows,x);
+      let y_right = rowsVector(right_rows,y);
+
+      let leftNode_aux  = fitClassification(x_left, y_left, current_depth + 1, y_uniques, max_depth, min_node_data_size);
+      let rightNode_aux  = fitClassification(x_right, y_right, current_depth + 1, y_uniques, max_depth, min_node_data_size);
+      let leftNode = switch leftNode_aux {
+        case (#ok(leftNode)) leftNode;
+        case (#err(err)) return leftNode_aux;
+      };
+      let rightNode = switch rightNode_aux {
+        case (#ok(rightNode)) rightNode;
+        case (#err(err)) return rightNode_aux;
+      };
+      let thisNode: BinTree = setLeftRightBranch(bestcol, ?bestth, #symbol(Buffer.toArray(probs)), leftNode, rightNode);
       
-      return #ok(TopTree);
+      return #ok(thisNode);
     };   
 
+    //<----------------------------------IMHERE: test fit classifciation
     
     //let Xtrain = rows([0,1,2,3], data); 
     let x = cols([0,1,2], data);
