@@ -180,6 +180,14 @@ actor {
     let aux = Array.sort(rs, Float.compare);
     aux[rs.size()-1];
   };
+  func sumTrues(rs: [Bool]) : Nat {
+    let sum = Array.foldLeft<Bool, Nat>(rs, 0, func(sumSoFar, x) = switch x {case true sumSoFar + 1; case false sumSoFar + 0});
+    sum;
+  };
+  func sumFalses(rs: [Bool]) : Nat {
+    let sum = Array.foldLeft<Bool, Nat>(rs, 0, func(sumSoFar, x) = switch x {case true sumSoFar + 0; case false sumSoFar + 1});
+    sum;
+  };
   func mean(rs: [Float]) : Float {
     let sum = Array.foldLeft<Float, Float>(rs, 0, func(sumSoFar, x) = sumSoFar + x);
     let ret : Float = sum/Float.fromInt(rs.size());
@@ -455,7 +463,7 @@ actor {
   
     let NUM_CHECKS_GINI : Nat = 10;
 
-    func computeFeatureGini(xcol: [dataMember],y:[Text],y_uniques:[Text]): Result.Result<Float, MotokoLearnError> {
+    func computeFeatureGini(xcol: [dataMember],y:[Text],y_uniques:[Text]): Result.Result<(Float,Float), MotokoLearnError> {
       // check whether this a nueric or a symbolic feature
       let aux: dataMember = xcol[0];
       switch(aux) {
@@ -497,14 +505,20 @@ actor {
                 };
                 ginis.add(weight_l*gini_l+weight_r*gini_r);
               }; 
-              return #ok(min(Buffer.toArray(ginis)));
+              let bestgini = min(Buffer.toArray(ginis));
+              let bestth_i: ?Nat = Array.indexOf<Float>(bestgini, Buffer.toArray(ginis), Float.equal);
+              let bestth_ix: Nat = switch bestth_i {
+                case null 0;
+                case (?Nat) Nat;
+              };
+              return #ok(bestgini,th_vec[bestth_ix]);
             };
             case (#err(err)) {
               // TBD
             }
           };
 
-          return (#ok(0)); //TBD
+          return (#ok(0,0)); //TBD
         };
         case (#symbol(sym)) {
           let xs = dataMemberVectorToTextVector(xcol);
@@ -543,7 +557,7 @@ actor {
               };
               let ws = Buffer.toArray(weigths);
               let gs = Buffer.toArray(ginis);
-              return #ok(ws[0]*gs[0]+ws[1]*gs[1]);
+              return #ok(ws[0]*gs[0]+ws[1]*gs[1],0);
             };
             case (#err(xs_text)) {
               return #err(#notAllYsymbols);
@@ -553,6 +567,27 @@ actor {
       };
     };
     
+    func computeThLeftRightNumeric(x: [dataMember], y: [Text], y_uniques: [Text], bestth: Float): ([Nat], [Nat]) {
+      let xs = dataMemberVectorToFloatVector(x);
+      switch (xs) {
+        case (#ok(xs_num)) {
+          let ret_xi: [Bool]= Array.mapEntries<Float, Bool>(xs_num, func (xx, ii) = (xx <= bestth));
+          let sumtrues = sumTrues(ret_xi);
+          let left_i = Buffer.Buffer<Nat>(sumtrues);
+          let right_i = Buffer.Buffer<Nat>(ret_xi.size()-sumtrues);
+          for (j in Iter.range(0, ret_xi.size() - 1)) {
+            if (ret_xi[j]==true) left_i.add(j)
+            else right_i.add(j);
+          };
+          return (Buffer.toArray(left_i),Buffer.toArray(right_i));
+        };
+        case (_) {return ([0],[0]);};
+      };
+    };
+    func computeLeftRightSymbolic(x: [dataMember], y: [Text], y_uniques: [Text]): ([Nat], [Nat]) {
+      return ([1],[2]);
+    };
+
     func dataMemberVectorToTextVector(y: [dataMember]): Result.Result<[Text], MotokoLearnError> {
       let ysize = y.size();
       let ret = Buffer.Buffer<Text>(ysize); 
@@ -630,13 +665,16 @@ actor {
       // for all features
       let xt = transpose(x);
       let ginis = Buffer.Buffer<Float>(xt.size());
+      let ths = Buffer.Buffer<Float>(xt.size());
       for (i in Iter.range(0, xt.size() - 1)) {
         let xcol = xt[i];
         let gini = computeFeatureGini(xcol,y,y_uniques);
         switch (gini) {
-          case (#ok(gini_float)) {
+          case (#ok(gini_float, th_float)) {
             ginis.add(gini_float);
+            ths.add(th_float);
             Debug.print("gini:"#Float.toText(gini_float));
+            Debug.print("th:"#Float.toText(th_float));
           };
           case (#err(err)) {
             return #err(err);
@@ -645,20 +683,33 @@ actor {
       }; 
       // compute gini index of the
       let ginis_array = Buffer.toArray(ginis);
+      let ths_array = Buffer.toArray(ths);
       let bestgini = min(ginis_array);
-      let bestcol = Array.indexOf<Float>(bestgini, ginis_array, Float.equal);
+      let bestcol: ?Nat = Array.indexOf<Float>(bestgini, ginis_array, Float.equal);
       if (bestcol==null) {
         return #err(#noBestGiniError);
       };
-      //<--------IMHERE
-      // recursive call left and right and connect to node and return 
-      //----------Cal fer mini funcions per obtenir x_left/right,y_left/right, and th i utilitzarles tambe alcalcul del gini per no duplicar codi
-      //----------cal calcular probs per "thisNode" utilitzant y (facil)
-      // let leftNode: BinTree  = fitClassification(x_left, y_left, current_depth + 1, y_uniques, max_depth, min_node_data_size);
-      // let rightNode: BinTree  = fitClassification(x_right, y_right, current_depth + 1, y_uniques, max_depth, min_node_data_size);
-      // let thisNode: BinTree = setLeftRightBranch(bestcol, th, #symbol(Buffer.toArray(probs)), leftNode, rightNode);
+      let xbestcol : Nat = switch bestcol {
+        case null 0;
+        case (?Nat) Nat;
+      };
+      let bestth = ths_array[xbestcol];
+        //<--------IMHERE
+        // recursive call left and right and connect to node and return 
+      let myx = cols<dataMember>([xbestcol], x)[0];
 
-      return #ok(thisNode);
+      let (left_rows,right_rows) = switch (myx[0]) {
+        case (#number(num)) computeThLeftRightNumeric(myx, y, y_uniques, bestth);
+        case (#symbol(sym)) computeLeftRightSymbolic(myx, y, y_uniques);
+      };
+     
+        //----------Cal fer mini funcions per obtenir x_left/right,y_left/right, and th i utilitzarles tambe alcalcul del gini per no duplicar codi
+        //----------cal calcular probs per "thisNode" utilitzant y (facil)
+        // let leftNode: BinTree  = fitClassification(x_left, y_left, current_depth + 1, y_uniques, max_depth, min_node_data_size);
+        // let rightNode: BinTree  = fitClassification(x_right, y_right, current_depth + 1, y_uniques, max_depth, min_node_data_size);
+        // let thisNode: BinTree = setLeftRightBranch(bestcol, th, #symbol(Buffer.toArray(probs)), leftNode, rightNode);
+      
+      return #ok(TopTree);
     };   
 
     
