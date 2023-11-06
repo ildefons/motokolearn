@@ -679,6 +679,7 @@ actor {
         let leafNode: BinTree  = setLeftRightBranch(null, null, #symbol(Buffer.toArray(probs)), nilTree(), nilTree());
         return #ok(leafNode);
       };
+      Debug.print("NoLEAF"#Nat.toText(x.size()));
       // create node  
       // for all features
       let xt = transpose(x);
@@ -691,8 +692,6 @@ actor {
           case (#ok(gini_float, th_float)) {
             ginis.add(gini_float);
             ths.add(th_float);
-            Debug.print("gini:"#Float.toText(gini_float));
-            Debug.print("th:"#Float.toText(th_float));
           };
           case (#err(err)) {
             return #err(err);
@@ -713,12 +712,13 @@ actor {
       };
       let bestth = ths_array[xbestcol];
       // recursive call left and right and connect to node and return 
-      let myx = cols<dataMember>([xbestcol], x)[0];
+      let myx = transpose(cols<dataMember>([xbestcol], x))[0];
 
       let (left_rows,right_rows) = switch (myx[0]) {
         case (#number(num)) computeThLeftRightNumeric(myx, y, y_uniques, bestth);
         case (#symbol(sym)) computeLeftRightSymbolic(myx, y, y_uniques);
       };
+
       let x_left = rows(left_rows,x);
       let y_left = rowsVector(left_rows,y);
       let x_right = rows(right_rows,x);
@@ -747,7 +747,7 @@ actor {
     let y = dataMemberVectorToTextVector(yaux);
     switch(y) {
       case (#ok(yvec)) {
-        let ret_tree = fitClassification(x, yvec, 0, ["0","1"], 2, 3);
+        let ret_tree = fitClassification(x, yvec, 0, ["0","1"], 3, 1);
         switch(ret_tree) {
           case (#ok(mytree)) {
             return mytree;
