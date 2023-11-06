@@ -133,7 +133,33 @@ actor {
   func rowsVector<T>(rs : [Nat], v : [T]) : [T] {
     Array.tabulate<T>(rs.size(), func r { v[rs[r]] });
   };
-
+  func removeRows<T>(rs : [Nat], m : [[T]]) : [[T]] {
+    let rs2 = Buffer.Buffer<Nat>(m.size()); 
+    for (i in Iter.range(0, m.size() - 1)) {
+      let myindex = Array.indexOf<Nat>(i, rs, Nat.equal);
+      switch(myindex) {
+        case null rs2.add(i);
+        case (_) {};
+      };
+    };
+    for (i in Iter.range(0, Buffer.toArray(rs2).size() - 1)) {
+      Debug.print("rs2:"#Nat.toText(Buffer.toArray(rs2)[i]));
+    };
+    let m2 = rows(Buffer.toArray(rs2), m);
+    return m2;
+  };
+  func removeRowsVector<T>(rs : [Nat], v : [T]) : [T] {
+    let rs2 = Buffer.Buffer<Nat>(v.size()); 
+    for (i in Iter.range(0, v.size() - 1)) {
+      let myindex = Array.indexOf<Nat>(i, rs, Nat.equal);
+      switch(myindex) {
+        case null rs2.add(i);
+        case (_) {};
+      };
+    };
+    let v2 = rowsVector(Buffer.toArray(rs2), v);
+    return v2;
+  };
   func cols<T>(cs : [Nat], m : [[T]]) : [[T]] {
     Array.tabulate<[T]>(m.size(), func r {
       Array.tabulate<T>(cs.size(), func c { m[r][cs[c]] }) });
@@ -718,6 +744,13 @@ actor {
         case (#number(num)) computeThLeftRightNumeric(myx, y, y_uniques, bestth);
         case (#symbol(sym)) computeLeftRightSymbolic(myx, y, y_uniques);
       };
+
+      let x2 = removeRows([xbestcol], x);
+      let y2 = removeRowsVector([xbestcol], y);
+      
+      Debug.print("sizey:"#Nat.toText(y.size()));
+
+      Debug.print("sizey2:"#Nat.toText(y2.size()));
 
       let x_left = rows(left_rows,x);
       let y_left = rowsVector(left_rows,y);
