@@ -774,8 +774,11 @@ actor {
         case (#ok(rightNode)) rightNode;
         case (#err(err)) return rightNode_aux;
       };
-      let thisNode: BinTree = setLeftRightBranch(?true_colid, ?bestth, #symbol(Buffer.toArray(probs)), leftNode, rightNode);
-      
+      let thisNode: BinTree = switch (Buffer.toArray(probs)[0]) {
+        case (0) setLeftRightBranch(?true_colid, ?bestth, #symbol(Buffer.toArray(probs)), nilTree(), nilTree()); // no need to split bc all samples class 0
+        case (1) setLeftRightBranch(?true_colid, ?bestth, #symbol(Buffer.toArray(probs)), nilTree(), nilTree()); // no need to split bc all samples class 1
+        case (_) setLeftRightBranch(?true_colid, ?bestth, #symbol(Buffer.toArray(probs)), leftNode, rightNode);
+      };
       return #ok(thisNode);
     };   
 
@@ -841,19 +844,20 @@ actor {
                 case null 0;
                 case (?Nat) Nat;
               };
-              //Debug.print("var_id:" # Nat.toText(var_id));
+              Debug.print("var_id:" # Nat.toText(var_id));
               let feature: dataMember = x[var_id]; 
               let th : Float = switch xth {
                   case null 0;
                   case (?Float) Float;
               };
+              Debug.print("th:" # Float.toText(th));
               if (isLeftNode(feature: dataMember, th: Float)) {
-                 //Debug.print("predict left");
+                 Debug.print("predict left");
                  predictTree(x, bl);
                }
               else {
                  //predict right
-                 //Debug.print("predict right");
+                 Debug.print("predict right");
                  predictTree(x, br);
               };
             }; 
@@ -877,10 +881,10 @@ actor {
         switch(ret_tree) {
           case (#ok(mytree)) {
             // let's predict
-            for (i in Iter.range(0, x.size() - 1)) {
-             let sample: [dataMember] = x[i];   
-             predictTree(sample, TopTree);
-            };
+            //for (i in Iter.range(0, x.size() - 1)) {
+             let sample: [dataMember] = x[0];   
+             predictTree(sample, mytree);
+            //};
             return mytree;
           };
           case (_) {
