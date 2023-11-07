@@ -707,7 +707,7 @@ actor {
           let prob = Float.fromInt(num_ys) / Float.fromInt(y.size());
           probs.add(prob);
         };
-      if (x.size() <= min_node_data_size or current_depth >= max_depth) {
+      if (x.size() <= min_node_data_size or current_depth >= max_depth or Buffer.toArray(probs)[0]==0 or Buffer.toArray(probs)[0]==1) {
         let leafNode: BinTree  = setLeftRightBranch(null, null, #symbol(Buffer.toArray(probs)), nilTree(), nilTree());
         return #ok(leafNode);
       };
@@ -774,11 +774,11 @@ actor {
         case (#ok(rightNode)) rightNode;
         case (#err(err)) return rightNode_aux;
       };
-      let thisNode: BinTree = switch (Buffer.toArray(probs)[0]) {
-        case (0) setLeftRightBranch(?true_colid, ?bestth, #symbol(Buffer.toArray(probs)), nilTree(), nilTree()); // no need to split bc all samples class 0
-        case (1) setLeftRightBranch(?true_colid, ?bestth, #symbol(Buffer.toArray(probs)), nilTree(), nilTree()); // no need to split bc all samples class 1
-        case (_) setLeftRightBranch(?true_colid, ?bestth, #symbol(Buffer.toArray(probs)), leftNode, rightNode);
-      };
+      let aaaaa = setLeftRightBranch(null, null, #symbol(Buffer.toArray(probs)), nilTree(), nilTree());
+      Debug.print("1:"#Float.toText(Buffer.toArray(probs)[0]));
+      let thisNode: BinTree = setLeftRightBranch(?true_colid, ?bestth, #symbol(Buffer.toArray(probs)), leftNode, rightNode);
+      
+      Debug.print("5");
       return #ok(thisNode);
     };   
 
@@ -882,8 +882,8 @@ actor {
           case (#ok(mytree)) {
             // let's predict
             //for (i in Iter.range(0, x.size() - 1)) {
-             let sample: [dataMember] = x[0];   
-             predictTree(sample, mytree);
+            //  let sample: [dataMember] = x[0];   
+            //  predictTree(sample, mytree);
             //};
             return mytree;
           };
