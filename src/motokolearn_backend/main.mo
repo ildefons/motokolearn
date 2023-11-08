@@ -7,6 +7,7 @@ import Array "mo:base/Array";
 import List "mo:base/List";
 import Buffer "mo:base/Buffer";
 import Iter "mo:base/Iter";
+import Hash "mo:base/Hash";
 import TrieSet "mo:base/TrieSet";
 import Debug "mo:base/Debug";
 import Result "mo:base/Result";
@@ -109,14 +110,14 @@ actor {
   //   Prim.hashBlob(Prim.encodeUtf8(key)) & 0x3fffffff;
   // };
 
-  // func hashNat(key: Nat): Nat32 {
-  //   var hash = Prim.intToNat64Wrap(key);
+  func hashNat(key: Nat): Nat32 {
+    var hash = Prim.intToNat64Wrap(key);
 
-  //   hash := hash >> 30 ^ hash *% 0xbf58476d1ce4e5b9;
-  //   hash := hash >> 27 ^ hash *% 0x94d049bb133111eb;
+    hash := hash >> 30 ^ hash *% 0xbf58476d1ce4e5b9;
+    hash := hash >> 27 ^ hash *% 0x94d049bb133111eb;
 
-  //   Prim.nat64ToNat32(hash >> 31 ^ hash & 0x3fffffff);
-  // };     
+    Prim.nat64ToNat32(hash >> 31 ^ hash & 0x3fffffff);
+  };     
 
   // Note: in the end I will make a class but by the time being I just make an actor with functions and vars
   // function: set training dataset
@@ -579,7 +580,7 @@ actor {
                                       [#number(6.5), #number(3.0), #number(5.2), #number(2.0), #symbol("2")],
                                       [#number(6.2), #number(3.4), #number(5.4), #number(2.3), #symbol("2")],
                                       [#number(5.9), #number(3.0), #number(5.1), #number(1.8), #symbol("2")]];
-                                      
+
     var data: [[dataMember]] = [[#symbol("0"), #number(1), #number(2), #symbol("0")],
                                 [#symbol("0"), #number(2), #number(3), #symbol("0")],
                                 [#symbol("0"), #number(5), #number(4), #symbol("1")],
@@ -606,10 +607,44 @@ actor {
 
     let seed = 123456789;
     let fuzz = Fuzz.fromSeed(seed);
-    for (i in Iter.range(0, 10)) {
-      let randNat: Nat = fuzz.nat.randomRange(0, 4);
-      Debug.print("RANDOM: " # Nat.toText(randNat));
+    let nsamples: Nat = 20;
+   
+    // let bufaux = Buffer.Buffer<Nat>(nsamples);
+        
+    // while (TrieSet.toArray<Nat>(TrieSet.fromArray<Nat>(Buffer.toArray<Nat>(bufaux),Hash.hash, Nat.equal)).size() < nsamples) { 
+    //   let randNat: Nat = fuzz.nat.randomRange(0, iris_data.size()-1);
+    //   bufaux.add(randNat);
+    // };
+
+
+    // let pos_vec = TrieSet.toArray<Nat>(TrieSet.fromArray<Nat>(Buffer.toArray<Nat>(bufaux),Hash.hash, Nat.equal)); 
+    // Debug.print("size: " # Nat.toText(pos_vec.size()));
+
+
+    func randomSample(min_: Nat, max_: Nat, nsamples_: Nat, withRepetition_: Bool): [Nat] {
+      let bufaux = Buffer.Buffer<Nat>(nsamples_);
+      if (withRepetition_ == false) {
+        while (TrieSet.toArray<Nat>(TrieSet.fromArray<Nat>(Buffer.toArray<Nat>(bufaux),Hash.hash, Nat.equal)).size() < nsamples) { 
+          let randNat: Nat = fuzz.nat.randomRange(min_, max_);
+          bufaux.add(randNat);
+        };
+      }
+      else {
+        while (Buffer.toArray<Nat>(bufaux).size() < nsamples) { 
+          let randNat: Nat = fuzz.nat.randomRange(min_, max_);
+          bufaux.add(randNat);
+        };
+      };
+      let pos_vec = TrieSet.toArray<Nat>(TrieSet.fromArray<Nat>(Buffer.toArray<Nat>(bufaux),Hash.hash, Nat.equal)); 
+      return pos_vec;
     };
+    
+    let pos_vec = randomSample(0, iris_data.size(), 20, false);
+    
+    for (i in Iter.range(0, pos_vec.size()-1)) {
+      Debug.print("pos: " # Nat.toText(pos_vec[i]));
+    };
+
 
     let xtrain = cols([0,1], data); 
     let ytrain = transpose(cols([2], data));
@@ -1020,33 +1055,33 @@ actor {
     //<----------------------------------IMHERE: test fitted classifciation tree
     
     //let Xtrain = rows([0,1,2,3], data); 
-    let x = cols([0,1,2], data);
-    let yaux = transpose(cols([3], data))[0];
-    let y = dataMemberVectorToTextVector(yaux);
-    switch(y) {
-      case (#ok(yvec)) {
-        let myiter = Iter.range(0, x.size());
-        let col_ids = Iter.toArray(myiter);
-        let ret_tree = fitClassification(x, yvec, 0, ["0","1"], 3, 1, col_ids); 
-        switch(ret_tree) {
-          case (#ok(mytree)) {
-            // let's predict
-            //for (i in Iter.range(0, x.size() - 1)) {
-            //  let sample: [dataMember] = x[0];   
-            //  predictTree(sample, mytree);
-            //};
-            return mytree;
-          };
-          case (_) {
-            return TopTree;
-          };
-        }
-      };
-      case (_) {
-        return TopTree;
-      };
-    };
-
+    // let x = cols([0,1,2], data);
+    // let yaux = transpose(cols([3], data))[0];
+    // let y = dataMemberVectorToTextVector(yaux);
+    // switch(y) {
+    //   case (#ok(yvec)) {
+    //     let myiter = Iter.range(0, x.size());
+    //     let col_ids = Iter.toArray(myiter);
+    //     let ret_tree = fitClassification(x, yvec, 0, ["0","1"], 3, 1, col_ids); 
+    //     switch(ret_tree) {
+    //       case (#ok(mytree)) {
+    //         // let's predict
+    //         //for (i in Iter.range(0, x.size() - 1)) {
+    //         //  let sample: [dataMember] = x[0];   
+    //         //  predictTree(sample, mytree);
+    //         //};
+    //         return mytree;
+    //       };
+    //       case (_) {
+    //         return TopTree;
+    //       };
+    //     }
+    //   };
+    //   case (_) {
+    //     return TopTree;
+    //   };
+    // };
+    return TopTree;
   };
 
 
