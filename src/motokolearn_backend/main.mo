@@ -639,15 +639,10 @@ actor {
       return pos_vec;
     };
     
-    let pos_vec = randomSample(0, iris_data.size(), 20, false);
-    
-    for (i in Iter.range(0, pos_vec.size()-1)) {
-      Debug.print("pos: " # Nat.toText(pos_vec[i]));
-    };
+    //let pos_vec = randomSample(0, iris_data.size(), 20, false);
 
-
-    let xtrain = cols([0,1], data); 
-    let ytrain = transpose(cols([2], data));
+    //let xtrain = cols([0,1], data); 
+    //let ytrain = transpose(cols([2], data));
 
     func checkAllSymbol(y : [dataMember]): (Bool) {
       for (i in Iter.range(0, y.size() - 1)) {
@@ -852,6 +847,7 @@ actor {
       return #ok(Buffer.toArray(ret)); 
     };
 
+    
     // let x = transpose(cols([1],data));
     // let ycol = cols([3],data);
     // let yvec = transpose(ycol);
@@ -1054,34 +1050,38 @@ actor {
 
     //<----------------------------------IMHERE: test fitted classifciation tree
     
-    //let Xtrain = rows([0,1,2,3], data); 
-    // let x = cols([0,1,2], data);
-    // let yaux = transpose(cols([3], data))[0];
-    // let y = dataMemberVectorToTextVector(yaux);
-    // switch(y) {
-    //   case (#ok(yvec)) {
-    //     let myiter = Iter.range(0, x.size());
-    //     let col_ids = Iter.toArray(myiter);
-    //     let ret_tree = fitClassification(x, yvec, 0, ["0","1"], 3, 1, col_ids); 
-    //     switch(ret_tree) {
-    //       case (#ok(mytree)) {
-    //         // let's predict
-    //         //for (i in Iter.range(0, x.size() - 1)) {
-    //         //  let sample: [dataMember] = x[0];   
-    //         //  predictTree(sample, mytree);
-    //         //};
-    //         return mytree;
-    //       };
-    //       case (_) {
-    //         return TopTree;
-    //       };
-    //     }
-    //   };
-    //   case (_) {
-    //     return TopTree;
-    //   };
-    // };
-    return TopTree;
+    let pos_vec = randomSample(0, iris_data.size(), 20, false);
+    let Xtrain = rows(pos_vec, iris_data); 
+    let x = cols([0,1,2,3], Xtrain);
+    let yaux = transpose(cols([4], Xtrain))[0];
+    let y = dataMemberVectorToTextVector(yaux);
+   
+    switch(y) {
+      case (#ok(yvec)) {
+        let y_uniques = uniquesText(yvec);
+        let myiter = Iter.range(0, x.size());
+        let col_ids = Iter.toArray(myiter);
+        let ret_tree = fitClassification(x, yvec, 0, y_uniques, 3, 1, col_ids); 
+        switch(ret_tree) {
+          case (#ok(mytree)) {
+            Debug.print("output of learned classifier tree:");
+            // let's predict
+            //for (i in Iter.range(0, x.size() - 1)) {
+            //  let sample: [dataMember] = x[0];   
+            //  predictTree(sample, mytree);
+            //};
+            return mytree;
+          };
+          case (_) {
+            return TopTree;
+          };
+        }
+      };
+      case (_) {
+        return TopTree;
+      };
+    };
+    //return TopTree;
   };
 
 
