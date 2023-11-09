@@ -1071,7 +1071,7 @@ actor {
             for (i in Iter.range(0, x.size() - 1)) {
               let sample: [dataMember] = x[i]; 
               predictTree(sample, mytree);
-              Debug.print("Expected:",yvec[i]);
+              Debug.print("Expected: "#yvec[i]);
             };
             //  let sample: [dataMember] = x[0];   
             //  predictTree(sample, mytree);
