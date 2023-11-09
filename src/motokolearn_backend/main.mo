@@ -1,5 +1,6 @@
 import Int "mo:base/Int";
 import Nat "mo:base/Nat";
+import Bool "mo:base/Bool";
 //import Nat32 "mo:base/Nat32";
 import Float "mo:base/Float";
 import Text "mo:base/Text";
@@ -143,9 +144,9 @@ actor {
         case (_) {};
       };
     };
-    for (i in Iter.range(0, Buffer.toArray(rs2).size() - 1)) {
-      Debug.print("rs2:"#Nat.toText(Buffer.toArray(rs2)[i]));
-    };
+    // for (i in Iter.range(0, Buffer.toArray(rs2).size() - 1)) {
+    //   Debug.print("rs2:"#Nat.toText(Buffer.toArray(rs2)[i]));
+    // };
     let m2 = rows(Buffer.toArray(rs2), m);
     return m2;
   };
@@ -248,8 +249,8 @@ actor {
   func log2(n: Float): Float {
     Float.log(n)/Float.log(2);
   };
-  func entropy(rs: [Text]): Float { 
-    let y_uniques = uniquesText(rs);
+  func entropy(rs: [Text], y_uniques: [Text]): Float { 
+    //let y_uniques = uniquesText(rs);
     var h_total: Float = 0.0;
     for (i in Iter.range(0,y_uniques.size()-1)) {
       let ys_y =  Array.filter<Text>(rs, func x = x == y_uniques[i]);
@@ -356,37 +357,37 @@ actor {
     //   trans.add(ys2);
     //   //trans := List.push<[dataMember]>(ys2, trans); 
     // };
-    let ret = transpose(actor_data);//Buffer.toArray(trans); 
-    //trans := Array(trans);
-    // <-----------------HOW TO ADD ELEMENTS TO A VECTOR
-    let myncols = ncols(actor_data);
-    let ys = cols([myncols-1], actor_data);
-    let ys2 = Array.flatten(ys);
-    let aux = ys2[0];
-    // Debug.print("is a text:" # aux);
-    switch (aux) {
-       case (#symbol s) { // classification case
-          // 1) convert last column to a vector of text: if something is not a symbol, raise 
-          let aux = symbolVecToTextVec(ys2);   // 
-          switch (aux) {
-            case(#err(#notAllYsAreSymbol)){
-              // throw errortype BinTree = ?(?Nat, ?dataMember, ?dataMember, BinTree, BinTree); 
-              throw Error.reject("Target column is not totally formed by symbols")
-            }; 
-            case(#ok(result)) {
-              Debug.print("is a text:" # result[0]);
-              // compute entropy using "result"
-              let y_entropy: Float = entropy(result); 
-              Debug.print("The entropy of the target column is:" # Float.toText(y_entropy));
-              // how to gow a decision tree?
+    // let ret = transpose(actor_data);//Buffer.toArray(trans); 
+    // //trans := Array(trans);
+    // // <-----------------HOW TO ADD ELEMENTS TO A VECTOR
+    // let myncols = ncols(actor_data);
+    // let ys = cols([myncols-1], actor_data);
+    // let ys2 = Array.flatten(ys);
+    // let aux = ys2[0];
+    // // Debug.print("is a text:" # aux);
+    // switch (aux) {
+    //    case (#symbol s) { // classification case
+    //       // 1) convert last column to a vector of text: if something is not a symbol, raise 
+    //       let aux = symbolVecToTextVec(ys2);   // 
+    //       switch (aux) {
+    //         case(#err(#notAllYsAreSymbol)){
+    //           // throw errortype BinTree = ?(?Nat, ?dataMember, ?dataMember, BinTree, BinTree); 
+    //           throw Error.reject("Target column is not totally formed by symbols")
+    //         }; 
+    //         case(#ok(result)) {
+    //           Debug.print("is a text:" # result[0]);
+    //           // compute entropy using "result"
+    //           let y_entropy: Float = entropy(result); 
+    //           Debug.print("The entropy of the target column is:" # Float.toText(y_entropy));
+    //           // how to gow a decision tree?
 
-            };
-          };
-        };
-        case (#number s) { // regresssion case
-          Debug.print("is a number:" # Float.toText(s));
-       };
-     };
+    //         };
+    //       };
+    //     };
+    //     case (#number s) { // regresssion case
+    //       Debug.print("is a number:" # Float.toText(s));
+    //    };
+    //  };
     // NEXT:----> check is type symbol?
     // https://internetcomputer.org/docs/current/motoko/main/errors#what-error-type-to-prefer
     // let myuniques = uniquesText(textVec);
@@ -888,7 +889,13 @@ actor {
           let prob = Float.fromInt(num_ys) / Float.fromInt(y.size());
           probs.add(prob);
         };
-      if (x.size() <= min_node_data_size or current_depth >= max_depth or Buffer.toArray(probs)[0]==0 or Buffer.toArray(probs)[0]==1) {
+      let node_entropy = entropy(y, y_uniques);
+      if (x.size() <= min_node_data_size or current_depth >= max_depth or node_entropy==0) {
+        Debug.print("Reason to leaf:");
+        Debug.print("x.size() <= min_node_data_size:" # Bool.toText(x.size() <= min_node_data_size));
+        Debug.print("current_depth >= max_depth:"#Bool.toText(current_depth >= max_depth));
+        Debug.print("node_entropy==0:"#Bool.toText(node_entropy==0));
+
         let leafNode: BinTree  = setLeftRightBranch(null, null, #symbol(Buffer.toArray(probs)), nilTree(), nilTree());
         return #ok(leafNode);
       };
@@ -955,11 +962,8 @@ actor {
         case (#ok(rightNode)) rightNode;
         case (#err(err)) return rightNode_aux;
       };
-      let aaaaa = setLeftRightBranch(null, null, #symbol(Buffer.toArray(probs)), nilTree(), nilTree());
-      Debug.print("1:"#Float.toText(Buffer.toArray(probs)[0]));
       let thisNode: BinTree = setLeftRightBranch(?true_colid, ?bestth, #symbol(Buffer.toArray(probs)), leftNode, rightNode);
       
-      Debug.print("5");
       return #ok(thisNode);
     };   
 
@@ -1025,20 +1029,20 @@ actor {
                 case null 0;
                 case (?Nat) Nat;
               };
-              Debug.print("var_id:" # Nat.toText(var_id));
+              //Debug.print("var_id:" # Nat.toText(var_id));
               let feature: dataMember = x[var_id]; 
               let th : Float = switch xth {
                   case null 0;
                   case (?Float) Float;
               };
-              Debug.print("th:" # Float.toText(th));
+              //Debug.print("th:" # Float.toText(th));
               if (isLeftNode(feature: dataMember, th: Float)) {
                  Debug.print("predict left");
                  predictTree(x, bl);
                }
               else {
                  //predict right
-                 Debug.print("predict right");
+                 //Debug.print("predict right");
                  predictTree(x, br);
               };
             }; 
@@ -1064,6 +1068,14 @@ actor {
         let ret_tree = fitClassification(x, yvec, 0, y_uniques, 3, 1, col_ids); 
         switch(ret_tree) {
           case (#ok(mytree)) {
+            for (i in Iter.range(0, x.size() - 1)) {
+              let sample: [dataMember] = x[i]; 
+              predictTree(sample, mytree);
+              Debug.print("Expected:",y_vec[i]);
+            };
+            //  let sample: [dataMember] = x[0];   
+            //  predictTree(sample, mytree);
+
             Debug.print("output of learned classifier tree:");
             // let's predict
             //for (i in Iter.range(0, x.size() - 1)) {
