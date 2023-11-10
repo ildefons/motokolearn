@@ -1175,9 +1175,9 @@ actor {
     // Debug.print("min:"#Nat.toText(minNat(pos_vec)));
     // Debug.print("max:"#Nat.toText(maxNat(pos_vec)));
     // Debug.print("size iris_data:"#Nat.toText(iris_data.size()));
-    let Xtrain = data;//rows(pos_vec, iris_data); Debug.print("11");
-    let x = cols([0,1,2], Xtrain);Debug.print("12");
-    let yaux = transpose(cols([3], Xtrain))[0];Debug.print("13");
+    let Xtrain = rows(pos_vec, iris_data); Debug.print("11");
+    let x = cols([0,1,2,3], Xtrain);Debug.print("12");
+    let yaux = transpose(cols([4], Xtrain))[0];Debug.print("13");
     let y = dataMemberVectorToTextVector(yaux);Debug.print("14");
    
     switch(y) {
