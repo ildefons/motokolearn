@@ -18,6 +18,8 @@ import Random "mo:base/Random";
 import Blob "mo:base/Blob";
 import Fuzz "mo:fuzz";
 
+import Mtklearn "../Mtklearn/Mtklearn";
+
 // actor {
 
 //   let o = Array.tabulate<Nat>(1000_000, func i { i });
@@ -442,6 +444,184 @@ actor {
       ?(var_id, th, value, leftTree, rightTree);
     };
     
+    var wine_data: [[dataMember]] =  [[#number(14.2), #number(1.7), #number(2.4), #number(15.6), #number(127.0), #number(2.8), #number(3.1), #number(0.3), #number(2.3), #number(5.6), #number(1.0), #number(3.9), #number(1065.0), #symbol("0")],
+                  [#number(13.2), #number(1.8), #number(2.1), #number(11.2), #number(100.0), #number(2.6), #number(2.8), #number(0.3), #number(1.3), #number(4.4), #number(1.1), #number(3.4), #number(1050.0), #symbol("0")],
+                  [#number(13.2), #number(2.4), #number(2.7), #number(18.6), #number(101.0), #number(2.8), #number(3.2), #number(0.3), #number(2.8), #number(5.7), #number(1.0), #number(3.2), #number(1185.0), #symbol("0")],
+                  [#number(14.4), #number(1.9), #number(2.5), #number(16.8), #number(113.0), #number(3.9), #number(3.5), #number(0.2), #number(2.2), #number(7.8), #number(0.9), #number(3.5), #number(1480.0), #symbol("0")],
+                  [#number(13.2), #number(2.6), #number(2.9), #number(21.0), #number(118.0), #number(2.8), #number(2.7), #number(0.4), #number(1.8), #number(4.3), #number(1.0), #number(2.9), #number(735.0), #symbol("0")],
+                  [#number(14.2), #number(1.8), #number(2.5), #number(15.2), #number(112.0), #number(3.3), #number(3.4), #number(0.3), #number(2.0), #number(6.8), #number(1.1), #number(2.9), #number(1450.0), #symbol("0")],
+                  [#number(14.4), #number(1.9), #number(2.5), #number(14.6), #number(96.0), #number(2.5), #number(2.5), #number(0.3), #number(2.0), #number(5.2), #number(1.0), #number(3.6), #number(1290.0), #symbol("0")],
+                  [#number(14.1), #number(2.1), #number(2.6), #number(17.6), #number(121.0), #number(2.6), #number(2.5), #number(0.3), #number(1.2), #number(5.0), #number(1.1), #number(3.6), #number(1295.0), #symbol("0")],
+                  [#number(14.8), #number(1.6), #number(2.2), #number(14.0), #number(97.0), #number(2.8), #number(3.0), #number(0.3), #number(2.0), #number(5.2), #number(1.1), #number(2.9), #number(1045.0), #symbol("0")],
+                  [#number(13.9), #number(1.4), #number(2.3), #number(16.0), #number(98.0), #number(3.0), #number(3.1), #number(0.2), #number(1.9), #number(7.2), #number(1.0), #number(3.5), #number(1045.0), #symbol("0")],
+                  [#number(14.1), #number(2.2), #number(2.3), #number(18.0), #number(105.0), #number(3.0), #number(3.3), #number(0.2), #number(2.4), #number(5.8), #number(1.2), #number(3.2), #number(1510.0), #symbol("0")],
+                  [#number(14.1), #number(1.5), #number(2.3), #number(16.8), #number(95.0), #number(2.2), #number(2.4), #number(0.3), #number(1.6), #number(5.0), #number(1.2), #number(2.8), #number(1280.0), #symbol("0")],
+                  [#number(13.8), #number(1.7), #number(2.4), #number(16.0), #number(89.0), #number(2.6), #number(2.8), #number(0.3), #number(1.8), #number(5.6), #number(1.1), #number(2.9), #number(1320.0), #symbol("0")],
+                  [#number(14.8), #number(1.7), #number(2.4), #number(11.4), #number(91.0), #number(3.1), #number(3.7), #number(0.4), #number(2.8), #number(5.4), #number(1.2), #number(2.7), #number(1150.0), #symbol("0")],
+                  [#number(14.4), #number(1.9), #number(2.4), #number(12.0), #number(102.0), #number(3.3), #number(3.6), #number(0.3), #number(3.0), #number(7.5), #number(1.2), #number(3.0), #number(1547.0), #symbol("0")],
+                  [#number(13.6), #number(1.8), #number(2.7), #number(17.2), #number(112.0), #number(2.9), #number(2.9), #number(0.3), #number(1.5), #number(7.3), #number(1.3), #number(2.9), #number(1310.0), #symbol("0")],
+                  [#number(14.3), #number(1.9), #number(2.7), #number(20.0), #number(120.0), #number(2.8), #number(3.1), #number(0.3), #number(2.0), #number(6.2), #number(1.1), #number(2.6), #number(1280.0), #symbol("0")],
+                  [#number(13.8), #number(1.6), #number(2.6), #number(20.0), #number(115.0), #number(3.0), #number(3.4), #number(0.4), #number(1.7), #number(6.6), #number(1.1), #number(2.6), #number(1130.0), #symbol("0")],
+                  [#number(14.2), #number(1.6), #number(2.5), #number(16.5), #number(108.0), #number(3.3), #number(3.9), #number(0.3), #number(1.9), #number(8.7), #number(1.2), #number(2.8), #number(1680.0), #symbol("0")],
+                  [#number(13.6), #number(3.1), #number(2.6), #number(15.2), #number(116.0), #number(2.7), #number(3.0), #number(0.2), #number(1.7), #number(5.1), #number(1.0), #number(3.4), #number(845.0), #symbol("0")],
+                  [#number(14.1), #number(1.6), #number(2.3), #number(16.0), #number(126.0), #number(3.0), #number(3.2), #number(0.2), #number(2.1), #number(5.7), #number(1.1), #number(3.7), #number(780.0), #symbol("0")],
+                  [#number(12.9), #number(3.8), #number(2.6), #number(18.6), #number(102.0), #number(2.4), #number(2.4), #number(0.2), #number(2.0), #number(4.5), #number(1.0), #number(3.5), #number(770.0), #symbol("0")],
+                  [#number(13.7), #number(1.9), #number(2.4), #number(16.6), #number(101.0), #number(2.6), #number(2.9), #number(0.3), #number(1.7), #number(3.8), #number(1.1), #number(4.0), #number(1035.0), #symbol("0")],
+                  [#number(12.8), #number(1.6), #number(2.5), #number(17.8), #number(95.0), #number(2.5), #number(2.4), #number(0.3), #number(1.5), #number(3.9), #number(1.1), #number(3.6), #number(1015.0), #symbol("0")],
+                  [#number(13.5), #number(1.8), #number(2.6), #number(20.0), #number(96.0), #number(2.5), #number(2.6), #number(0.3), #number(1.7), #number(3.5), #number(1.1), #number(3.8), #number(845.0), #symbol("0")],
+                  [#number(13.1), #number(2.0), #number(3.2), #number(25.0), #number(124.0), #number(2.6), #number(2.7), #number(0.5), #number(1.9), #number(3.6), #number(1.1), #number(3.2), #number(830.0), #symbol("0")],
+                  [#number(13.4), #number(1.8), #number(2.6), #number(16.1), #number(93.0), #number(2.9), #number(2.9), #number(0.3), #number(1.4), #number(4.8), #number(0.9), #number(3.2), #number(1195.0), #symbol("0")],
+                  [#number(13.3), #number(1.7), #number(2.1), #number(17.0), #number(94.0), #number(2.4), #number(2.2), #number(0.3), #number(1.4), #number(4.0), #number(1.0), #number(2.8), #number(1285.0), #symbol("0")],
+                  [#number(13.9), #number(1.9), #number(2.8), #number(19.4), #number(107.0), #number(3.0), #number(3.0), #number(0.4), #number(1.8), #number(4.5), #number(1.2), #number(3.4), #number(915.0), #symbol("0")],
+                  [#number(14.0), #number(1.7), #number(2.2), #number(16.0), #number(96.0), #number(2.6), #number(2.3), #number(0.3), #number(2.0), #number(4.7), #number(1.0), #number(3.6), #number(1035.0), #symbol("0")],
+                  [#number(13.7), #number(1.5), #number(2.7), #number(22.5), #number(101.0), #number(3.0), #number(3.2), #number(0.3), #number(2.4), #number(5.7), #number(1.2), #number(2.7), #number(1285.0), #symbol("0")],
+                  [#number(13.6), #number(1.7), #number(2.4), #number(19.1), #number(106.0), #number(2.9), #number(3.2), #number(0.2), #number(1.9), #number(6.9), #number(1.1), #number(2.9), #number(1515.0), #symbol("0")],
+                  [#number(13.7), #number(1.8), #number(2.4), #number(17.2), #number(104.0), #number(2.4), #number(2.7), #number(0.4), #number(2.0), #number(3.8), #number(1.2), #number(2.9), #number(990.0), #symbol("0")],
+                  [#number(13.8), #number(1.5), #number(2.7), #number(19.5), #number(132.0), #number(3.0), #number(2.7), #number(0.5), #number(1.4), #number(5.4), #number(1.2), #number(3.0), #number(1235.0), #symbol("0")],
+                  [#number(13.5), #number(1.8), #number(2.6), #number(19.0), #number(110.0), #number(2.4), #number(2.5), #number(0.3), #number(1.5), #number(4.2), #number(1.1), #number(2.9), #number(1095.0), #symbol("0")],
+                  [#number(13.5), #number(1.8), #number(2.4), #number(20.5), #number(100.0), #number(2.7), #number(3.0), #number(0.3), #number(1.9), #number(5.1), #number(1.0), #number(3.5), #number(920.0), #symbol("0")],
+                  [#number(13.3), #number(1.6), #number(2.8), #number(15.5), #number(110.0), #number(2.6), #number(2.7), #number(0.3), #number(1.4), #number(4.6), #number(1.1), #number(2.8), #number(880.0), #symbol("0")],
+                  [#number(13.1), #number(1.6), #number(2.5), #number(18.0), #number(98.0), #number(2.5), #number(2.4), #number(0.3), #number(1.4), #number(4.2), #number(1.1), #number(2.5), #number(1105.0), #symbol("0")],
+                  [#number(13.1), #number(1.5), #number(2.1), #number(15.5), #number(98.0), #number(2.4), #number(2.6), #number(0.3), #number(1.4), #number(3.7), #number(1.2), #number(2.7), #number(1020.0), #symbol("0")],
+                  [#number(14.2), #number(4.0), #number(2.5), #number(13.2), #number(128.0), #number(3.0), #number(3.0), #number(0.2), #number(2.1), #number(5.1), #number(0.9), #number(3.5), #number(760.0), #symbol("0")],
+                  [#number(13.6), #number(1.7), #number(2.3), #number(16.2), #number(117.0), #number(3.1), #number(3.3), #number(0.3), #number(2.3), #number(6.1), #number(0.9), #number(3.4), #number(795.0), #symbol("0")],
+                  [#number(13.4), #number(3.8), #number(2.1), #number(18.8), #number(90.0), #number(2.5), #number(2.7), #number(0.3), #number(1.5), #number(4.3), #number(0.9), #number(3.0), #number(1035.0), #symbol("0")],
+                  [#number(13.9), #number(1.9), #number(2.6), #number(15.0), #number(101.0), #number(3.2), #number(3.6), #number(0.2), #number(1.7), #number(5.4), #number(0.9), #number(3.6), #number(1095.0), #symbol("0")],
+                  [#number(13.2), #number(4.0), #number(2.3), #number(17.5), #number(103.0), #number(2.6), #number(2.6), #number(0.3), #number(1.7), #number(4.4), #number(0.8), #number(3.0), #number(680.0), #symbol("0")],
+                  [#number(13.1), #number(1.8), #number(2.1), #number(17.0), #number(107.0), #number(3.0), #number(3.0), #number(0.3), #number(2.0), #number(5.0), #number(0.9), #number(3.4), #number(885.0), #symbol("0")],
+                  [#number(14.2), #number(4.0), #number(2.4), #number(18.9), #number(111.0), #number(2.9), #number(2.6), #number(0.3), #number(1.2), #number(5.2), #number(0.9), #number(3.3), #number(1080.0), #symbol("0")],
+                  [#number(14.4), #number(3.6), #number(2.3), #number(16.0), #number(102.0), #number(3.2), #number(3.2), #number(0.3), #number(2.2), #number(4.9), #number(1.0), #number(3.4), #number(1065.0), #symbol("0")],
+                  [#number(13.9), #number(1.7), #number(2.1), #number(16.0), #number(101.0), #number(3.1), #number(3.4), #number(0.2), #number(2.1), #number(6.1), #number(0.9), #number(3.3), #number(985.0), #symbol("0")],
+                  [#number(14.1), #number(2.0), #number(2.4), #number(18.8), #number(103.0), #number(2.8), #number(2.9), #number(0.3), #number(2.4), #number(6.2), #number(1.1), #number(2.8), #number(1060.0), #symbol("0")],
+                  [#number(13.9), #number(1.7), #number(2.3), #number(17.4), #number(108.0), #number(2.9), #number(3.5), #number(0.3), #number(2.1), #number(8.9), #number(1.1), #number(3.1), #number(1260.0), #symbol("0")],
+                  [#number(13.1), #number(1.7), #number(2.0), #number(12.4), #number(92.0), #number(2.7), #number(3.3), #number(0.2), #number(2.9), #number(7.2), #number(1.1), #number(2.9), #number(1150.0), #symbol("0")],
+                  [#number(13.8), #number(1.6), #number(2.6), #number(17.2), #number(94.0), #number(2.5), #number(3.0), #number(0.2), #number(2.3), #number(5.6), #number(1.2), #number(3.4), #number(1265.0), #symbol("0")],
+                  [#number(13.8), #number(1.8), #number(2.4), #number(14.0), #number(111.0), #number(3.9), #number(3.7), #number(0.3), #number(1.9), #number(7.0), #number(1.0), #number(3.3), #number(1190.0), #symbol("0")],
+                  [#number(13.8), #number(1.9), #number(2.7), #number(17.1), #number(115.0), #number(3.0), #number(2.8), #number(0.4), #number(1.7), #number(6.3), #number(1.1), #number(2.9), #number(1375.0), #symbol("0")],
+                  [#number(13.7), #number(1.7), #number(2.2), #number(16.4), #number(118.0), #number(2.6), #number(2.9), #number(0.2), #number(1.6), #number(5.8), #number(0.9), #number(3.2), #number(1060.0), #symbol("0")],
+                  [#number(13.6), #number(1.7), #number(2.5), #number(20.5), #number(116.0), #number(3.0), #number(2.8), #number(0.2), #number(2.5), #number(6.2), #number(1.0), #number(3.0), #number(1120.0), #symbol("0")],
+                  [#number(14.2), #number(1.7), #number(2.3), #number(16.3), #number(118.0), #number(3.2), #number(3.0), #number(0.3), #number(2.0), #number(6.4), #number(0.9), #number(3.3), #number(970.0), #symbol("0")],
+                  [#number(13.3), #number(2.0), #number(2.7), #number(16.8), #number(102.0), #number(3.0), #number(3.2), #number(0.3), #number(1.7), #number(6.0), #number(1.1), #number(2.8), #number(1270.0), #symbol("0")],
+                  [#number(13.7), #number(1.4), #number(2.5), #number(16.7), #number(108.0), #number(3.4), #number(3.7), #number(0.2), #number(2.0), #number(6.8), #number(0.9), #number(2.9), #number(1285.0), #symbol("0")],
+                  [#number(12.4), #number(0.9), #number(1.4), #number(10.6), #number(88.0), #number(2.0), #number(0.6), #number(0.3), #number(0.4), #number(1.9), #number(1.1), #number(1.8), #number(520.0), #symbol("1")],
+                  [#number(12.3), #number(1.1), #number(2.3), #number(16.0), #number(101.0), #number(2.0), #number(1.1), #number(0.6), #number(0.4), #number(3.3), #number(1.2), #number(1.7), #number(680.0), #symbol("1")],
+                  [#number(12.6), #number(1.4), #number(2.0), #number(16.8), #number(100.0), #number(2.0), #number(1.4), #number(0.5), #number(0.6), #number(5.8), #number(1.0), #number(1.6), #number(450.0), #symbol("1")],
+                  [#number(13.7), #number(1.2), #number(1.9), #number(18.0), #number(94.0), #number(2.1), #number(1.8), #number(0.3), #number(0.7), #number(3.8), #number(1.2), #number(2.5), #number(630.0), #symbol("1")],
+                  [#number(12.4), #number(1.1), #number(2.2), #number(19.0), #number(87.0), #number(3.5), #number(3.1), #number(0.2), #number(1.9), #number(4.5), #number(1.2), #number(2.9), #number(420.0), #symbol("1")],
+                  [#number(12.2), #number(1.4), #number(2.5), #number(19.0), #number(104.0), #number(1.9), #number(1.8), #number(0.5), #number(1.0), #number(3.0), #number(1.4), #number(2.2), #number(355.0), #symbol("1")],
+                  [#number(12.4), #number(1.2), #number(2.6), #number(18.1), #number(98.0), #number(2.4), #number(2.6), #number(0.4), #number(2.1), #number(4.6), #number(1.2), #number(2.3), #number(678.0), #symbol("1")],
+                  [#number(13.1), #number(1.0), #number(1.7), #number(15.0), #number(78.0), #number(3.0), #number(3.2), #number(0.3), #number(2.3), #number(5.3), #number(1.1), #number(3.2), #number(502.0), #symbol("1")],
+                  [#number(12.4), #number(1.2), #number(1.9), #number(19.6), #number(78.0), #number(2.1), #number(2.0), #number(0.3), #number(1.0), #number(4.7), #number(1.1), #number(3.5), #number(510.0), #symbol("1")],
+                  [#number(13.3), #number(0.9), #number(2.4), #number(17.0), #number(110.0), #number(2.5), #number(1.3), #number(0.6), #number(0.4), #number(3.2), #number(1.0), #number(1.9), #number(750.0), #symbol("1")],
+                  [#number(12.2), #number(1.2), #number(1.8), #number(16.8), #number(151.0), #number(1.9), #number(1.3), #number(0.1), #number(2.5), #number(2.9), #number(1.3), #number(3.1), #number(718.0), #symbol("1")],
+                  [#number(12.3), #number(1.6), #number(2.2), #number(20.4), #number(103.0), #number(1.1), #number(1.0), #number(0.4), #number(1.5), #number(3.0), #number(0.9), #number(1.8), #number(870.0), #symbol("1")],
+                  [#number(13.9), #number(1.5), #number(2.7), #number(25.0), #number(86.0), #number(3.0), #number(2.9), #number(0.2), #number(1.9), #number(3.4), #number(1.4), #number(3.2), #number(410.0), #symbol("1")],
+                  [#number(13.5), #number(1.7), #number(2.2), #number(24.0), #number(87.0), #number(1.9), #number(1.8), #number(0.3), #number(1.0), #number(3.7), #number(1.0), #number(2.8), #number(472.0), #symbol("1")],
+                  [#number(13.0), #number(1.7), #number(2.6), #number(30.0), #number(139.0), #number(3.3), #number(2.9), #number(0.2), #number(2.0), #number(3.4), #number(1.3), #number(3.5), #number(985.0), #symbol("1")],
+                  [#number(12.0), #number(1.1), #number(2.3), #number(21.0), #number(101.0), #number(3.4), #number(2.1), #number(0.1), #number(1.6), #number(3.2), #number(1.0), #number(3.1), #number(886.0), #symbol("1")],
+                  [#number(11.7), #number(1.9), #number(1.9), #number(16.0), #number(97.0), #number(1.6), #number(1.6), #number(0.3), #number(1.1), #number(3.8), #number(1.2), #number(2.1), #number(428.0), #symbol("1")],
+                  [#number(13.0), #number(0.9), #number(1.7), #number(16.0), #number(86.0), #number(1.9), #number(2.0), #number(0.2), #number(1.5), #number(4.6), #number(1.2), #number(2.5), #number(392.0), #symbol("1")],
+                  [#number(11.8), #number(2.9), #number(2.2), #number(18.0), #number(112.0), #number(1.7), #number(1.3), #number(0.4), #number(0.9), #number(2.6), #number(1.0), #number(2.5), #number(500.0), #symbol("1")],
+                  [#number(12.3), #number(1.0), #number(1.9), #number(14.8), #number(136.0), #number(1.9), #number(1.9), #number(0.3), #number(2.8), #number(3.4), #number(1.1), #number(2.3), #number(750.0), #symbol("1")],
+                  [#number(12.7), #number(3.9), #number(2.4), #number(23.0), #number(101.0), #number(2.8), #number(2.5), #number(0.4), #number(1.9), #number(2.6), #number(1.2), #number(3.1), #number(463.0), #symbol("1")],
+                  [#number(12.0), #number(0.9), #number(2.0), #number(19.0), #number(86.0), #number(2.4), #number(2.3), #number(0.3), #number(1.4), #number(2.5), #number(1.4), #number(3.1), #number(278.0), #symbol("1")],
+                  [#number(12.7), #number(1.8), #number(2.2), #number(18.8), #number(86.0), #number(2.2), #number(2.5), #number(0.3), #number(1.8), #number(3.9), #number(1.2), #number(3.1), #number(714.0), #symbol("1")],
+                  [#number(12.1), #number(1.1), #number(2.5), #number(24.0), #number(78.0), #number(2.0), #number(1.6), #number(0.4), #number(1.4), #number(2.2), #number(1.3), #number(2.7), #number(630.0), #symbol("1")],
+                  [#number(13.1), #number(3.9), #number(2.3), #number(22.5), #number(85.0), #number(1.6), #number(1.6), #number(0.6), #number(1.6), #number(4.8), #number(0.8), #number(2.0), #number(515.0), #symbol("1")],
+                  [#number(11.8), #number(0.9), #number(2.6), #number(18.0), #number(94.0), #number(2.2), #number(2.2), #number(0.2), #number(2.4), #number(3.0), #number(0.8), #number(3.1), #number(520.0), #symbol("1")],
+                  [#number(12.7), #number(1.0), #number(2.2), #number(18.0), #number(99.0), #number(2.2), #number(1.9), #number(0.3), #number(1.5), #number(2.6), #number(1.2), #number(3.2), #number(450.0), #symbol("1")],
+                  [#number(12.2), #number(1.6), #number(2.3), #number(22.8), #number(90.0), #number(1.8), #number(1.7), #number(0.4), #number(1.6), #number(2.5), #number(1.3), #number(2.3), #number(495.0), #symbol("1")],
+                  [#number(11.7), #number(1.7), #number(2.6), #number(26.0), #number(88.0), #number(1.9), #number(1.6), #number(0.4), #number(1.3), #number(2.6), #number(1.4), #number(3.2), #number(562.0), #symbol("1")],
+                  [#number(11.6), #number(2.1), #number(2.5), #number(21.6), #number(84.0), #number(1.9), #number(1.7), #number(0.5), #number(1.4), #number(2.8), #number(1.0), #number(2.8), #number(680.0), #symbol("1")],
+                  [#number(12.1), #number(1.3), #number(2.3), #number(23.6), #number(70.0), #number(2.2), #number(1.6), #number(0.4), #number(1.4), #number(1.7), #number(1.1), #number(3.2), #number(625.0), #symbol("1")],
+                  [#number(12.1), #number(1.8), #number(2.3), #number(18.5), #number(81.0), #number(1.6), #number(1.5), #number(0.5), #number(1.6), #number(2.4), #number(1.1), #number(2.3), #number(480.0), #symbol("1")],
+                  [#number(12.0), #number(1.5), #number(2.4), #number(22.0), #number(86.0), #number(1.4), #number(1.2), #number(0.5), #number(1.6), #number(3.6), #number(1.1), #number(2.6), #number(450.0), #symbol("1")],
+                  [#number(12.7), #number(1.5), #number(2.3), #number(20.7), #number(80.0), #number(1.4), #number(1.5), #number(0.6), #number(1.6), #number(3.0), #number(1.0), #number(2.1), #number(495.0), #symbol("1")],
+                  [#number(12.3), #number(2.8), #number(2.2), #number(18.0), #number(88.0), #number(2.5), #number(2.2), #number(0.2), #number(2.0), #number(2.1), #number(1.1), #number(3.3), #number(290.0), #symbol("1")],
+                  [#number(11.6), #number(2.0), #number(2.3), #number(18.0), #number(98.0), #number(3.0), #number(2.3), #number(0.2), #number(1.4), #number(3.2), #number(1.2), #number(3.0), #number(345.0), #symbol("1")],
+                  [#number(12.5), #number(1.5), #number(2.2), #number(19.0), #number(162.0), #number(2.5), #number(2.3), #number(0.3), #number(3.3), #number(2.6), #number(1.2), #number(2.6), #number(937.0), #symbol("1")],
+                  [#number(11.8), #number(2.1), #number(2.7), #number(21.5), #number(134.0), #number(1.6), #number(1.0), #number(0.1), #number(1.6), #number(2.5), #number(0.9), #number(2.3), #number(625.0), #symbol("1")],
+                  [#number(12.3), #number(1.4), #number(2.0), #number(16.0), #number(85.0), #number(2.5), #number(2.5), #number(0.3), #number(1.8), #number(2.9), #number(1.2), #number(2.7), #number(428.0), #symbol("1")],
+                  [#number(12.4), #number(1.1), #number(2.1), #number(18.5), #number(88.0), #number(3.5), #number(3.8), #number(0.2), #number(1.9), #number(4.5), #number(1.0), #number(2.8), #number(660.0), #symbol("1")],
+                  [#number(12.3), #number(3.2), #number(2.2), #number(18.0), #number(88.0), #number(2.9), #number(3.0), #number(0.5), #number(2.8), #number(2.3), #number(1.4), #number(2.8), #number(406.0), #symbol("1")],
+                  [#number(12.1), #number(2.1), #number(1.7), #number(17.5), #number(97.0), #number(2.2), #number(2.2), #number(0.3), #number(1.4), #number(3.3), #number(1.3), #number(3.0), #number(710.0), #symbol("1")],
+                  [#number(12.6), #number(1.3), #number(1.9), #number(18.5), #number(88.0), #number(1.4), #number(1.4), #number(0.3), #number(1.4), #number(2.5), #number(1.0), #number(2.8), #number(562.0), #symbol("1")],
+                  [#number(12.3), #number(2.5), #number(2.5), #number(21.0), #number(98.0), #number(2.6), #number(2.1), #number(0.3), #number(1.3), #number(2.8), #number(0.8), #number(3.4), #number(438.0), #symbol("1")],
+                  [#number(11.8), #number(1.7), #number(1.9), #number(19.5), #number(86.0), #number(2.5), #number(1.6), #number(0.4), #number(1.4), #number(2.1), #number(0.9), #number(2.4), #number(415.0), #symbol("1")],
+                  [#number(12.5), #number(1.7), #number(2.0), #number(20.5), #number(85.0), #number(2.2), #number(1.9), #number(0.3), #number(1.5), #number(2.9), #number(1.0), #number(3.6), #number(672.0), #symbol("1")],
+                  [#number(12.4), #number(2.5), #number(2.3), #number(22.0), #number(90.0), #number(1.7), #number(1.8), #number(0.7), #number(1.4), #number(2.7), #number(0.9), #number(3.3), #number(315.0), #symbol("1")],
+                  [#number(12.2), #number(1.7), #number(2.1), #number(19.0), #number(80.0), #number(1.6), #number(2.0), #number(0.4), #number(1.6), #number(3.4), #number(1.0), #number(3.2), #number(510.0), #symbol("1")],
+                  [#number(12.7), #number(1.8), #number(2.3), #number(22.5), #number(84.0), #number(1.4), #number(1.8), #number(0.5), #number(1.6), #number(3.3), #number(0.9), #number(2.4), #number(488.0), #symbol("1")],
+                  [#number(12.2), #number(1.3), #number(1.9), #number(19.0), #number(92.0), #number(2.4), #number(2.0), #number(0.4), #number(2.1), #number(2.7), #number(0.9), #number(3.0), #number(312.0), #symbol("1")],
+                  [#number(11.6), #number(1.4), #number(2.7), #number(20.0), #number(94.0), #number(2.7), #number(2.9), #number(0.3), #number(2.5), #number(2.6), #number(1.0), #number(3.3), #number(680.0), #symbol("1")],
+                  [#number(11.5), #number(3.7), #number(1.8), #number(19.5), #number(107.0), #number(3.2), #number(2.6), #number(0.2), #number(3.6), #number(2.9), #number(0.8), #number(2.8), #number(562.0), #symbol("1")],
+                  [#number(12.5), #number(2.4), #number(2.2), #number(21.0), #number(88.0), #number(2.5), #number(2.3), #number(0.3), #number(1.2), #number(2.0), #number(0.9), #number(2.8), #number(325.0), #symbol("1")],
+                  [#number(11.8), #number(2.7), #number(2.9), #number(20.0), #number(103.0), #number(1.8), #number(2.0), #number(0.6), #number(1.1), #number(3.8), #number(1.2), #number(2.5), #number(607.0), #symbol("1")],
+                  [#number(11.4), #number(0.7), #number(2.5), #number(21.0), #number(88.0), #number(2.5), #number(2.0), #number(0.4), #number(1.4), #number(3.1), #number(1.1), #number(2.3), #number(434.0), #symbol("1")],
+                  [#number(12.1), #number(1.4), #number(2.5), #number(22.5), #number(84.0), #number(2.6), #number(2.3), #number(0.4), #number(1.0), #number(2.9), #number(0.9), #number(3.2), #number(385.0), #symbol("1")],
+                  [#number(11.0), #number(1.5), #number(2.2), #number(21.5), #number(85.0), #number(2.5), #number(2.2), #number(0.5), #number(2.0), #number(1.9), #number(1.7), #number(2.9), #number(407.0), #symbol("1")],
+                  [#number(11.8), #number(1.5), #number(2.0), #number(20.8), #number(86.0), #number(2.0), #number(1.6), #number(0.3), #number(1.5), #number(1.9), #number(0.9), #number(3.3), #number(495.0), #symbol("1")],
+                  [#number(12.4), #number(1.6), #number(2.2), #number(22.5), #number(108.0), #number(2.0), #number(2.1), #number(0.3), #number(1.6), #number(2.1), #number(1.1), #number(3.0), #number(345.0), #symbol("1")],
+                  [#number(12.8), #number(3.4), #number(2.0), #number(16.0), #number(80.0), #number(1.6), #number(1.2), #number(0.4), #number(0.8), #number(3.4), #number(0.7), #number(2.1), #number(372.0), #symbol("1")],
+                  [#number(12.0), #number(3.4), #number(2.0), #number(19.0), #number(87.0), #number(2.0), #number(1.6), #number(0.4), #number(1.9), #number(1.3), #number(0.9), #number(3.0), #number(564.0), #symbol("1")],
+                  [#number(11.4), #number(2.4), #number(2.4), #number(20.0), #number(96.0), #number(2.9), #number(2.8), #number(0.3), #number(1.8), #number(3.2), #number(0.8), #number(3.4), #number(625.0), #symbol("1")],
+                  [#number(11.6), #number(2.0), #number(3.2), #number(28.5), #number(119.0), #number(3.2), #number(5.1), #number(0.5), #number(1.9), #number(6.0), #number(0.9), #number(3.7), #number(465.0), #symbol("1")],
+                  [#number(12.4), #number(4.4), #number(2.7), #number(26.5), #number(102.0), #number(2.2), #number(2.1), #number(0.4), #number(1.7), #number(2.1), #number(0.9), #number(3.1), #number(365.0), #symbol("1")],
+                  [#number(13.1), #number(5.8), #number(2.1), #number(21.5), #number(86.0), #number(2.6), #number(2.6), #number(0.3), #number(2.0), #number(2.6), #number(0.7), #number(3.1), #number(380.0), #symbol("1")],
+                  [#number(11.9), #number(4.3), #number(2.4), #number(21.0), #number(82.0), #number(2.9), #number(3.0), #number(0.2), #number(2.9), #number(2.8), #number(0.8), #number(3.6), #number(380.0), #symbol("1")],
+                  [#number(12.1), #number(2.2), #number(2.2), #number(21.0), #number(85.0), #number(2.6), #number(2.6), #number(0.4), #number(1.4), #number(2.8), #number(0.9), #number(3.3), #number(378.0), #symbol("1")],
+                  [#number(12.4), #number(1.5), #number(2.3), #number(21.5), #number(86.0), #number(2.7), #number(3.1), #number(0.4), #number(1.8), #number(3.9), #number(0.7), #number(2.8), #number(352.0), #symbol("1")],
+                  [#number(11.8), #number(2.1), #number(2.8), #number(28.5), #number(92.0), #number(2.1), #number(2.2), #number(0.6), #number(1.8), #number(3.0), #number(1.0), #number(2.4), #number(466.0), #symbol("1")],
+                  [#number(12.4), #number(1.6), #number(2.3), #number(24.5), #number(88.0), #number(2.2), #number(2.5), #number(0.4), #number(1.9), #number(2.1), #number(0.9), #number(2.8), #number(342.0), #symbol("1")],
+                  [#number(12.0), #number(4.3), #number(2.4), #number(22.0), #number(80.0), #number(2.1), #number(1.8), #number(0.4), #number(1.4), #number(2.6), #number(0.8), #number(2.6), #number(580.0), #symbol("1")],
+                  [#number(12.9), #number(1.4), #number(2.3), #number(18.0), #number(122.0), #number(1.5), #number(1.2), #number(0.2), #number(0.9), #number(4.1), #number(0.8), #number(1.3), #number(630.0), #symbol("2")],
+                  [#number(12.9), #number(3.0), #number(2.4), #number(20.0), #number(104.0), #number(1.3), #number(1.2), #number(0.2), #number(0.8), #number(5.4), #number(0.7), #number(1.4), #number(530.0), #symbol("2")],
+                  [#number(12.8), #number(2.3), #number(2.4), #number(24.0), #number(98.0), #number(1.1), #number(1.1), #number(0.3), #number(0.8), #number(5.7), #number(0.7), #number(1.4), #number(560.0), #symbol("2")],
+                  [#number(12.7), #number(3.5), #number(2.4), #number(21.5), #number(106.0), #number(1.7), #number(1.2), #number(0.2), #number(0.8), #number(5.0), #number(0.8), #number(1.3), #number(600.0), #symbol("2")],
+                  [#number(12.5), #number(1.2), #number(2.2), #number(17.5), #number(85.0), #number(2.0), #number(0.6), #number(0.6), #number(1.2), #number(5.5), #number(0.8), #number(1.5), #number(650.0), #symbol("2")],
+                  [#number(12.6), #number(2.5), #number(2.2), #number(18.5), #number(94.0), #number(1.6), #number(0.7), #number(0.6), #number(0.9), #number(7.1), #number(0.7), #number(1.6), #number(695.0), #symbol("2")],
+                  [#number(12.2), #number(4.7), #number(2.5), #number(21.0), #number(89.0), #number(1.4), #number(0.5), #number(0.5), #number(0.8), #number(3.9), #number(0.8), #number(1.3), #number(720.0), #symbol("2")],
+                  [#number(12.5), #number(5.5), #number(2.6), #number(25.0), #number(96.0), #number(1.8), #number(0.6), #number(0.6), #number(1.1), #number(5.0), #number(0.8), #number(1.7), #number(515.0), #symbol("2")],
+                  [#number(13.5), #number(3.6), #number(2.2), #number(19.5), #number(88.0), #number(1.6), #number(0.5), #number(0.6), #number(0.9), #number(5.7), #number(0.8), #number(1.8), #number(580.0), #symbol("2")],
+                  [#number(12.8), #number(3.0), #number(2.6), #number(24.0), #number(101.0), #number(2.3), #number(0.6), #number(0.5), #number(0.8), #number(4.9), #number(0.9), #number(2.1), #number(590.0), #symbol("2")],
+                  [#number(12.9), #number(2.8), #number(2.7), #number(21.0), #number(96.0), #number(1.5), #number(0.5), #number(0.5), #number(0.8), #number(4.6), #number(0.8), #number(2.3), #number(600.0), #symbol("2")],
+                  [#number(13.4), #number(2.6), #number(2.4), #number(20.0), #number(89.0), #number(1.4), #number(0.5), #number(0.4), #number(0.6), #number(5.6), #number(0.7), #number(2.5), #number(780.0), #symbol("2")],
+                  [#number(13.5), #number(3.2), #number(2.7), #number(23.5), #number(97.0), #number(1.6), #number(0.5), #number(0.5), #number(0.6), #number(4.3), #number(0.9), #number(2.1), #number(520.0), #symbol("2")],
+                  [#number(13.6), #number(5.0), #number(2.4), #number(20.0), #number(92.0), #number(2.0), #number(0.8), #number(0.5), #number(1.0), #number(4.4), #number(0.9), #number(2.0), #number(550.0), #symbol("2")],
+                  [#number(12.2), #number(3.9), #number(2.2), #number(18.5), #number(112.0), #number(1.4), #number(0.8), #number(0.3), #number(1.1), #number(8.2), #number(0.7), #number(2.0), #number(855.0), #symbol("2")],
+                  [#number(13.2), #number(3.6), #number(2.1), #number(21.0), #number(102.0), #number(1.5), #number(0.6), #number(0.4), #number(1.3), #number(4.0), #number(0.6), #number(1.7), #number(830.0), #symbol("2")],
+                  [#number(13.9), #number(5.0), #number(2.2), #number(20.0), #number(80.0), #number(1.0), #number(0.3), #number(0.4), #number(0.7), #number(4.9), #number(0.6), #number(1.3), #number(415.0), #symbol("2")],
+                  [#number(12.9), #number(4.6), #number(2.5), #number(21.5), #number(86.0), #number(1.7), #number(0.7), #number(0.5), #number(0.9), #number(7.7), #number(0.5), #number(1.9), #number(625.0), #symbol("2")],
+                  [#number(13.3), #number(3.2), #number(2.4), #number(21.5), #number(92.0), #number(1.9), #number(0.8), #number(0.5), #number(1.2), #number(8.4), #number(0.6), #number(1.6), #number(650.0), #symbol("2")],
+                  [#number(13.1), #number(3.9), #number(2.4), #number(21.5), #number(113.0), #number(1.4), #number(1.4), #number(0.3), #number(1.1), #number(9.4), #number(0.6), #number(1.3), #number(550.0), #symbol("2")],
+                  [#number(13.5), #number(3.1), #number(2.6), #number(24.0), #number(123.0), #number(1.4), #number(1.6), #number(0.2), #number(1.2), #number(8.6), #number(0.6), #number(1.3), #number(500.0), #symbol("2")],
+                  [#number(12.8), #number(2.7), #number(2.5), #number(22.0), #number(112.0), #number(1.5), #number(1.4), #number(0.2), #number(1.3), #number(10.8), #number(0.5), #number(1.5), #number(480.0), #symbol("2")],
+                  [#number(13.1), #number(1.9), #number(2.8), #number(25.5), #number(116.0), #number(2.2), #number(1.3), #number(0.3), #number(1.6), #number(7.1), #number(0.6), #number(1.3), #number(425.0), #symbol("2")],
+                  [#number(13.2), #number(3.3), #number(2.3), #number(18.5), #number(98.0), #number(1.8), #number(0.8), #number(0.6), #number(1.9), #number(10.5), #number(0.6), #number(1.5), #number(675.0), #symbol("2")],
+                  [#number(12.6), #number(1.3), #number(2.1), #number(20.0), #number(103.0), #number(1.5), #number(0.6), #number(0.5), #number(1.4), #number(7.6), #number(0.6), #number(1.6), #number(640.0), #symbol("2")],
+                  [#number(13.2), #number(5.2), #number(2.3), #number(22.0), #number(93.0), #number(1.7), #number(0.6), #number(0.6), #number(1.6), #number(7.9), #number(0.6), #number(1.5), #number(725.0), #symbol("2")],
+                  [#number(13.8), #number(4.1), #number(2.4), #number(19.5), #number(89.0), #number(1.8), #number(0.8), #number(0.5), #number(1.6), #number(9.0), #number(0.6), #number(1.6), #number(480.0), #symbol("2")],
+                  [#number(12.4), #number(3.0), #number(2.6), #number(27.0), #number(97.0), #number(1.9), #number(0.6), #number(0.6), #number(1.1), #number(7.5), #number(0.7), #number(1.7), #number(880.0), #symbol("2")],
+                  [#number(14.3), #number(1.7), #number(2.7), #number(25.0), #number(98.0), #number(2.8), #number(1.3), #number(0.5), #number(2.7), #number(13.0), #number(0.6), #number(2.0), #number(660.0), #symbol("2")],
+                  [#number(13.5), #number(1.7), #number(2.6), #number(22.5), #number(89.0), #number(2.6), #number(1.1), #number(0.5), #number(2.3), #number(11.8), #number(0.6), #number(1.8), #number(620.0), #symbol("2")],
+                  [#number(12.4), #number(3.8), #number(2.4), #number(21.0), #number(88.0), #number(2.3), #number(0.9), #number(0.5), #number(1.0), #number(7.7), #number(0.6), #number(1.6), #number(520.0), #symbol("2")],
+                  [#number(13.7), #number(3.3), #number(2.5), #number(20.0), #number(107.0), #number(1.8), #number(0.6), #number(0.5), #number(0.8), #number(5.9), #number(1.0), #number(1.8), #number(680.0), #symbol("2")],
+                  [#number(12.8), #number(3.3), #number(2.6), #number(22.0), #number(106.0), #number(1.6), #number(0.6), #number(0.6), #number(1.0), #number(5.6), #number(0.9), #number(2.1), #number(570.0), #symbol("2")],
+                  [#number(13.0), #number(3.5), #number(2.4), #number(18.5), #number(106.0), #number(1.4), #number(0.7), #number(0.4), #number(0.9), #number(5.3), #number(0.7), #number(1.8), #number(675.0), #symbol("2")],
+                  [#number(13.8), #number(2.8), #number(2.3), #number(22.0), #number(90.0), #number(1.4), #number(0.7), #number(0.4), #number(1.0), #number(9.6), #number(0.7), #number(1.7), #number(615.0), #symbol("2")],
+                  [#number(13.7), #number(4.4), #number(2.3), #number(22.5), #number(88.0), #number(1.3), #number(0.5), #number(0.5), #number(1.1), #number(6.6), #number(0.8), #number(1.8), #number(520.0), #symbol("2")],
+                  [#number(13.4), #number(3.7), #number(2.6), #number(23.0), #number(111.0), #number(1.7), #number(0.9), #number(0.4), #number(1.5), #number(10.7), #number(0.8), #number(1.6), #number(695.0), #symbol("2")],
+                  [#number(12.8), #number(3.4), #number(2.3), #number(19.5), #number(88.0), #number(1.5), #number(0.7), #number(0.4), #number(1.0), #number(10.3), #number(0.7), #number(1.8), #number(685.0), #symbol("2")],
+                  [#number(13.6), #number(2.6), #number(2.7), #number(24.5), #number(105.0), #number(1.6), #number(0.8), #number(0.4), #number(1.5), #number(8.7), #number(0.7), #number(1.8), #number(750.0), #symbol("2")],
+                  [#number(13.4), #number(4.6), #number(2.9), #number(25.0), #number(112.0), #number(2.0), #number(1.0), #number(0.3), #number(1.1), #number(8.5), #number(0.7), #number(1.9), #number(630.0), #symbol("2")],
+                  [#number(12.2), #number(3.0), #number(2.3), #number(19.0), #number(96.0), #number(1.2), #number(0.5), #number(0.4), #number(0.7), #number(5.5), #number(0.7), #number(1.8), #number(510.0), #symbol("2")],
+                  [#number(12.8), #number(2.4), #number(2.3), #number(19.5), #number(86.0), #number(1.4), #number(0.5), #number(0.5), #number(0.6), #number(9.9), #number(0.6), #number(1.6), #number(470.0), #symbol("2")],
+                  [#number(14.2), #number(2.5), #number(2.5), #number(20.0), #number(91.0), #number(1.7), #number(0.7), #number(0.4), #number(1.2), #number(9.7), #number(0.6), #number(1.7), #number(660.0), #symbol("2")],
+                  [#number(13.7), #number(5.7), #number(2.5), #number(20.5), #number(95.0), #number(1.7), #number(0.6), #number(0.5), #number(1.1), #number(7.7), #number(0.6), #number(1.7), #number(740.0), #symbol("2")],
+                  [#number(13.4), #number(3.9), #number(2.5), #number(23.0), #number(102.0), #number(1.8), #number(0.8), #number(0.4), #number(1.4), #number(7.3), #number(0.7), #number(1.6), #number(750.0), #symbol("2")],
+                  [#number(13.3), #number(4.3), #number(2.3), #number(20.0), #number(120.0), #number(1.6), #number(0.7), #number(0.4), #number(1.4), #number(10.2), #number(0.6), #number(1.6), #number(835.0), #symbol("2")],
+                  [#number(13.2), #number(2.6), #number(2.4), #number(20.0), #number(120.0), #number(1.6), #number(0.7), #number(0.5), #number(1.5), #number(9.3), #number(0.6), #number(1.6), #number(840.0), #symbol("2")],
+                  [#number(14.1), #number(4.1), #number(2.7), #number(24.5), #number(96.0), #number(2.0), #number(0.8), #number(0.6), #number(1.4), #number(9.2), #number(0.6), #number(1.6), #number(560.0), #symbol("2")]];
 
     var iris_data: [[dataMember]] =  [[#number(5.1), #number(3.5), #number(1.4), #number(0.2), #symbol("0")],
                                       [#number(4.9), #number(3.0), #number(1.4), #number(0.2), #symbol("0")],
@@ -1144,81 +1324,81 @@ actor {
       };
     };
 
-    func printSample(x: [dataMember]): (Text) {
-      var x_text: Text = "";
-      for (i in Iter.range(0, x.size() - 1)) {
+    // func printSample(x: [dataMember]): (Text) {
+    //   var x_text: Text = "";
+    //   for (i in Iter.range(0, x.size() - 1)) {
         
-        switch (x[i]) {
-          case (#symbol(sym)) {
-            x_text := x_text # sym;
-          };
-          case (#number(num)) {
-            x_text := x_text # Float.toText(num);
-          };
-        };
-        if (i < x.size()) {
-          x_text := x_text #", "
-        };
-      }; 
-      return x_text;
-    };
+    //     switch (x[i]) {
+    //       case (#symbol(sym)) {
+    //         x_text := x_text # sym;
+    //       };
+    //       case (#number(num)) {
+    //         x_text := x_text # Float.toText(num);
+    //       };
+    //     };
+    //     if (i < x.size()) {
+    //       x_text := x_text #", "
+    //     };
+    //   }; 
+    //   return x_text;
+    // };
 
     //<----------------------------------IMHERE: test fitted classifciation tree
     let seed = 123456789;
     let fuzz = Fuzz.fromSeed(seed);
 
-    let nsamples: Nat = 150;
-    let pos_vec = randomSample(0, iris_data.size()-1, nsamples, false);Debug.print("1");
-    // for (i in Iter.range(0, pos_vec.size() - 1)) {
-    //   Debug.print(Nat.toText(pos_vec[i]));
-    // };
-    // Debug.print("min:"#Nat.toText(minNat(pos_vec)));
-    // Debug.print("max:"#Nat.toText(maxNat(pos_vec)));
-    // Debug.print("size iris_data:"#Nat.toText(iris_data.size()));
-    let Xtrain = rows(pos_vec, iris_data); Debug.print("11");
-    let x = cols([0,1,2,3], Xtrain);Debug.print("12");
-    let yaux = transpose(cols([4], Xtrain))[0];Debug.print("13");
-    let y = dataMemberVectorToTextVector(yaux);Debug.print("14");
+    let nsamples: Nat = 100;
+    let alldata = wine_data;
+    let pos_vec = randomSample(0, alldata.size()-1, nsamples, false);Debug.print("1");
+
+    let Xtrain = rows(pos_vec, alldata); Debug.print("11");
+    let Xtest = removeRows(pos_vec, alldata); Debug.print("11");
+    let xcols = Iter.toArray(Iter.range(0, transpose(Xtrain).size()-1));
+    let xtrain = cols(xcols, Xtrain);Debug.print("12"#":"#Nat.toText(transpose(Xtrain).size()));
+    let yaux = transpose(cols([transpose(Xtrain).size()-1], Xtrain))[0];Debug.print("13");
+    let ytrain = dataMemberVectorToTextVector(yaux);Debug.print("14");
+    let xtest = cols(xcols, Xtest);Debug.print("141");
+    let yauxtest = transpose(cols([transpose(Xtest).size()-1], Xtest))[0];Debug.print("142");
+    let ytest = dataMemberVectorToTextVector(yauxtest);Debug.print("143");
    
-    switch(y) {
+    switch(ytrain) {
       case (#ok(yvec)) {
         let y_uniques = uniquesText(yvec);Debug.print("15");
-        let myiter = Iter.range(0, transpose(x).size()-1);Debug.print("16");
+        let myiter = Iter.range(0, transpose(xtrain).size()-1);Debug.print("16");
         let col_ids = Iter.toArray(myiter);Debug.print("17");
-        let ret_tree = fitClassification(x, yvec, 0, y_uniques, 3, 1, col_ids); Debug.print("18");
+        let ret_tree = fitClassification(xtrain, yvec, 0, y_uniques, 3, 10, col_ids); Debug.print("18");
         Debug.print("Tree created");
         switch(ret_tree) {
           case (#ok(mytree)) {
-            var ncorrect: Nat = 0; 
-            for (i in Iter.range(0, x.size() - 1)) {
-              //return mytree;
-              Debug.print(Nat.toText(i));
-              let sample: [dataMember] = x[i]; // Debug.print("11");
-              let vec = predictClassificationTree(sample, mytree);// Debug.print("12");
-              let myindex = Array.indexOf<Float>(max(vec), vec, Float.equal);// Debug.print("13");
-              let xindex: Nat = switch(myindex) {
-                case (?Nat) Nat; 
-                case _ 10;
-              };// Debug.print("14");
-              let text_sample = printSample(sample);
-              Debug.print("sample: " # text_sample);
-              if (Text.equal(y_uniques[xindex], yvec[i])) {
-                Debug.print("correct");
-                ncorrect := ncorrect + 1;  
-              }
-              else {
-                Debug.print("wrong"#y_uniques[xindex]#":"#yvec[i]); 
+            switch(ytest) {
+              case (#ok(yvectest)) {
+                var ncorrect: Nat = 0; 
+                for (i in Iter.range(0, xtest.size() - 1)) {
+                  //return mytree;
+                  Debug.print(Nat.toText(i));
+                  let sample: [dataMember] = xtest[i]; // Debug.print("11");
+                  let vec = predictClassificationTree(sample, mytree);// Debug.print("12");
+                  let myindex = Array.indexOf<Float>(max(vec), vec, Float.equal);// Debug.print("13");
+                  let xindex: Nat = switch(myindex) {
+                    case (?Nat) Nat; 
+                    case _ 10;
+                  };// Debug.print("14");
+                  let text_sample = Mtklearn.printSample(sample);
+                  Debug.print("sample: " # text_sample);
+                  if (Text.equal(y_uniques[xindex], yvectest[i])) {
+                    Debug.print("correct");
+                    ncorrect := ncorrect + 1;  
+                  }
+                  else {
+                    Debug.print("wrong"#y_uniques[xindex]#":"#yvectest[i]); 
+                  };
+                };
+                Debug.print("Percentage correct predictions:"#Float.toText(100*Float.fromInt(ncorrect)/Float.fromInt(yvectest.size())));
               };
+              case (_) {
+                //TBD
+              }
             };
-            Debug.print("Percentage correct predictions:"#Float.toText(100*Float.fromInt(ncorrect)/Float.fromInt(yvec.size())));
-            return mytree;
-            //  let sample: [dataMember] = x[0];   
-            //  predictTree(sample, mytree);
-            // let's predict
-            //for (i in Iter.range(0, x.size() - 1)) {
-            //  let sample: [dataMember] = x[0];   
-            //  predictTree(sample, mytree);
-            //};
             return mytree;
           };
           case (_) {
