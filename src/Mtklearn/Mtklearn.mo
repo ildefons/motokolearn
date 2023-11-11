@@ -1047,12 +1047,4 @@ module {
         };
       };
     };
-
-    // let LeftLeftTree: BinTree  = setLeftRightBranch(null, null, #symbol([1,0]), nilTree(), nilTree());
-    // let LeftRightTree: BinTree = setLeftRightBranch(null, null, #symbol([0,1]), nilTree(), nilTree());
-    // let LeftTopTree: BinTree   = setLeftRightBranch(?1, ?(3.5), #symbol([0.5,0.5]), LeftLeftTree, LeftRightTree);
-    // let RightLeftTree: BinTree  = setLeftRightBranch(null, null, #symbol([0,1]), nilTree(), nilTree());
-    // let RightRightTree: BinTree = setLeftRightBranch(null, null, #symbol([1,0]), nilTree(), nilTree());
-    // let RightTopTree: BinTree   = setLeftRightBranch(?1, ?(3.5), #symbol([0.5,0.5]), RightLeftTree, RightRightTree);
-    // let TopTree: BinTree   = setLeftRightBranch(?0, ?(2.5), #symbol([0.5,0.5]), LeftTopTree, RightTopTree);  
 };
