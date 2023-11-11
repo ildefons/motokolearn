@@ -1,22 +1,9 @@
-import Int "mo:base/Int";
 import Nat "mo:base/Nat";
-import Bool "mo:base/Bool";
-//import Nat32 "mo:base/Nat32";
 import Float "mo:base/Float";
 import Text "mo:base/Text";
 import Array "mo:base/Array";
-import List "mo:base/List";
-import Buffer "mo:base/Buffer";
 import Iter "mo:base/Iter";
-import Hash "mo:base/Hash";
-import TrieSet "mo:base/TrieSet";
 import Debug "mo:base/Debug";
-import Result "mo:base/Result";
-import Error "mo:base/Error";
-import Prim "mo:prim";
-import Random "mo:base/Random";
-import Blob "mo:base/Blob";
-import Fuzz "mo:fuzz";
 
 import mtkl "../Mtklearn/Mtklearn";
 
