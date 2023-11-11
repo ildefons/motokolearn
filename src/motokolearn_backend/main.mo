@@ -343,8 +343,8 @@ actor {
                             [4,5,6],
                             [7,8,9],[10,20,30],[11,22,33]]; 
 
-    let auxr : [[Float]] = rows([0, 2], matrix);
-    let auxc : [[Float]] = cols([0, 2], matrix);
+    let auxr : [[Float]] = mtkl.rows([0, 2], matrix);
+    let auxc : [[Float]] = mtkl.cols([0, 2], matrix);
     // Debug.print("min:" # Float.toText(min(matrix[0])) );
     // Debug.print("max:" # Float.toText(max(matrix[0])) );
     // Debug.print("mean:" # Float.toText(mean(matrix[0])) ); 
@@ -872,9 +872,9 @@ actor {
           let xs = dataMemberVectorToFloatVector(xcol);
           switch (xs) {
             case (#ok(xs_num)) {
-              let xs_min = min(xs_num);
-              let xs_max = max(xs_num);
-              let th_vec: [Float] = linspace(xs_min,xs_max,NUM_CHECKS_GINI); // NUM_CHECKS_GINI : Nat = 10; it should be a private constant of the future module
+              let xs_min = mtkl.min(xs_num);
+              let xs_max = mtkl.max(xs_num);
+              let th_vec: [Float] = mtkl.linspace(xs_min,xs_max,NUM_CHECKS_GINI); // NUM_CHECKS_GINI : Nat = 10; it should be a private constant of the future module
               let ginis = Buffer.Buffer<Float>(th_vec.size());
               for (i in Iter.range(0, th_vec.size() - 1)) {
                 let th = th_vec[i];
@@ -906,7 +906,7 @@ actor {
                 };
                 ginis.add(weight_l*gini_l+weight_r*gini_r);
               }; 
-              let bestgini = min(Buffer.toArray(ginis));
+              let bestgini = mtkl.min(Buffer.toArray(ginis));
               let bestth_i: ?Nat = Array.indexOf<Float>(bestgini, Buffer.toArray(ginis), Float.equal);
               let bestth_ix: Nat = switch bestth_i {
                 case null 0;
@@ -973,7 +973,7 @@ actor {
       switch (xs) {
         case (#ok(xs_num)) {
           let ret_xi: [Bool]= Array.mapEntries<Float, Bool>(xs_num, func (xx, ii) = (xx <= bestth));
-          let sumtrues = sumTrues(ret_xi);
+          let sumtrues = mtkl.sumTrues(ret_xi);
           let left_i = Buffer.Buffer<Nat>(sumtrues);
           let right_i = Buffer.Buffer<Nat>(ret_xi.size()-sumtrues);
           for (j in Iter.range(0, ret_xi.size() - 1)) {
@@ -992,7 +992,7 @@ actor {
       switch (xs) {
         case (#ok(xs_sym)) {
           let ret_xi: [Bool] = Array.mapEntries<Text, Bool>(xs_sym, func (xx, ii) = Text.equal(xx,X_UNIQUES[0]));
-          let sumtrues = sumTrues(ret_xi);
+          let sumtrues = mtkl.sumTrues(ret_xi);
           let left_i = Buffer.Buffer<Nat>(sumtrues);
           let right_i = Buffer.Buffer<Nat>(ret_xi.size()-sumtrues);
           for (j in Iter.range(0, ret_xi.size() - 1)) {
@@ -1134,34 +1134,34 @@ actor {
       let bestth = ths_array[xbestcol];// Debug.print("102");
       
       // recursive call left and right and connect to node and return 
-      let myx = transpose(cols<dataMember>([xbestcol], x))[0];// Debug.print("103");
+      let myx = mtkl.transpose(mtkl.cols<dataMember>([xbestcol], x))[0];// Debug.print("103");
 
       let (left_rows,right_rows) = switch (myx[0]) {
         case (#number(num)) computeThLeftRightNumeric(myx, y, y_uniques, bestth);
         case (#symbol(sym)) computeLeftRightSymbolic(myx, y, y_uniques);
       };Debug.print("104");
 
-      let x2 = removeRows([xbestcol], x);// Debug.print("105");
-      let y2 = removeRowsVector([xbestcol], y);// Debug.print("106");
+      let x2 = mtkl.removeRows([xbestcol], x);// Debug.print("105");
+      let y2 = mtkl.removeRowsVector([xbestcol], y);// Debug.print("106");
       
       // pick the true col_id from col_ids
       // Debug.print("xbestcol:"#Nat.toText(xbestcol));
       let true_colid: Nat = col_ids[xbestcol];// Debug.print("107");
       Debug.print("TRUE_COLID: "#Nat.toText(true_colid)#" "#Nat.toText(ginis.size())#" "#Nat.toText(ginis_array.size()));
       // remove "true_colid" from col_ids before passing recursively
-      let next_col_ids: [Nat] = removeRowsVector([xbestcol], col_ids);Debug.print("108");
+      let next_col_ids: [Nat] = mtkl.removeRowsVector([xbestcol], col_ids);Debug.print("108");
       
       //let next_x: [[dataMember]] = cols(next_col_ids, x);Debug.print("109");
       Debug.print("xbestcol: "#Nat.toText(xbestcol));
-      Debug.print("size(X): "#Nat.toText(transpose(x).size()));
-      let next_x: [[dataMember]] = transpose(removeRows([xbestcol], transpose(x))); Debug.print("109");
+      Debug.print("size(X): "#Nat.toText(mtkl.transpose(x).size()));
+      let next_x: [[dataMember]] = mtkl.transpose(mtkl.removeRows([xbestcol], mtkl.transpose(x))); Debug.print("109");
 
 
-      Debug.print("Next col ids: "#Nat.toText(next_col_ids.size())#":"#Nat.toText(transpose(next_x).size())); Debug.print("110");
-      let x_left = rows(left_rows,next_x);
-      let y_left = rowsVector(left_rows,y);
-      let x_right = rows(right_rows,next_x);
-      let y_right = rowsVector(right_rows,y);
+      Debug.print("Next col ids: "#Nat.toText(next_col_ids.size())#":"#Nat.toText(mtkl.transpose(next_x).size())); Debug.print("110");
+      let x_left = mtkl.rows(left_rows,next_x);
+      let y_left = mtkl.rowsVector(left_rows,y);
+      let x_right = mtkl.rows(right_rows,next_x);
+      let y_right = mtkl.rowsVector(right_rows,y);
 
       let leftNode_aux  = fitClassification(x_left, y_left, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids);
       let rightNode_aux  = fitClassification(x_right, y_right, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids);
