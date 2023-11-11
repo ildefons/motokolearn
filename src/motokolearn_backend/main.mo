@@ -18,7 +18,7 @@ import Random "mo:base/Random";
 import Blob "mo:base/Blob";
 import Fuzz "mo:fuzz";
 
-import Mtklearn "../Mtklearn/Mtklearn";
+import mtkl "../Mtklearn/Mtklearn";
 
 // actor {
 
@@ -82,6 +82,7 @@ actor {
     #number : Float; // variant 
     #symbol : Text; 
   };
+
   var actor_data: [[dataMember]] = [[#number(1), #number(3), #symbol("1")],
                                     [#number(2), #number(2), #symbol("2")],
                                     [#number(3), #number(3), #symbol("3")],
@@ -131,150 +132,150 @@ actor {
   // Develope matrix module inspyred in Array module
   // 1) understand, to/from vec(vec), filterByListofIndexes, filterbyrowsandcols
   // https://forum.dfinity.org/t/how-to-index-a-matrix-to-get-a-subset-of-rows-and-or-columns/23887/4?u=ildefons
-  func rows<T>(rs : [Nat], m : [[T]]) : [[T]] {
-    Array.tabulate<[T]>(rs.size(), func r { m[rs[r]] });
-  };
-  func rowsVector<T>(rs : [Nat], v : [T]) : [T] {
-    Array.tabulate<T>(rs.size(), func r { v[rs[r]] });
-  };
-  func removeRows<T>(rs : [Nat], m : [[T]]) : [[T]] {
-    let rs2 = Buffer.Buffer<Nat>(m.size()); 
-    for (i in Iter.range(0, m.size() - 1)) {
-      let myindex = Array.indexOf<Nat>(i, rs, Nat.equal);
-      switch(myindex) {
-        case null rs2.add(i);
-        case (_) {};
-      };
-    };
-    // for (i in Iter.range(0, Buffer.toArray(rs2).size() - 1)) {
-    //   Debug.print("rs2:"#Nat.toText(Buffer.toArray(rs2)[i]));
-    // };
-    let m2 = rows(Buffer.toArray(rs2), m);
-    return m2;
-  };
-  func removeRowsVector<T>(rs : [Nat], v : [T]) : [T] {
-    let rs2 = Buffer.Buffer<Nat>(v.size()); 
-    for (i in Iter.range(0, v.size() - 1)) {
+//   func rows<T>(rs : [Nat], m : [[T]]) : [[T]] {
+//     Array.tabulate<[T]>(rs.size(), func r { m[rs[r]] });
+//   };
+//   func rowsVector<T>(rs : [Nat], v : [T]) : [T] {
+//     Array.tabulate<T>(rs.size(), func r { v[rs[r]] });
+//   };
+//   func removeRows<T>(rs : [Nat], m : [[T]]) : [[T]] {
+//     let rs2 = Buffer.Buffer<Nat>(m.size()); 
+//     for (i in Iter.range(0, m.size() - 1)) {
+//       let myindex = Array.indexOf<Nat>(i, rs, Nat.equal);
+//       switch(myindex) {
+//         case null rs2.add(i);
+//         case (_) {};
+//       };
+//     };
+//     // for (i in Iter.range(0, Buffer.toArray(rs2).size() - 1)) {
+//     //   Debug.print("rs2:"#Nat.toText(Buffer.toArray(rs2)[i]));
+//     // };
+//     let m2 = rows(Buffer.toArray(rs2), m);
+//     return m2;
+//   };
+//   func removeRowsVector<T>(rs : [Nat], v : [T]) : [T] {
+//     let rs2 = Buffer.Buffer<Nat>(v.size()); 
+//     for (i in Iter.range(0, v.size() - 1)) {
 
-      let myindex = Array.indexOf<Nat>(i, rs, Nat.equal);
-      switch(myindex) {
-        case null rs2.add(i);
-        case (_) {};
-      };
-    };
-    let v2 = rowsVector(Buffer.toArray(rs2), v);
-    return v2;
-  };
-  func cols<T>(cs : [Nat], m : [[T]]) : [[T]] {
-    //Debug.print(Nat.toText(cs.size())#":");
-    //Debug.print(Nat.toText(transpose(m).size()));
-    let ret = Array.tabulate<[T]>(m.size(), func r {
-      Array.tabulate<T>(cs.size(), func c { m[r][cs[c]] }) });
-    return ret;
-  };
+//       let myindex = Array.indexOf<Nat>(i, rs, Nat.equal);
+//       switch(myindex) {
+//         case null rs2.add(i);
+//         case (_) {};
+//       };
+//     };
+//     let v2 = rowsVector(Buffer.toArray(rs2), v);
+//     return v2;
+//   };
+//   func cols<T>(cs : [Nat], m : [[T]]) : [[T]] {
+//     //Debug.print(Nat.toText(cs.size())#":");
+//     //Debug.print(Nat.toText(transpose(m).size()));
+//     let ret = Array.tabulate<[T]>(m.size(), func r {
+//       Array.tabulate<T>(cs.size(), func c { m[r][cs[c]] }) });
+//     return ret;
+//   };
 
-  func ncols<T>(m : [[T]]) : Nat {
-    // TODO: check all rows habve same number of elements
-    m[0].size();
-  };
+//   func ncols<T>(m : [[T]]) : Nat {
+//     // TODO: check all rows habve same number of elements
+//     m[0].size();
+//   };
 
-  func nrows<T>(m : [[T]]) : Nat {
-    m.size();  
-  };
-//----->IM HERE
-  // func init<X>(sizer : Nat, sizec : Nat, initValue : X) : [var X] {
-  //   let row = Prim.Array_init<X>(sizec, initValue);
+//   func nrows<T>(m : [[T]]) : Nat {
+//     m.size();  
+//   };
+// //----->IM HERE
+//   // func init<X>(sizer : Nat, sizec : Nat, initValue : X) : [var X] {
+//   //   let row = Prim.Array_init<X>(sizec, initValue);
 
-  // };
+//   // };
 
-  func transpose<T>(m : [[T]]) : [[T]] {
-    let myncols = ncols(m);
-    let trans = Buffer.Buffer<[T]>(myncols); 
-    for (i in Iter.range(0, myncols - 1)) {
-      let ys = cols([i], m);
-      let ys2 = Array.flatten(ys);
-      trans.add(ys2);
-      //trans := List.push<[dataMember]>(ys2, trans); // 
-    };
-    Buffer.toArray(trans); 
-  };
+//   func transpose<T>(m : [[T]]) : [[T]] {
+//     let myncols = ncols(m);
+//     let trans = Buffer.Buffer<[T]>(myncols); 
+//     for (i in Iter.range(0, myncols - 1)) {
+//       let ys = cols([i], m);
+//       let ys2 = Array.flatten(ys);
+//       trans.add(ys2);
+//       //trans := List.push<[dataMember]>(ys2, trans); // 
+//     };
+//     Buffer.toArray(trans); 
+//   };
 
 
-  // 2) do error checking s.t. indexes fall within matrix dimensions
-  func linspace(xs_min: Float, xs_max: Float, num: Nat): [Float] {
-    let ret = Buffer.Buffer<Float>(num);
-    let A: Float = (xs_max-xs_min)/Float.fromInt(num);
-    for (i in Iter.range(0, num - 1)) {
-      ret.add(xs_min + Float.fromInt(i)*A)
-    }; 
-    Buffer.toArray(ret);
-  };
-  func min(rs: [Float]) : Float {
-    let aux = Array.sort(rs, Float.compare);
-    aux[0];
-  };
-  func minNat(rs: [Nat]) : Nat {
-    let aux = Array.sort(rs, Nat.compare);
-    aux[0];
-  };
-  func max(rs: [Float]) : Float {
-    let aux = Array.sort(rs, Float.compare);
-    aux[rs.size()-1];
-  };
-  func maxNat(rs: [Nat]) : Nat {
-    let aux = Array.sort(rs, Nat.compare);
-    aux[rs.size()-1];
-  };
-  func sumTrues(rs: [Bool]) : Nat {
-    let sum = Array.foldLeft<Bool, Nat>(rs, 0, func(sumSoFar, x) = switch x {case true sumSoFar + 1; case false sumSoFar + 0});
-    sum;
-  };
-  func sumFalses(rs: [Bool]) : Nat {
-    let sum = Array.foldLeft<Bool, Nat>(rs, 0, func(sumSoFar, x) = switch x {case true sumSoFar + 0; case false sumSoFar + 1});
-    sum;
-  };
-  func mean(rs: [Float]) : Float {
-    let sum = Array.foldLeft<Float, Float>(rs, 0, func(sumSoFar, x) = sumSoFar + x);
-    let ret : Float = sum/Float.fromInt(rs.size());
-    ret;
-  };
-  func median(rs: [Float]) : Float {
-    let aux = Array.sort(rs, Float.compare);
-    var ret: Float = 0;
-    let pos = aux.size()/2;
-    let rem = aux.size()%2;
-    if (rem == 0) {
-      ret := (aux[pos-1]+aux[pos])/2;
-    } else {
-      ret := aux[pos];
-    };
-    ret;
-  };
-  // func uniquesNat(rs: [Nat]): [Nat] {
-  //   let myset = TrieSet.fromArray<Nat>(rs, hashNat, Nat.equal);
-  //   let uniques = TrieSet.toArray(myset);
-  //   uniques;
-  // };
-  func uniquesText(rs: [Text]): [Text] {
-    let myset = TrieSet.fromArray<Text>(rs, Text.hash, Text.equal);
-    let uniques = TrieSet.toArray(myset);
-    return uniques;
-  };
-  func log2(n: Float): Float {
-    Float.log(n)/Float.log(2);
-  };
-  func entropy(rs: [Text], y_uniques: [Text]): Float { 
-    //let y_uniques = uniquesText(rs);
-    var h_total: Float = 0.0;
-    for (i in Iter.range(0,y_uniques.size()-1)) {
-      let ys_y =  Array.filter<Text>(rs, func x = x == y_uniques[i]);
-      let p_y = Float.fromInt(ys_y.size()) / Float.fromInt(rs.size()); 
-      let h_y = p_y * log2(p_y);
-      h_total := h_total + h_y;
-    };
+//   // 2) do error checking s.t. indexes fall within matrix dimensions
+//   func linspace(xs_min: Float, xs_max: Float, num: Nat): [Float] {
+//     let ret = Buffer.Buffer<Float>(num);
+//     let A: Float = (xs_max-xs_min)/Float.fromInt(num);
+//     for (i in Iter.range(0, num - 1)) {
+//       ret.add(xs_min + Float.fromInt(i)*A)
+//     }; 
+//     Buffer.toArray(ret);
+//   };
+//   func min(rs: [Float]) : Float {
+//     let aux = Array.sort(rs, Float.compare);
+//     aux[0];
+//   };
+//   func minNat(rs: [Nat]) : Nat {
+//     let aux = Array.sort(rs, Nat.compare);
+//     aux[0];
+//   };
+//   func max(rs: [Float]) : Float {
+//     let aux = Array.sort(rs, Float.compare);
+//     aux[rs.size()-1];
+//   };
+//   func maxNat(rs: [Nat]) : Nat {
+//     let aux = Array.sort(rs, Nat.compare);
+//     aux[rs.size()-1];
+//   };
+//   func sumTrues(rs: [Bool]) : Nat {
+//     let sum = Array.foldLeft<Bool, Nat>(rs, 0, func(sumSoFar, x) = switch x {case true sumSoFar + 1; case false sumSoFar + 0});
+//     sum;
+//   };
+//   func sumFalses(rs: [Bool]) : Nat {
+//     let sum = Array.foldLeft<Bool, Nat>(rs, 0, func(sumSoFar, x) = switch x {case true sumSoFar + 0; case false sumSoFar + 1});
+//     sum;
+//   };
+//   func mean(rs: [Float]) : Float {
+//     let sum = Array.foldLeft<Float, Float>(rs, 0, func(sumSoFar, x) = sumSoFar + x);
+//     let ret : Float = sum/Float.fromInt(rs.size());
+//     ret;
+//   };
+//   func median(rs: [Float]) : Float {
+//     let aux = Array.sort(rs, Float.compare);
+//     var ret: Float = 0;
+//     let pos = aux.size()/2;
+//     let rem = aux.size()%2;
+//     if (rem == 0) {
+//       ret := (aux[pos-1]+aux[pos])/2;
+//     } else {
+//       ret := aux[pos];
+//     };
+//     ret;
+//   };
+//   // func uniquesNat(rs: [Nat]): [Nat] {
+//   //   let myset = TrieSet.fromArray<Nat>(rs, hashNat, Nat.equal);
+//   //   let uniques = TrieSet.toArray(myset);
+//   //   uniques;
+//   // };
+//   func uniquesText(rs: [Text]): [Text] {
+//     let myset = TrieSet.fromArray<Text>(rs, Text.hash, Text.equal);
+//     let uniques = TrieSet.toArray(myset);
+//     return uniques;
+//   };
+//   func log2(n: Float): Float {
+//     Float.log(n)/Float.log(2);
+//   };
+//   func entropy(rs: [Text], y_uniques: [Text]): Float { 
+//     //let y_uniques = uniquesText(rs);
+//     var h_total: Float = 0.0;
+//     for (i in Iter.range(0,y_uniques.size()-1)) {
+//       let ys_y =  Array.filter<Text>(rs, func x = x == y_uniques[i]);
+//       let p_y = Float.fromInt(ys_y.size()) / Float.fromInt(rs.size()); 
+//       let h_y = p_y * log2(p_y);
+//       h_total := h_total + h_y;
+//     };
 
-    -h_total;
-  };
+//     -h_total;
+//   };
 
   // func example(a: Nat): Nat {
   //   if (Nat.equal(a,0)) {
@@ -1088,8 +1089,8 @@ actor {
           probs.add(prob);
         };
       // Debug.print("before Entropy");
-      let node_entropy = entropy(y, y_uniques);
-      let x_ncols = transpose(x).size();   // if we only have 1 feature, we finish branch 
+      let node_entropy = mtkl.entropy(y, y_uniques);
+      let x_ncols = mtkl.transpose(x).size();   // if we only have 1 feature, we finish branch 
       // Debug.print("After Entropy)");
       if (x.size() <= min_node_data_size or current_depth >= max_depth or node_entropy==0 or x_ncols == 1) {
         // Debug.print("Reason to leaf:");
@@ -1102,7 +1103,7 @@ actor {
       };
       // create node  
       // for all features
-      let xt = transpose(x);// Debug.print("11");
+      let xt = mtkl.transpose(x);// Debug.print("11");
       let ginis = Buffer.Buffer<Float>(xt.size());// Debug.print("12");
       let ths = Buffer.Buffer<Float>(xt.size());// Debug.print("13:"#Nat.toText(col_ids.size())#":"#Nat.toText(xt.size()));
       for (i in Iter.range(0, xt.size() - 1)) {
@@ -1121,7 +1122,7 @@ actor {
       // compute gini index of the
       let ginis_array = Buffer.toArray(ginis);// Debug.print("17");
       let ths_array: [Float] = Buffer.toArray(ths);// Debug.print("18");
-      let bestgini = min(ginis_array);// Debug.print("19");
+      let bestgini = mtkl.min(ginis_array);// Debug.print("19");
       let bestcol: ?Nat = Array.indexOf<Float>(bestgini, ginis_array, Float.equal);// Debug.print("101");
       if (bestcol==null) {
         return #err(#noBestGiniError);
@@ -1351,20 +1352,20 @@ actor {
     let alldata = wine_data;
     let pos_vec = randomSample(0, alldata.size()-1, nsamples, false);Debug.print("1");
 
-    let Xtrain = rows(pos_vec, alldata); Debug.print("11");
-    let Xtest = removeRows(pos_vec, alldata); Debug.print("11");
-    let xcols = Iter.toArray(Iter.range(0, transpose(Xtrain).size()-1));
-    let xtrain = cols(xcols, Xtrain);Debug.print("12"#":"#Nat.toText(transpose(Xtrain).size()));
-    let yaux = transpose(cols([transpose(Xtrain).size()-1], Xtrain))[0];Debug.print("13");
+    let Xtrain = mtkl.rows(pos_vec, alldata); Debug.print("11");
+    let Xtest = mtkl.removeRows(pos_vec, alldata); Debug.print("11");
+    let xcols = Iter.toArray(Iter.range(0, mtkl.transpose(Xtrain).size()-1));
+    let xtrain = mtkl.cols(xcols, Xtrain);Debug.print("12"#":"#Nat.toText(mtkl.transpose(Xtrain).size()));
+    let yaux = mtkl.transpose(mtkl.cols([mtkl.transpose(Xtrain).size()-1], Xtrain))[0];Debug.print("13");
     let ytrain = dataMemberVectorToTextVector(yaux);Debug.print("14");
-    let xtest = cols(xcols, Xtest);Debug.print("141");
-    let yauxtest = transpose(cols([transpose(Xtest).size()-1], Xtest))[0];Debug.print("142");
+    let xtest = mtkl.cols(xcols, Xtest);Debug.print("141");
+    let yauxtest = mtkl.transpose(mtkl.cols([mtkl.transpose(Xtest).size()-1], Xtest))[0];Debug.print("142");
     let ytest = dataMemberVectorToTextVector(yauxtest);Debug.print("143");
    
     switch(ytrain) {
       case (#ok(yvec)) {
-        let y_uniques = uniquesText(yvec);Debug.print("15");
-        let myiter = Iter.range(0, transpose(xtrain).size()-1);Debug.print("16");
+        let y_uniques = mtkl.uniquesText(yvec);Debug.print("15");
+        let myiter = Iter.range(0, mtkl.transpose(xtrain).size()-1);Debug.print("16");
         let col_ids = Iter.toArray(myiter);Debug.print("17");
         let ret_tree = fitClassification(xtrain, yvec, 0, y_uniques, 3, 10, col_ids); Debug.print("18");
         Debug.print("Tree created");
@@ -1378,12 +1379,12 @@ actor {
                   Debug.print(Nat.toText(i));
                   let sample: [dataMember] = xtest[i]; // Debug.print("11");
                   let vec = predictClassificationTree(sample, mytree);// Debug.print("12");
-                  let myindex = Array.indexOf<Float>(max(vec), vec, Float.equal);// Debug.print("13");
+                  let myindex = Array.indexOf<Float>(mtkl.max(vec), vec, Float.equal);// Debug.print("13");
                   let xindex: Nat = switch(myindex) {
                     case (?Nat) Nat; 
                     case _ 10;
                   };// Debug.print("14");
-                  let text_sample = Mtklearn.printSample(sample);
+                  let text_sample = mtkl.printSample(sample);
                   Debug.print("sample: " # text_sample);
                   if (Text.equal(y_uniques[xindex], yvectest[i])) {
                     Debug.print("correct");
