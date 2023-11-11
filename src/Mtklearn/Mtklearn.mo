@@ -988,7 +988,6 @@ module {
       };
     };
  
-
     public func predictClassificationTree(x : [dataMember], bintree : BinTree) : ([Float]) {
       // 1) check assert the size of x is > 0
       // 2) check bintree is not nil
