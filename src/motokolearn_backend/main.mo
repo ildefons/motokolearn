@@ -78,12 +78,12 @@ actor {
     #noBestGiniError;
   };
 
-  type dataMember = {
-    #number : Float; // variant 
-    #symbol : Text; 
-  };
+  // type dataMember = {
+  //   #number : Float; // variant 
+  //   #symbol : Text; 
+  // };
 
-  var actor_data: [[dataMember]] = [[#number(1), #number(3), #symbol("1")],
+  var actor_data: [[mtkl.dataMember]] = [[#number(1), #number(3), #symbol("1")],
                                     [#number(2), #number(2), #symbol("2")],
                                     [#number(3), #number(3), #symbol("3")],
                                     [#number(4), #number(2), #symbol("4")]];
@@ -284,24 +284,24 @@ actor {
   //   return 0;
   // };
 
-  func symbolVecToTextVec(ys: [dataMember]):  Result.Result<[Text], MotokoLearnError> {
-    let aux = ys[0];
-    let textBuf = Buffer.Buffer<Text>(ys.size());
-    // Debug.print("is a text:" # aux);
-    for (i in Iter.range(0, ys.size() - 1)) {
-      let aux = ys[i];
-      switch (aux) {
-        case (#symbol s) {
-            textBuf.add(s);
-        };
-        case (#number s) { 
-          return #err(#notAllYsAreSymbol);
-        };
-      };
-    };
+  // func symbolVecToTextVec(ys: [dataMember]):  Result.Result<[Text], MotokoLearnError> {
+  //   let aux = ys[0];
+  //   let textBuf = Buffer.Buffer<Text>(ys.size());
+  //   // Debug.print("is a text:" # aux);
+  //   for (i in Iter.range(0, ys.size() - 1)) {
+  //     let aux = ys[i];
+  //     switch (aux) {
+  //       case (#symbol s) {
+  //           textBuf.add(s);
+  //       };
+  //       case (#number s) { 
+  //         return #err(#notAllYsAreSymbol);
+  //       };
+  //     };
+  //   };
 
-    return #ok(Buffer.toArray(textBuf));
-  };
+  //   return #ok(Buffer.toArray(textBuf));
+  // };
   // are there max min mean median with vector ?
 
   // function: identify classification or regression problem
@@ -312,7 +312,7 @@ actor {
   // 4) left/right child nodes node
   // 5) node average label or probability vector  
 
-  public func setTrainingData(data: [[dataMember]]) : async () {
+  public func setTrainingData(data: [[mtkl.dataMember]]) : async () {
     actor_data := data;
     // identify classification vs regression aaf of last column type
     // 
@@ -322,7 +322,7 @@ actor {
     //
   };
   
-  public func predict(data: [[dataMember]]) : async () {
+  public func predict(data: [[mtkl.dataMember]]) : async () {
     //
   }; 
   
@@ -445,7 +445,7 @@ actor {
       ?(var_id, th, value, leftTree, rightTree);
     };
     
-    var wine_data: [[dataMember]] =  [[#number(14.2), #number(1.7), #number(2.4), #number(15.6), #number(127.0), #number(2.8), #number(3.1), #number(0.3), #number(2.3), #number(5.6), #number(1.0), #number(3.9), #number(1065.0), #symbol("0")],
+    var wine_data: [[mtkl.dataMember]] =  [[#number(14.2), #number(1.7), #number(2.4), #number(15.6), #number(127.0), #number(2.8), #number(3.1), #number(0.3), #number(2.3), #number(5.6), #number(1.0), #number(3.9), #number(1065.0), #symbol("0")],
                   [#number(13.2), #number(1.8), #number(2.1), #number(11.2), #number(100.0), #number(2.6), #number(2.8), #number(0.3), #number(1.3), #number(4.4), #number(1.1), #number(3.4), #number(1050.0), #symbol("0")],
                   [#number(13.2), #number(2.4), #number(2.7), #number(18.6), #number(101.0), #number(2.8), #number(3.2), #number(0.3), #number(2.8), #number(5.7), #number(1.0), #number(3.2), #number(1185.0), #symbol("0")],
                   [#number(14.4), #number(1.9), #number(2.5), #number(16.8), #number(113.0), #number(3.9), #number(3.5), #number(0.2), #number(2.2), #number(7.8), #number(0.9), #number(3.5), #number(1480.0), #symbol("0")],
@@ -624,7 +624,7 @@ actor {
                   [#number(13.2), #number(2.6), #number(2.4), #number(20.0), #number(120.0), #number(1.6), #number(0.7), #number(0.5), #number(1.5), #number(9.3), #number(0.6), #number(1.6), #number(840.0), #symbol("2")],
                   [#number(14.1), #number(4.1), #number(2.7), #number(24.5), #number(96.0), #number(2.0), #number(0.8), #number(0.6), #number(1.4), #number(9.2), #number(0.6), #number(1.6), #number(560.0), #symbol("2")]];
 
-    var iris_data: [[dataMember]] =  [[#number(5.1), #number(3.5), #number(1.4), #number(0.2), #symbol("0")],
+    var iris_data: [[mtkl.dataMember]] =  [[#number(5.1), #number(3.5), #number(1.4), #number(0.2), #symbol("0")],
                                       [#number(4.9), #number(3.0), #number(1.4), #number(0.2), #symbol("0")],
                                       [#number(4.7), #number(3.2), #number(1.3), #number(0.2), #symbol("0")],
                                       [#number(4.6), #number(3.1), #number(1.5), #number(0.2), #symbol("0")],
@@ -775,7 +775,7 @@ actor {
                                       [#number(6.2), #number(3.4), #number(5.4), #number(2.3), #symbol("2")],
                                       [#number(5.9), #number(3.0), #number(5.1), #number(1.8), #symbol("2")]];
 
-    var data: [[dataMember]] = [[#symbol("0"), #number(1), #number(2), #symbol("0")],
+    var data: [[mtkl.dataMember]] = [[#symbol("0"), #number(1), #number(2), #symbol("0")],
                                 [#symbol("0"), #number(2), #number(3), #symbol("0")],
                                 [#symbol("0"), #number(5), #number(4), #symbol("1")],
                                 [#symbol("0"), #number(8), #number(5), #symbol("1")],
@@ -835,7 +835,7 @@ actor {
     //let xtrain = cols([0,1], data); 
     //let ytrain = transpose(cols([2], data));
 
-    func checkAllSymbol(y : [dataMember]): (Bool) {
+    func checkAllSymbol(y : [mtkl.dataMember]): (Bool) {
       for (i in Iter.range(0, y.size() - 1)) {
         switch(y[i]) {
           case (#number(num)) {
@@ -864,9 +864,9 @@ actor {
     let NUM_CHECKS_GINI : Nat = 10;
     let X_UNIQUES : [Text] = ["0","1"];
 
-    func computeFeatureGini(xcol: [dataMember],y:[Text],y_uniques:[Text]): Result.Result<(Float,Float), MotokoLearnError> {
+    func computeFeatureGini(xcol: [mtkl.dataMember],y:[Text],y_uniques:[Text]): Result.Result<(Float,Float), MotokoLearnError> {
       // check whether this a nueric or a symbolic feature
-      let aux: dataMember = xcol[0];
+      let aux: mtkl.dataMember = xcol[0];
       switch(aux) {
         case (#number(num)) {
           let xs = dataMemberVectorToFloatVector(xcol);
@@ -968,7 +968,7 @@ actor {
       };
     };
     
-    func computeThLeftRightNumeric(x: [dataMember], y: [Text], y_uniques: [Text], bestth: Float): ([Nat], [Nat]) {
+    func computeThLeftRightNumeric(x: [mtkl.dataMember], y: [Text], y_uniques: [Text], bestth: Float): ([Nat], [Nat]) {
       let xs = dataMemberVectorToFloatVector(x);
       switch (xs) {
         case (#ok(xs_num)) {
@@ -987,7 +987,7 @@ actor {
       };
     };
 
-    func computeLeftRightSymbolic(x: [dataMember], y: [Text], y_uniques: [Text]): ([Nat], [Nat]) {
+    func computeLeftRightSymbolic(x: [mtkl.dataMember], y: [Text], y_uniques: [Text]): ([Nat], [Nat]) {
       let xs = dataMemberVectorToTextVector(x);
       switch (xs) {
         case (#ok(xs_sym)) {
@@ -1006,7 +1006,7 @@ actor {
       };
     };
 
-    func dataMemberVectorToTextVector(y: [dataMember]): Result.Result<[Text], MotokoLearnError> {
+    func dataMemberVectorToTextVector(y: [mtkl.dataMember]): Result.Result<[Text], MotokoLearnError> {
       let ysize = y.size();
       let ret = Buffer.Buffer<Text>(ysize); 
       for (i in Iter.range(0, ysize - 1)) {
@@ -1023,7 +1023,7 @@ actor {
       return #ok(Buffer.toArray(ret)); 
     };
 
-    func dataMemberVectorToFloatVector(y: [dataMember]): Result.Result<[Float], MotokoLearnError> {
+    func dataMemberVectorToFloatVector(y: [mtkl.dataMember]): Result.Result<[Float], MotokoLearnError> {
       let ysize = y.size();
       let ret = Buffer.Buffer<Float>(ysize); 
       for (i in Iter.range(0, ysize - 1)) {
@@ -1067,7 +1067,7 @@ actor {
 
   
 
-    func fitClassification(x : [[dataMember]], 
+    func fitClassification(x : [[mtkl.dataMember]], 
                            y : [Text], 
                            current_depth : Nat, 
                            y_uniques: [Text], 
@@ -1134,7 +1134,7 @@ actor {
       let bestth = ths_array[xbestcol];// Debug.print("102");
       
       // recursive call left and right and connect to node and return 
-      let myx = mtkl.transpose(mtkl.cols<dataMember>([xbestcol], x))[0];// Debug.print("103");
+      let myx = mtkl.transpose(mtkl.cols<mtkl.dataMember>([xbestcol], x))[0];// Debug.print("103");
 
       let (left_rows,right_rows) = switch (myx[0]) {
         case (#number(num)) computeThLeftRightNumeric(myx, y, y_uniques, bestth);
@@ -1154,7 +1154,7 @@ actor {
       //let next_x: [[dataMember]] = cols(next_col_ids, x);Debug.print("109");
       Debug.print("xbestcol: "#Nat.toText(xbestcol));
       Debug.print("size(X): "#Nat.toText(mtkl.transpose(x).size()));
-      let next_x: [[dataMember]] = mtkl.transpose(mtkl.removeRows([xbestcol], mtkl.transpose(x))); Debug.print("109");
+      let next_x: [[mtkl.dataMember]] = mtkl.transpose(mtkl.removeRows([xbestcol], mtkl.transpose(x))); Debug.print("109");
 
 
       Debug.print("Next col ids: "#Nat.toText(next_col_ids.size())#":"#Nat.toText(mtkl.transpose(next_x).size())); Debug.print("110");
@@ -1182,7 +1182,7 @@ actor {
     // Inference code
     //
 
-    func isLeftNode(feature_: dataMember, th_: Float): (Bool) { 
+    func isLeftNode(feature_: mtkl.dataMember, th_: Float): (Bool) { 
       switch feature_ {
         case (#number(num)) {
           //TBD
@@ -1206,7 +1206,7 @@ actor {
       };
     };
 
-    func predictTree(x : [dataMember], bintree : BinTree) : () {
+    func predictTree(x : [mtkl.dataMember], bintree : BinTree) : () {
       // 1) check assert the size of x is > 0
       // 2) check bintree is not nil
       // 3) do until bintree in left or right is nil and return "value" (try first iterative , if not possible recursion)         
@@ -1244,13 +1244,13 @@ actor {
                 case (?Nat) Nat;
               };
               //Debug.print("var_id:" # Nat.toText(var_id));
-              let feature: dataMember = x[var_id]; 
+              let feature: mtkl.dataMember = x[var_id]; 
               let th : Float = switch xth {
                   case null 0;
                   case (?Float) Float;
               };
               //Debug.print("th:" # Float.toText(th));
-              if (isLeftNode(feature: dataMember, th: Float)) {
+              if (isLeftNode(feature: mtkl.dataMember, th: Float)) {
                  //Debug.print("predict left");
                  predictTree(x, bl);
                }
@@ -1266,7 +1266,7 @@ actor {
     };
  
 
-    func predictClassificationTree(x : [dataMember], bintree : BinTree) : ([Float]) {
+    func predictClassificationTree(x : [mtkl.dataMember], bintree : BinTree) : ([Float]) {
       // 1) check assert the size of x is > 0
       // 2) check bintree is not nil
       // 3) do until bintree in left or right is nil and return "value" (try first iterative , if not possible recursion)         
@@ -1302,13 +1302,13 @@ actor {
                 case (?Nat) Nat;
               };// Debug.print("p2");
               // Debug.print("var_id:" # Nat.toText(var_id));
-              let feature: dataMember = x[var_id]; // Debug.print("p3");
+              let feature: mtkl.dataMember = x[var_id]; // Debug.print("p3");
               let th : Float = switch xth {
                   case null 0;
                   case (?Float) Float;
               };// Debug.print("p4");
               //Debug.print("th:" # Float.toText(th));
-              if (isLeftNode(feature: dataMember, th: Float)) {
+              if (isLeftNode(feature: mtkl.dataMember, th: Float)) {
                  //Debug.print("predict left");
                  // Debug.print("p5");
                  predictClassificationTree(x, bl);
@@ -1377,7 +1377,7 @@ actor {
                 for (i in Iter.range(0, xtest.size() - 1)) {
                   //return mytree;
                   Debug.print(Nat.toText(i));
-                  let sample: [dataMember] = xtest[i]; // Debug.print("11");
+                  let sample: [mtkl.dataMember] = xtest[i]; // Debug.print("11");
                   let vec = predictClassificationTree(sample, mytree);// Debug.print("12");
                   let myindex = Array.indexOf<Float>(mtkl.max(vec), vec, Float.equal);// Debug.print("13");
                   let xindex: Nat = switch(myindex) {

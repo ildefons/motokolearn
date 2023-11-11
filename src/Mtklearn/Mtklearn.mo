@@ -8,12 +8,41 @@ import Iter "mo:base/Iter";
 import Nat "mo:base/Nat";
 import Buffer "mo:base/Buffer";
 import TrieSet "mo:base/TrieSet";
+import Result "mo:base/Result";
 
 module {
+
+    public type MotokoLearnError = {
+      #notAllYsAreSymbol;
+      #sizeMissmatchXY;
+      #notAllYsymbols;
+      #notExactly2UniqueXSymbols;
+      #notAllNumbers;
+      #noBestGiniError;
+    };
 
     public type dataMember = {
         #number : Float;
         #symbol : Text; 
+    };
+
+    public func symbolVecToTextVec(ys: [dataMember]):  Result.Result<[Text], MotokoLearnError> {
+      let aux = ys[0];
+      let textBuf = Buffer.Buffer<Text>(ys.size());
+      // Debug.print("is a text:" # aux);
+      for (i in Iter.range(0, ys.size() - 1)) {
+        let aux = ys[i];
+        switch (aux) {
+          case (#symbol s) {
+              textBuf.add(s);
+          };
+          case (#number s) { 
+            return #err(#notAllYsAreSymbol);
+          };
+        };
+      };
+
+      return #ok(Buffer.toArray(textBuf));
     };
 
     public func printSample(x: [dataMember]): (Text) {
