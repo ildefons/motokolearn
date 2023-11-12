@@ -1059,18 +1059,18 @@ module {
       let mses = Buffer.Buffer<Float>(xt.size());// Debug.print("12");
       let ths = Buffer.Buffer<Float>(xt.size());// Debug.print("13:"#Nat.toText(col_ids.size())#":"#Nat.toText(xt.size()));
       for (i in Iter.range(0, xt.size() - 1)) {
-         let xcol = xt[i];
-         let mse = computeFeatureMSE(xcol,y);    <------------IMHERE
-      //   switch (gini) {
-      //     case (#ok(gini_float, th_float)) {
-      //       ginis.add(gini_float);// Debug.print("14");
-      //       ths.add(th_float);// Debug.print("15");
-      //     };
-      //     case (#err(err)) {
-      //       return #err(err);// Debug.print("16");
-      //     };
-      //   }; 
-      }; 
+        let xcol = xt[i];
+        let mse = computeFeatureMSE(xcol,y); 
+        switch (mse) {
+          case (#ok(gini_float, th_float)) {
+            mses.add(gini_float);// Debug.print("14");
+            ths.add(th_float);// Debug.print("15");
+          };
+          case (#err(err)) {
+            return #err(err);// Debug.print("16");
+          };
+        }; 
+      }; //   <------------IMHERE
       // // compute gini index of the
       // let ginis_array = Buffer.toArray(ginis);// Debug.print("17");
       // let ths_array: [Float] = Buffer.toArray(ths);// Debug.print("18");
