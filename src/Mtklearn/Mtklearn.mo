@@ -717,7 +717,111 @@ module {
         };
       };
     };
-    
+    //<----------------------IMHERE!!!
+    func computeFeatureMSE(xcol: [dataMember],y:[Text]): Result.Result<(Float,Float), MotokoLearnError> {
+      // check whether this a nueric or a symbolic feature
+      let aux: dataMember = xcol[0];
+      switch(aux) {
+        case (#number(num)) {
+          let xs = dataMemberVectorToFloatVector(xcol);
+          switch (xs) {
+            case (#ok(xs_num)) {
+              let xs_min = min(xs_num);
+              let xs_max = max(xs_num);
+              let th_vec: [Float] = linspace(xs_min,xs_max,NUM_CHECKS_GINI); // NUM_CHECKS_GINI : Nat = 10; it should be a private constant of the future module
+              let ginis = Buffer.Buffer<Float>(th_vec.size());
+              for (i in Iter.range(0, th_vec.size() - 1)) {
+                let th = th_vec[i];
+                let ret_xi = Array.mapEntries<Float, Bool>(xs_num, func (xx, ii) = (xx <= th));
+                let ret_xi_size: Nat = Array.filter<Bool>(ret_xi, func xx = xx == true).size();
+                let ret_yi_l = Buffer.Buffer<Text>(ret_xi_size);
+                let ret_yi_r = Buffer.Buffer<Text>(ret_xi.size()-ret_xi_size);
+                var gini_l: Float = 0;
+                var gini_r: Float = 0;
+                var weight_l: Float = 0;
+                var weight_r: Float = 0;
+                if (ret_xi_size > 0) {
+                  for (j in Iter.range(0, ret_xi.size() - 1)) {
+                    if (ret_xi[j]==true) {
+                      ret_yi_l.add(y[j]);
+                    }
+                  };
+                  gini_l := gini(Buffer.toArray(ret_yi_l), y_uniques);
+                  weight_l := Float.fromInt(Buffer.toArray(ret_yi_l).size())/Float.fromInt(y.size());
+                };
+                if ( (ret_xi.size()-ret_xi_size) > 0) {
+                  for (j in Iter.range(0, ret_xi.size() - 1)) {
+                    if (ret_xi[j]==false) {
+                      ret_yi_r.add(y[j]);
+                    }
+                  };
+                  gini_r := gini(Buffer.toArray(ret_yi_r), y_uniques);
+                  weight_r := Float.fromInt(Buffer.toArray(ret_yi_r).size())/Float.fromInt(y.size());
+                };
+                ginis.add(weight_l*gini_l+weight_r*gini_r);
+              }; 
+              let bestgini = min(Buffer.toArray(ginis));
+              let bestth_i: ?Nat = Array.indexOf<Float>(bestgini, Buffer.toArray(ginis), Float.equal);
+              let bestth_ix: Nat = switch bestth_i {
+                case null 0;
+                case (?Nat) Nat;
+              };
+              return #ok(bestgini,th_vec[bestth_ix]);
+            };
+            case (#err(err)) {
+              // TBD
+            }
+          };
+
+          return (#ok(0,0)); //TBD
+        };
+        case (#symbol(sym)) {
+          let xs = dataMemberVectorToTextVector(xcol);
+          switch (xs) {
+            case (#ok(xs_text)) {
+              // check exatly 2 different symbolic features: remeber it will require 
+              //let x_uniques = ["0","1"];   // NOTE: x_uniques is always ["0","1"], y_uniques is problem dependent. E.g. has 4 classes
+              // if (x_uniques.size() != 2) {
+              //   return (#err(#notExactly2UniqueXSymbols))
+              // };
+              // for each unique x get the corresponding y vector and compute gini and weight
+              let ginis = Buffer.Buffer<Float>(2);
+              let weigths = Buffer.Buffer<Float>(2);
+              for (i in Iter.range(0, 2 - 1)) {
+                //let num_ys: Nat = Array.filter<Text>(xs_text, func x = x == x_uniques[i]);
+                //Debug.print("211:"#Nat.toText(xs_text.size()));
+                let ret_xi = Array.mapEntries<Text, Bool>(xs_text, func (xx, ii) = Text.equal(xx,X_UNIQUES[i]));//Debug.print("2111");
+                let ret_xi_size: Nat = Array.filter<Bool>(ret_xi, func xx = xx == true).size();//Debug.print("21:"#Nat.toText(ret_xi_size));
+                let ret_yi = Buffer.Buffer<Text>(ret_xi_size);//Debug.print("212");
+                if (ret_xi_size > 0) {
+                  for (j in Iter.range(0, ret_xi.size() - 1)) {
+                    //Debug.print("j"#Nat.toText(j));
+                    if (ret_xi[j]) {
+                      ret_yi.add(y[j]);//Debug.print("214");
+                    }
+                  };
+                  //Debug.print("219:"#Nat.toText(ret_yi.size()));
+                  let gini_aux: Float = gini(Buffer.toArray(ret_yi), y_uniques);//Debug.print("215");
+                  ginis.add(gini_aux);//Debug.print("216:"#Float.toText(gini_aux)#Float.toText(Float.fromInt(Buffer.toArray(ret_yi).size())/Float.fromInt(y.size())));
+                  weigths.add(Float.fromInt(Buffer.toArray(ret_yi).size())/Float.fromInt(y.size()));//Debug.print("217");
+                }
+                else { // case x_uniques[i] does not exist in xcol, then weight is 0
+                  ginis.add(0);
+                  weigths.add(0);
+                };
+              };
+              let ws = Buffer.toArray(weigths);
+              let gs = Buffer.toArray(ginis);
+              return #ok(ws[0]*gs[0]+ws[1]*gs[1],0);
+            };
+            case (#err(xs_text)) {
+              return #err(#notAllYsymbols);
+            };
+          };
+        };
+      };
+    };
+
     public func computeThLeftRightNumeric(x: [dataMember], y: [Text], y_uniques: [Text], bestth: Float): ([Nat], [Nat]) {
       let xs = dataMemberVectorToFloatVector(x);
       switch (xs) {
@@ -939,15 +1043,15 @@ module {
          // Debug.print("current_depth >= max_depth:"#Bool.toText(current_depth >= max_depth));
          let leafNode: BinTree  = setLeftRightBranch(null, null, #number(y_mean), nilTree(), nilTree());
          return #ok(leafNode);
-      }; <---------------------IMHERE
+      }; 
       // // create node  
       // // for all features
-      // let xt = transpose(x);// Debug.print("11");
-      // let ginis = Buffer.Buffer<Float>(xt.size());// Debug.print("12");
-      // let ths = Buffer.Buffer<Float>(xt.size());// Debug.print("13:"#Nat.toText(col_ids.size())#":"#Nat.toText(xt.size()));
-      // for (i in Iter.range(0, xt.size() - 1)) {
-      //   let xcol = xt[i];
-      //   let gini = computeFeatureGini(xcol,y,y_uniques);
+      let xt = transpose(x);// Debug.print("11");
+      let mses = Buffer.Buffer<Float>(xt.size());// Debug.print("12");
+      let ths = Buffer.Buffer<Float>(xt.size());// Debug.print("13:"#Nat.toText(col_ids.size())#":"#Nat.toText(xt.size()));
+      for (i in Iter.range(0, xt.size() - 1)) {
+         let xcol = xt[i];
+         let mse = computeFeatureMSE(xcol,y);
       //   switch (gini) {
       //     case (#ok(gini_float, th_float)) {
       //       ginis.add(gini_float);// Debug.print("14");
@@ -957,7 +1061,7 @@ module {
       //       return #err(err);// Debug.print("16");
       //     };
       //   }; 
-      // }; 
+      }; 
       // // compute gini index of the
       // let ginis_array = Buffer.toArray(ginis);// Debug.print("17");
       // let ths_array: [Float] = Buffer.toArray(ths);// Debug.print("18");
