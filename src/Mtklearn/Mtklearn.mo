@@ -600,13 +600,22 @@ module {
     };
 
     public func gini(y: [Text], y_uniques: [Text]): (Float) {
-      // 
       var g_total: Float = 0.0;
       for (i in Iter.range(0,y_uniques.size()-1)) {
         let ys_y =  Array.filter<Text>(y, func x = x == y_uniques[i]);
         let p_y = Float.fromInt(ys_y.size()) / Float.fromInt(y.size()); 
         let g_y = p_y * (1 - p_y);
         g_total := g_total + g_y;
+      };
+      return g_total;
+    };
+
+    public func mse(y: [Float]): (Float) {
+      let mymean: Float = mean(y);
+      var g_total: Float = 0.0;
+      for (i in Iter.range(0,y.size()-1)) {
+        let aux: Float =  (y[i]-mymean)**2;
+        g_total := g_total + aux;
       };
       return g_total;
     };
@@ -717,8 +726,8 @@ module {
         };
       };
     };
-    //<----------------------IMHERE!!!
-    func computeFeatureMSE(xcol: [dataMember],y:[Text]): Result.Result<(Float,Float), MotokoLearnError> {
+    
+    func computeFeatureMSE(xcol: [dataMember],y:[Float]): Result.Result<(Float,Float), MotokoLearnError> {
       // check whether this a nueric or a symbolic feature
       let aux: dataMember = xcol[0];
       switch(aux) {
@@ -734,8 +743,8 @@ module {
                 let th = th_vec[i];
                 let ret_xi = Array.mapEntries<Float, Bool>(xs_num, func (xx, ii) = (xx <= th));
                 let ret_xi_size: Nat = Array.filter<Bool>(ret_xi, func xx = xx == true).size();
-                let ret_yi_l = Buffer.Buffer<Text>(ret_xi_size);
-                let ret_yi_r = Buffer.Buffer<Text>(ret_xi.size()-ret_xi_size);
+                let ret_yi_l = Buffer.Buffer<Float>(ret_xi_size);
+                let ret_yi_r = Buffer.Buffer<Float>(ret_xi.size()-ret_xi_size);
                 var gini_l: Float = 0;
                 var gini_r: Float = 0;
                 var weight_l: Float = 0;
@@ -746,7 +755,7 @@ module {
                       ret_yi_l.add(y[j]);
                     }
                   };
-                  gini_l := gini(Buffer.toArray(ret_yi_l), y_uniques);
+                  gini_l := mse(Buffer.toArray(ret_yi_l));
                   weight_l := Float.fromInt(Buffer.toArray(ret_yi_l).size())/Float.fromInt(y.size());
                 };
                 if ( (ret_xi.size()-ret_xi_size) > 0) {
@@ -755,7 +764,7 @@ module {
                       ret_yi_r.add(y[j]);
                     }
                   };
-                  gini_r := gini(Buffer.toArray(ret_yi_r), y_uniques);
+                  gini_r := mse(Buffer.toArray(ret_yi_r));
                   weight_r := Float.fromInt(Buffer.toArray(ret_yi_r).size())/Float.fromInt(y.size());
                 };
                 ginis.add(weight_l*gini_l+weight_r*gini_r);
@@ -792,7 +801,7 @@ module {
                 //Debug.print("211:"#Nat.toText(xs_text.size()));
                 let ret_xi = Array.mapEntries<Text, Bool>(xs_text, func (xx, ii) = Text.equal(xx,X_UNIQUES[i]));//Debug.print("2111");
                 let ret_xi_size: Nat = Array.filter<Bool>(ret_xi, func xx = xx == true).size();//Debug.print("21:"#Nat.toText(ret_xi_size));
-                let ret_yi = Buffer.Buffer<Text>(ret_xi_size);//Debug.print("212");
+                let ret_yi = Buffer.Buffer<Float>(ret_xi_size);//Debug.print("212");
                 if (ret_xi_size > 0) {
                   for (j in Iter.range(0, ret_xi.size() - 1)) {
                     //Debug.print("j"#Nat.toText(j));
@@ -801,7 +810,7 @@ module {
                     }
                   };
                   //Debug.print("219:"#Nat.toText(ret_yi.size()));
-                  let gini_aux: Float = gini(Buffer.toArray(ret_yi), y_uniques);//Debug.print("215");
+                  let gini_aux: Float = mse(Buffer.toArray(ret_yi));//Debug.print("215");
                   ginis.add(gini_aux);//Debug.print("216:"#Float.toText(gini_aux)#Float.toText(Float.fromInt(Buffer.toArray(ret_yi).size())/Float.fromInt(y.size())));
                   weigths.add(Float.fromInt(Buffer.toArray(ret_yi).size())/Float.fromInt(y.size()));//Debug.print("217");
                 }
@@ -1051,7 +1060,7 @@ module {
       let ths = Buffer.Buffer<Float>(xt.size());// Debug.print("13:"#Nat.toText(col_ids.size())#":"#Nat.toText(xt.size()));
       for (i in Iter.range(0, xt.size() - 1)) {
          let xcol = xt[i];
-         let mse = computeFeatureMSE(xcol,y);
+         let mse = computeFeatureMSE(xcol,y);    <------------IMHERE
       //   switch (gini) {
       //     case (#ok(gini_float, th_float)) {
       //       ginis.add(gini_float);// Debug.print("14");
