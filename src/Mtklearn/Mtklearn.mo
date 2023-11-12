@@ -1072,8 +1072,8 @@ module {
         }; 
       }; //   <------------IMHERE
       // // compute gini index of the
-      // let ginis_array = Buffer.toArray(ginis);// Debug.print("17");
-      // let ths_array: [Float] = Buffer.toArray(ths);// Debug.print("18");
+      let mses_array = Buffer.toArray(mses);// Debug.print("17");
+      let ths_array: [Float] = Buffer.toArray(ths);// Debug.print("18");
       // let bestgini = min(ginis_array);// Debug.print("19");
       // let bestcol: ?Nat = Array.indexOf<Float>(bestgini, ginis_array, Float.equal);// Debug.print("101");
       // if (bestcol==null) {
