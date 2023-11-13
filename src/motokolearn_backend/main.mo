@@ -132,7 +132,7 @@ actor {
         //let y_uniques = mtkl.uniquesText(yvec);Debug.print("15");
         let myiter = Iter.range(0, xcols.size()-1);Debug.print("16");
         let col_ids = Iter.toArray(myiter);Debug.print("17");
-        let ret_tree = mtkl.fitRegression(xtrain, yvec, 0, 3, 10, col_ids); Debug.print("18");
+        let ret_tree = mtkl.fitRegression(xtrain, yvec, 0, 7, 5, col_ids); Debug.print("18");
         Debug.print("Tree created");
         switch(ret_tree) {
           case (#ok(mytree)) {
