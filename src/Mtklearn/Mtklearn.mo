@@ -1574,7 +1574,7 @@ module {
       };
       let thisNode: BinTree = setLeftRightBranch(?true_colid, ?bestth, #number(y_mean), leftNode, rightNode);
       
-      return #ok(nilTree());
+      return #ok(thisNode);
     };   
 
     // 
@@ -1671,7 +1671,7 @@ module {
       switch bintree {
         case null {
           //Debug.print("Do nothing");
-          Debug.print("UNEXPECTED");
+          Debug.print("UNEXPECTED1");
           return [0,0,0];
         };
         case (?(xvar_id,xth,xvalue,bl,br)) {
@@ -1689,7 +1689,7 @@ module {
                   return [num];
                 };
                 case (_) {
-                  Debug.print("UNEXPECTED");
+                  Debug.print("UNEXPECTED2");
                   return [0,0,0];
                 //   //TBD
                 };

@@ -112,7 +112,7 @@ actor {
     // let TopTree: mtkl.BinTree   = mtkl.setLeftRightBranch(?0, ?(2.5), #symbol([0.5,0.5]), LeftTopTree, RightTopTree);  
 
     let seed = 123456789;
-    let nsamples: Nat = 100;Debug.print("10");
+    let nsamples: Nat = 300;Debug.print("10");
     let alldata = mtkl.diabetes_data;Debug.print("11");
     let pos_vec = mtkl.randomSample(0, alldata.size()-1, nsamples, false, seed);Debug.print("1");
 
@@ -148,7 +148,7 @@ actor {
                   total_rmse := total_rmse + sample_error;
                   Debug.print("sample error: " # Float.toText(sample_error));
                 };
-                Debug.print("Total RMSE:"#Float.toText(total_rmse));
+                Debug.print("Total RMSE:"#Float.toText(total_rmse/Float.fromInt(xtest.size())));
               };
               case (_) {
                 //TBD
