@@ -1441,23 +1441,23 @@ module {
       let next_x: [[dataMember]] = transpose(removeRows([xbestcol], transpose(x))); Debug.print("109");
 
 
-      Debug.print("Next col ids: "#Nat.toText(next_col_ids.size())#":"#Nat.toText(transpose(next_x).size())); Debug.print("110");
-      let x_left = rows(left_rows,next_x);
-      let y_left = rowsVector(left_rows,y);
-      let x_right = rows(right_rows,next_x);
-      let y_right = rowsVector(right_rows,y);
+      Debug.print("Next col ids: "#Nat.toText(next_col_ids.size())#":"#Nat.toText(transpose(next_x).size())); Debug.print("110a");
+      let x_left = rows(left_rows,next_x);Debug.print("110b");
+      let y_left = rowsVector(left_rows,y);Debug.print("110c");
+      let x_right = rows(right_rows,next_x);Debug.print("110d");
+      let y_right = rowsVector(right_rows,y);Debug.print("110e");
 
-      let leftNode_aux  = fitClassification(x_left, y_left, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids);
-      let rightNode_aux  = fitClassification(x_right, y_right, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids);
+      let leftNode_aux  = fitClassification(x_left, y_left, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids);Debug.print("110f");
+      let rightNode_aux  = fitClassification(x_right, y_right, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids);Debug.print("110g");
       let leftNode = switch leftNode_aux {
         case (#ok(leftNode)) leftNode;
         case (#err(err)) return leftNode_aux;
-      };
+      };Debug.print("110h");
       let rightNode = switch rightNode_aux {
         case (#ok(rightNode)) rightNode;
         case (#err(err)) return rightNode_aux;
-      };
-      let thisNode: BinTree = setLeftRightBranch(?true_colid, ?bestth, #symbol(Buffer.toArray(probs)), leftNode, rightNode);
+      };Debug.print("110l");
+      let thisNode: BinTree = setLeftRightBranch(?true_colid, ?bestth, #symbol(Buffer.toArray(probs)), leftNode, rightNode);Debug.print("110m");
       
       return #ok(thisNode);
     };   
@@ -1471,7 +1471,7 @@ module {
 
       // For regression predictive modeling problems the cost function that is minimized to choose split points is the sum squared error 
       //     across all training samples that fall within the rectangle: sum(y – prediction)^2
-      
+      Debug.print("a-1");
       for (i in Iter.range(0, col_ids.size() - 1)) {
         Debug.print(Nat.toText(col_ids[i]));
       }; 
@@ -1487,27 +1487,29 @@ module {
       //     Debug.print("num_ys:"#Nat.toText(num_ys));
       //     probs.add(prob);
       //   };
-      let y_mean: Float = mean(y); // this value is the me value of y if inference stop at this node
+      Debug.print("a0:"#Nat.toText(y.size())#":"#Nat.toText(x.size()));
+      
+      let y_mean: Float = mean(y); Debug.print("a1"#":"#Nat.toText(x[0].size()));// this value is the me value of y if inference stop at this node
                                    // "probs" is no longer used in regression
       
       // Debug.print("before Entropy");
       // let node_entropy = entropy(y, y_uniques);
-      let x_ncols = transpose(x).size();   // if we only have 1 feature, we finish branch 
+      let x_ncols = transpose(x).size();   Debug.print("a2");// if we only have 1 feature, we finish branch 
       // // Debug.print("After Entropy)");
       if (x.size() <= min_node_data_size or current_depth >= max_depth or x_ncols == 1) {
          // Debug.print("Reason to leaf:");
          // Debug.print("x.size() <= min_node_data_size:" # Bool.toText(x.size() <= min_node_data_size));
          // Debug.print("current_depth >= max_depth:"#Bool.toText(current_depth >= max_depth));
-         let leafNode: BinTree  = setLeftRightBranch(null, null, #number(y_mean), nilTree(), nilTree());
+         let leafNode: BinTree  = setLeftRightBranch(null, null, #number(y_mean), nilTree(), nilTree());Debug.print("a1");
          return #ok(leafNode);
       }; 
       // // create node  
       // // for all features
-      let xt = transpose(x);// Debug.print("11");
-      let mses = Buffer.Buffer<Float>(xt.size());// Debug.print("12");
-      let ths = Buffer.Buffer<Float>(xt.size());// Debug.print("13:"#Nat.toText(col_ids.size())#":"#Nat.toText(xt.size()));
+      let xt = transpose(x);Debug.print("a3");// Debug.print("11");
+      let mses = Buffer.Buffer<Float>(xt.size());Debug.print("a4");// Debug.print("12");
+      let ths = Buffer.Buffer<Float>(xt.size());Debug.print("a5");// Debug.print("13:"#Nat.toText(col_ids.size())#":"#Nat.toText(xt.size()));
       for (i in Iter.range(0, xt.size() - 1)) {
-        let xcol = xt[i];
+        let xcol = xt[i];Debug.print("a6");
         let mse = computeFeatureMSE(xcol,y); 
         switch (mse) {
           case (#ok(gini_float, th_float)) {
@@ -1518,20 +1520,20 @@ module {
             return #err(err);// Debug.print("16");
           };
         }; 
-      }; 
+      }; Debug.print("a61");
       // // compute gini index of the
-      let mses_array = Buffer.toArray(mses);// Debug.print("17");
-      let ths_array: [Float] = Buffer.toArray(ths);// Debug.print("18");
-      let bestgini = min(mses_array);// Debug.print("19");
+      let mses_array = Buffer.toArray(mses);Debug.print("a62");// Debug.print("17");
+      let ths_array: [Float] = Buffer.toArray(ths);Debug.print("a63");// Debug.print("18");
+      let bestgini = min(mses_array);Debug.print("a64");// Debug.print("19");
       let bestcol: ?Nat = Array.indexOf<Float>(bestgini, mses_array, Float.equal);// Debug.print("101");
       if (bestcol==null) {
          return #err(#noBestGiniError);
-      };
+      };Debug.print("a65");
       let xbestcol : Nat = switch bestcol {
          case null 0;
          case (?Nat) Nat;
-      };
-      let bestth = ths_array[xbestcol];// Debug.print("102");
+      };Debug.print("a66");
+      let bestth = ths_array[xbestcol];Debug.print("a7");// Debug.print("102");
       
       // recursive call left and right and connect to node and return 
       let myx = transpose(cols<dataMember>([xbestcol], x))[0];// Debug.print("103");
@@ -1557,23 +1559,33 @@ module {
       let next_x: [[dataMember]] = transpose(removeRows([xbestcol], transpose(x))); Debug.print("109");
 
       Debug.print("Next col ids: "#Nat.toText(next_col_ids.size())#":"#Nat.toText(transpose(next_x).size())); Debug.print("110");
-      let x_left = rows(left_rows,next_x);
-      let y_left = rowsVector(left_rows,y);
-      let x_right = rows(right_rows,next_x);
-      let y_right = rowsVector(right_rows,y);
+      let x_left = rows(left_rows,next_x);Debug.print("110a1");
+      let y_left = rowsVector(left_rows,y);Debug.print("110a2");
+      let x_right = rows(right_rows,next_x);Debug.print("110a3");
+      let y_right = rowsVector(right_rows,y);Debug.print("110a4");
 
-      let leftNode_aux  = fitRegression(x_left, y_left, current_depth + 1, max_depth, min_node_data_size, next_col_ids);
-      let rightNode_aux  = fitRegression(x_right, y_right, current_depth + 1, max_depth, min_node_data_size, next_col_ids);
+      let lsize_zero:Bool = Nat.equal(x_left.size(),0);
+      let leftNode_aux  = switch (lsize_zero) {
+        case (true) #ok(nilTree());
+        case (false) fitRegression(x_left, y_left, current_depth + 1, max_depth, min_node_data_size, next_col_ids);
+      };
+      let rsize_zero:Bool = Nat.equal(x_right.size(),0);
+      let rightNode_aux  = switch (rsize_zero) {
+        case (true) #ok(nilTree());
+        case _ fitRegression(x_right, y_right, current_depth + 1, max_depth, min_node_data_size, next_col_ids);
+      };
+      
       let leftNode = switch leftNode_aux {
          case (#ok(leftNode)) leftNode;
          case (#err(err)) return leftNode_aux;
-      };
+      };Debug.print("110a7");
       let rightNode = switch rightNode_aux {
          case (#ok(rightNode)) rightNode;
          case (#err(err)) return rightNode_aux;
-      };
+      };Debug.print("110a8");
+
       let thisNode: BinTree = setLeftRightBranch(?true_colid, ?bestth, #number(y_mean), leftNode, rightNode);
-      
+      Debug.print("110a9");
       return #ok(thisNode);
     };   
 
@@ -1722,6 +1734,56 @@ module {
               };
             }; 
           };
+        };
+      };
+    };
+
+    public func predictTreeRegression(x : [dataMember], bintree : BinTree) : ([Float]) {        
+      switch bintree {
+        case null {
+          //Debug.print("Do nothing");
+          Debug.print("UNEXPECTED1: we should never get here");
+          return [0,0,0];
+        };
+        case (?(xvar_id,xth,xvalue,bl,br)) {
+          let isNL = isTreeNil(bl);
+          let isNR = isTreeNil(br);
+          switch (isNL,isNR) {
+            case (true, true) {
+              switch xvalue {
+                case (#symbol(vec)) {
+                   return vec;
+                };
+                case (#number(num)) {
+                  return [num];
+                };
+              };
+              return [0.0];
+            };
+            case (true, false) {
+              predictTreeRegression(x, br);
+            };
+            case (false, true) {
+              predictTreeRegression(x, bl);
+            };
+            case (false, false) {
+              let var_id : Nat = switch xvar_id {
+                case null 0;
+                case (?Nat) Nat;
+              };
+              let feature: dataMember = x[var_id]; // Debug.print("p3");
+              let th : Float = switch xth {
+                  case null 0;
+                  case (?Float) Float;
+              };
+              if (isLeftNode(feature, th)) {
+                 predictTree(x, bl);
+               }
+              else {
+                 predictTree(x, br);
+              };
+            }; 
+          }; 
         };
       };
     };
