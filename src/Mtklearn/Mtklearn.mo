@@ -1758,7 +1758,6 @@ module {
                   return [num];
                 };
               };
-              return [0.0];
             };
             case (true, false) {
               predictTreeRegression(x, br);
