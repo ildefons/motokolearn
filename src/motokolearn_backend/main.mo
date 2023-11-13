@@ -112,7 +112,9 @@ actor {
     // let TopTree: mtkl.BinTree   = mtkl.setLeftRightBranch(?0, ?(2.5), #symbol([0.5,0.5]), LeftTopTree, RightTopTree);  
 
     let seed = 123456789;
-    let nsamples: Nat = 300;Debug.print("10");
+    let nsamples: Nat = 50;Debug.print("10");
+    let max_depth: Nat = 7;
+    let min_num_samples: Nat = 5;
     let alldata = mtkl.diabetes_data;Debug.print("11");
     let pos_vec = mtkl.randomSample(0, alldata.size()-1, nsamples, false, seed);Debug.print("1");
 
@@ -132,7 +134,7 @@ actor {
         //let y_uniques = mtkl.uniquesText(yvec);Debug.print("15");
         let myiter = Iter.range(0, xcols.size()-1);Debug.print("16");
         let col_ids = Iter.toArray(myiter);Debug.print("17");
-        let ret_tree = mtkl.fitRegression(xtrain, yvec, 0, 7, 5, col_ids); Debug.print("18");
+        let ret_tree = mtkl.fitRegression(xtrain, yvec, 0, max_depth, min_num_samples, col_ids); Debug.print("18");
         Debug.print("Tree created");
         switch(ret_tree) {
           case (#ok(mytree)) {

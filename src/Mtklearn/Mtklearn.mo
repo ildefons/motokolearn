@@ -1770,7 +1770,7 @@ module {
                 case null 0;
                 case (?Nat) Nat;
               };
-              let feature: dataMember = x[var_id]; // Debug.print("p3");
+              let feature: dataMember = x[var_id]; 
               let th : Float = switch xth {
                   case null 0;
                   case (?Float) Float;
