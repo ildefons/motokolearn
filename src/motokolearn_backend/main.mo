@@ -19,7 +19,7 @@ actor {
     actor_data := data;
   };
   
-  public query func doClassification(name : Text) : async () {
+  public func doClassification() : async () {
 
     let seed = 123456789;
     let nsamples: Nat = 50;
@@ -89,7 +89,7 @@ actor {
   };
 
 
-  public query func doRegression(name : Text) : async () {
+  public func doRegression() : async () {
 
     let seed = 123456789;
     let nsamples: Nat = 50;
