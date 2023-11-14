@@ -813,7 +813,7 @@ module {
     public func symbolVecToTextVec(ys: [dataMember]):  Result.Result<[Text], MotokoLearnError> {
       let aux = ys[0];
       let textBuf = Buffer.Buffer<Text>(ys.size());
-      // Debug.print("is a text:" # aux);
+      
       for (i in Iter.range(0, ys.size() - 1)) {
         let aux = ys[i];
         switch (aux) {
@@ -1132,31 +1132,21 @@ module {
           let xs = dataMemberVectorToTextVector(xcol);
           switch (xs) {
             case (#ok(xs_text)) {
-              // check exatly 2 different symbolic features: remeber it will require 
-              //let x_uniques = ["0","1"];   // NOTE: x_uniques is always ["0","1"], y_uniques is problem dependent. E.g. has 4 classes
-              // if (x_uniques.size() != 2) {
-              //   return (#err(#notExactly2UniqueXSymbols))
-              // };
-              // for each unique x get the corresponding y vector and compute gini and weight
               let ginis = Buffer.Buffer<Float>(2);
               let weigths = Buffer.Buffer<Float>(2);
               for (i in Iter.range(0, 2 - 1)) {
-                //let num_ys: Nat = Array.filter<Text>(xs_text, func x = x == x_uniques[i]);
-                //Debug.print("211:"#Nat.toText(xs_text.size()));
-                let ret_xi = Array.mapEntries<Text, Bool>(xs_text, func (xx, ii) = Text.equal(xx,X_UNIQUES[i]));//Debug.print("2111");
-                let ret_xi_size: Nat = Array.filter<Bool>(ret_xi, func xx = xx == true).size();//Debug.print("21:"#Nat.toText(ret_xi_size));
-                let ret_yi = Buffer.Buffer<Text>(ret_xi_size);//Debug.print("212");
+                let ret_xi = Array.mapEntries<Text, Bool>(xs_text, func (xx, ii) = Text.equal(xx,X_UNIQUES[i]));
+                let ret_xi_size: Nat = Array.filter<Bool>(ret_xi, func xx = xx == true).size();
+                let ret_yi = Buffer.Buffer<Text>(ret_xi_size);
                 if (ret_xi_size > 0) {
                   for (j in Iter.range(0, ret_xi.size() - 1)) {
-                    //Debug.print("j"#Nat.toText(j));
                     if (ret_xi[j]) {
-                      ret_yi.add(y[j]);//Debug.print("214");
+                      ret_yi.add(y[j]);
                     }
                   };
-                  //Debug.print("219:"#Nat.toText(ret_yi.size()));
-                  let gini_aux: Float = gini(Buffer.toArray(ret_yi), y_uniques);//Debug.print("215");
-                  ginis.add(gini_aux);//Debug.print("216:"#Float.toText(gini_aux)#Float.toText(Float.fromInt(Buffer.toArray(ret_yi).size())/Float.fromInt(y.size())));
-                  weigths.add(Float.fromInt(Buffer.toArray(ret_yi).size())/Float.fromInt(y.size()));//Debug.print("217");
+                  let gini_aux: Float = gini(Buffer.toArray(ret_yi), y_uniques);
+                  ginis.add(gini_aux);
+                  weigths.add(Float.fromInt(Buffer.toArray(ret_yi).size())/Float.fromInt(y.size()));
                 }
                 else { // case x_uniques[i] does not exist in xcol, then weight is 0
                   ginis.add(0);
@@ -1236,31 +1226,22 @@ module {
           let xs = dataMemberVectorToTextVector(xcol);
           switch (xs) {
             case (#ok(xs_text)) {
-              // check exatly 2 different symbolic features: remeber it will require 
-              //let x_uniques = ["0","1"];   // NOTE: x_uniques is always ["0","1"], y_uniques is problem dependent. E.g. has 4 classes
-              // if (x_uniques.size() != 2) {
-              //   return (#err(#notExactly2UniqueXSymbols))
-              // };
-              // for each unique x get the corresponding y vector and compute gini and weight
               let ginis = Buffer.Buffer<Float>(2);
               let weigths = Buffer.Buffer<Float>(2);
               for (i in Iter.range(0, 2 - 1)) {
-                //let num_ys: Nat = Array.filter<Text>(xs_text, func x = x == x_uniques[i]);
-                //Debug.print("211:"#Nat.toText(xs_text.size()));
-                let ret_xi = Array.mapEntries<Text, Bool>(xs_text, func (xx, ii) = Text.equal(xx,X_UNIQUES[i]));//Debug.print("2111");
-                let ret_xi_size: Nat = Array.filter<Bool>(ret_xi, func xx = xx == true).size();//Debug.print("21:"#Nat.toText(ret_xi_size));
-                let ret_yi = Buffer.Buffer<Float>(ret_xi_size);//Debug.print("212");
+                let ret_xi = Array.mapEntries<Text, Bool>(xs_text, func (xx, ii) = Text.equal(xx,X_UNIQUES[i]));
+                let ret_xi_size: Nat = Array.filter<Bool>(ret_xi, func xx = xx == true).size();
+                let ret_yi = Buffer.Buffer<Float>(ret_xi_size);
                 if (ret_xi_size > 0) {
                   for (j in Iter.range(0, ret_xi.size() - 1)) {
-                    //Debug.print("j"#Nat.toText(j));
                     if (ret_xi[j]) {
-                      ret_yi.add(y[j]);//Debug.print("214");
+                      ret_yi.add(y[j]);
                     }
                   };
-                  //Debug.print("219:"#Nat.toText(ret_yi.size()));
-                  let gini_aux: Float = mse(Buffer.toArray(ret_yi));//Debug.print("215");
-                  ginis.add(gini_aux);//Debug.print("216:"#Float.toText(gini_aux)#Float.toText(Float.fromInt(Buffer.toArray(ret_yi).size())/Float.fromInt(y.size())));
-                  weigths.add(Float.fromInt(Buffer.toArray(ret_yi).size())/Float.fromInt(y.size()));//Debug.print("217");
+                  
+                  let gini_aux: Float = mse(Buffer.toArray(ret_yi));
+                  ginis.add(gini_aux);
+                  weigths.add(Float.fromInt(Buffer.toArray(ret_yi).size())/Float.fromInt(y.size()));
                 }
                 else { // case x_uniques[i] does not exist in xcol, then weight is 0
                   ginis.add(0);
@@ -1291,7 +1272,6 @@ module {
             if (ret_xi[j]==true) left_i.add(j)
             else right_i.add(j);
           };
-           Debug.print("cols:"#Nat.toText(x.size())#":"#Nat.toText(Buffer.toArray(left_i).size())#":"#Nat.toText(Buffer.toArray(right_i).size()));
           return (Buffer.toArray(left_i),Buffer.toArray(right_i));
         };
         case (_) {return ([0],[0]);};
@@ -1358,56 +1338,44 @@ module {
                            max_depth: Nat, 
                            min_node_data_size: Nat,
                            col_ids: [Nat]): Result.Result<BinTree, MotokoLearnError> {
-      for (i in Iter.range(0, col_ids.size() - 1)) {
-        Debug.print(Nat.toText(col_ids[i]));
-      }; 
       // check size of x is at least the minimum size and we are not at the deepest level allowed
       let probs = Buffer.Buffer<Float>(y_uniques.size());
       for (i in Iter.range(0, y_uniques.size() - 1)) { 
           let num_ys: Nat = Array.filter<Text>(y, func x = x == y_uniques[i]).size();
           let prob = Float.fromInt(num_ys) / Float.fromInt(y.size());
-          Debug.print("prob:"#Float.toText(prob));
-          Debug.print("i:"#Nat.toText(i));
-          Debug.print("y:"#y_uniques[i]);
-          Debug.print("num_ys:"#Nat.toText(num_ys));
           probs.add(prob);
         };
-      // Debug.print("before Entropy");
+     
       let node_entropy = entropy(y, y_uniques);
       let x_ncols = transpose(x).size();   // if we only have 1 feature, we finish branch 
-      // Debug.print("After Entropy)");
+     
       if (x.size() <= min_node_data_size or current_depth >= max_depth or node_entropy==0 or x_ncols == 1) {
-        // Debug.print("Reason to leaf:");
-        // Debug.print("x.size() <= min_node_data_size:" # Bool.toText(x.size() <= min_node_data_size));
-        // Debug.print("current_depth >= max_depth:"#Bool.toText(current_depth >= max_depth));
-        // Debug.print("node_entropy==0:"#Bool.toText(node_entropy==0));
-
         let leafNode: BinTree  = setLeftRightBranch(null, null, #symbol(Buffer.toArray(probs)), nilTree(), nilTree());
         return #ok(leafNode);
       };
       // create node  
       // for all features
-      let xt = transpose(x);// Debug.print("11");
-      let ginis = Buffer.Buffer<Float>(xt.size());// Debug.print("12");
-      let ths = Buffer.Buffer<Float>(xt.size());// Debug.print("13:"#Nat.toText(col_ids.size())#":"#Nat.toText(xt.size()));
+      let xt = transpose(x);
+      let ginis = Buffer.Buffer<Float>(xt.size());
+      let ths = Buffer.Buffer<Float>(xt.size());
       for (i in Iter.range(0, xt.size() - 1)) {
         let xcol = xt[i];
         let gini = computeFeatureGini(xcol,y,y_uniques);
         switch (gini) {
           case (#ok(gini_float, th_float)) {
-            ginis.add(gini_float);// Debug.print("14");
-            ths.add(th_float);// Debug.print("15");
+            ginis.add(gini_float);
+            ths.add(th_float);
           };
           case (#err(err)) {
-            return #err(err);// Debug.print("16");
+            return #err(err);
           };
         }; 
       }; 
       // compute gini index of the
-      let ginis_array = Buffer.toArray(ginis);// Debug.print("17");
-      let ths_array: [Float] = Buffer.toArray(ths);// Debug.print("18");
-      let bestgini = min(ginis_array);// Debug.print("19");
-      let bestcol: ?Nat = Array.indexOf<Float>(bestgini, ginis_array, Float.equal);// Debug.print("101");
+      let ginis_array = Buffer.toArray(ginis);
+      let ths_array: [Float] = Buffer.toArray(ths);
+      let bestgini = min(ginis_array);
+      let bestcol: ?Nat = Array.indexOf<Float>(bestgini, ginis_array, Float.equal);
       if (bestcol==null) {
         return #err(#noBestGiniError);
       };
@@ -1415,49 +1383,42 @@ module {
         case null 0;
         case (?Nat) Nat;
       };
-      let bestth = ths_array[xbestcol];// Debug.print("102");
+      let bestth = ths_array[xbestcol];
       
       // recursive call left and right and connect to node and return 
-      let myx = transpose(cols<dataMember>([xbestcol], x))[0];// Debug.print("103");
+      let myx = transpose(cols<dataMember>([xbestcol], x))[0];
 
       let (left_rows,right_rows) = switch (myx[0]) {
         case (#number(num)) computeThLeftRightNumeric(myx, bestth);
         case (#symbol(sym)) computeLeftRightSymbolic(myx);
-      };Debug.print("104");
+      };
 
-      let x2 = removeRows([xbestcol], x);// Debug.print("105");
-      //let y2 = removeRowsVector([xbestcol], y);// Debug.print("106");
+      let x2 = removeRows([xbestcol], x);
       
       // pick the true col_id from col_ids
-      // Debug.print("xbestcol:"#Nat.toText(xbestcol));
-      let true_colid: Nat = col_ids[xbestcol];// Debug.print("107");
-      Debug.print("TRUE_COLID: "#Nat.toText(true_colid)#" "#Nat.toText(ginis.size())#" "#Nat.toText(ginis_array.size()));
-      // remove "true_colid" from col_ids before passing recursively
-      let next_col_ids: [Nat] = removeRowsVector([xbestcol], col_ids);Debug.print("108");
+      let true_colid: Nat = col_ids[xbestcol];
       
-      //let next_x: [[dataMember]] = cols(next_col_ids, x);Debug.print("109");
-      Debug.print("xbestcol: "#Nat.toText(xbestcol));
-      Debug.print("size(X): "#Nat.toText(transpose(x).size()));
-      let next_x: [[dataMember]] = transpose(removeRows([xbestcol], transpose(x))); Debug.print("109");
+      // remove "true_colid" from col_ids before passing recursively
+      let next_col_ids: [Nat] = removeRowsVector([xbestcol], col_ids);
+ 
+      let next_x: [[dataMember]] = transpose(removeRows([xbestcol], transpose(x))); 
 
+      let x_left = rows(left_rows,next_x);
+      let y_left = rowsVector(left_rows,y);
+      let x_right = rows(right_rows,next_x);
+      let y_right = rowsVector(right_rows,y);
 
-      Debug.print("Next col ids: "#Nat.toText(next_col_ids.size())#":"#Nat.toText(transpose(next_x).size())); Debug.print("110a");
-      let x_left = rows(left_rows,next_x);Debug.print("110b");
-      let y_left = rowsVector(left_rows,y);Debug.print("110c");
-      let x_right = rows(right_rows,next_x);Debug.print("110d");
-      let y_right = rowsVector(right_rows,y);Debug.print("110e");
-
-      let leftNode_aux  = fitClassification(x_left, y_left, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids);Debug.print("110f");
-      let rightNode_aux  = fitClassification(x_right, y_right, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids);Debug.print("110g");
+      let leftNode_aux  = fitClassification(x_left, y_left, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids);
+      let rightNode_aux  = fitClassification(x_right, y_right, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids);
       let leftNode = switch leftNode_aux {
         case (#ok(leftNode)) leftNode;
         case (#err(err)) return leftNode_aux;
-      };Debug.print("110h");
+      };
       let rightNode = switch rightNode_aux {
         case (#ok(rightNode)) rightNode;
         case (#err(err)) return rightNode_aux;
-      };Debug.print("110l");
-      let thisNode: BinTree = setLeftRightBranch(?true_colid, ?bestth, #symbol(Buffer.toArray(probs)), leftNode, rightNode);Debug.print("110m");
+      };
+      let thisNode: BinTree = setLeftRightBranch(?true_colid, ?bestth, #symbol(Buffer.toArray(probs)), leftNode, rightNode);
       
       return #ok(thisNode);
     };   
@@ -1471,98 +1432,66 @@ module {
 
       // For regression predictive modeling problems the cost function that is minimized to choose split points is the sum squared error 
       //     across all training samples that fall within the rectangle: sum(y – prediction)^2
-      Debug.print("a-1");
-      for (i in Iter.range(0, col_ids.size() - 1)) {
-        Debug.print(Nat.toText(col_ids[i]));
-      }; 
+     
+      let y_mean: Float = mean(y); 
 
-      // check size of x is at least the minimum size and we are not at the deepest level allowed
-      // let probs = Buffer.Buffer<Float>(y_uniques.size());
-      // for (i in Iter.range(0, y_uniques.size() - 1)) { 
-      //     let num_ys: Nat = Array.filter<Text>(y, func x = x == y_uniques[i]).size();
-      //     let prob = Float.fromInt(num_ys) / Float.fromInt(y.size());
-      //     Debug.print("prob:"#Float.toText(prob));
-      //     Debug.print("i:"#Nat.toText(i));
-      //     Debug.print("y:"#y_uniques[i]);
-      //     Debug.print("num_ys:"#Nat.toText(num_ys));
-      //     probs.add(prob);
-      //   };
-      Debug.print("a0:"#Nat.toText(y.size())#":"#Nat.toText(x.size()));
-      
-      let y_mean: Float = mean(y); Debug.print("a1"#":"#Nat.toText(x[0].size()));// this value is the me value of y if inference stop at this node
-                                   // "probs" is no longer used in regression
-      
-      // Debug.print("before Entropy");
-      // let node_entropy = entropy(y, y_uniques);
-      let x_ncols = transpose(x).size();   Debug.print("a2");// if we only have 1 feature, we finish branch 
-      // // Debug.print("After Entropy)");
+      let x_ncols = transpose(x).size();
       if (x.size() <= min_node_data_size or current_depth >= max_depth or x_ncols == 1) {
-         // Debug.print("Reason to leaf:");
-         // Debug.print("x.size() <= min_node_data_size:" # Bool.toText(x.size() <= min_node_data_size));
-         // Debug.print("current_depth >= max_depth:"#Bool.toText(current_depth >= max_depth));
-         let leafNode: BinTree  = setLeftRightBranch(null, null, #number(y_mean), nilTree(), nilTree());Debug.print("a1");
+         let leafNode: BinTree  = setLeftRightBranch(null, null, #number(y_mean), nilTree(), nilTree());
          return #ok(leafNode);
       }; 
-      // // create node  
-      // // for all features
-      let xt = transpose(x);Debug.print("a3");// Debug.print("11");
-      let mses = Buffer.Buffer<Float>(xt.size());Debug.print("a4");// Debug.print("12");
-      let ths = Buffer.Buffer<Float>(xt.size());Debug.print("a5");// Debug.print("13:"#Nat.toText(col_ids.size())#":"#Nat.toText(xt.size()));
+      // create node  
+      // for all features
+      let xt = transpose(x);
+      let mses = Buffer.Buffer<Float>(xt.size());
+      let ths = Buffer.Buffer<Float>(xt.size());
       for (i in Iter.range(0, xt.size() - 1)) {
-        let xcol = xt[i];Debug.print("a6");
+        let xcol = xt[i];
         let mse = computeFeatureMSE(xcol,y); 
         switch (mse) {
           case (#ok(gini_float, th_float)) {
-            mses.add(gini_float);// Debug.print("14");
-            ths.add(th_float);// Debug.print("15");
+            mses.add(gini_float);
+            ths.add(th_float);
           };
           case (#err(err)) {
-            return #err(err);// Debug.print("16");
+            return #err(err);
           };
         }; 
-      }; Debug.print("a61");
+      }; 
       // // compute gini index of the
-      let mses_array = Buffer.toArray(mses);Debug.print("a62");// Debug.print("17");
-      let ths_array: [Float] = Buffer.toArray(ths);Debug.print("a63");// Debug.print("18");
-      let bestgini = min(mses_array);Debug.print("a64");// Debug.print("19");
-      let bestcol: ?Nat = Array.indexOf<Float>(bestgini, mses_array, Float.equal);// Debug.print("101");
+      let mses_array = Buffer.toArray(mses);
+      let ths_array: [Float] = Buffer.toArray(ths);
+      let bestgini = min(mses_array);
+      let bestcol: ?Nat = Array.indexOf<Float>(bestgini, mses_array, Float.equal);
       if (bestcol==null) {
          return #err(#noBestGiniError);
-      };Debug.print("a65");
+      };
       let xbestcol : Nat = switch bestcol {
          case null 0;
          case (?Nat) Nat;
-      };Debug.print("a66");
-      let bestth = ths_array[xbestcol];Debug.print("a7");// Debug.print("102");
+      };
+      let bestth = ths_array[xbestcol];
       
       // recursive call left and right and connect to node and return 
-      let myx = transpose(cols<dataMember>([xbestcol], x))[0];// Debug.print("103");
+      let myx = transpose(cols<dataMember>([xbestcol], x))[0];
       
       let (left_rows,right_rows) = switch (myx[0]) {
          case (#number(num)) computeThLeftRightNumeric(myx, bestth);
          case (#symbol(sym)) computeLeftRightSymbolic(myx);
-      };Debug.print("104");
+      };
 
-      let x2 = removeRows([xbestcol], x);// Debug.print("105");
-      //let y2 = removeRowsVector([xbestcol], y);// Debug.print("106");
-      
+      let x2 = removeRows([xbestcol], x);      
       // pick the true col_id from col_ids
-      // Debug.print("xbestcol:"#Nat.toText(xbestcol));
-      let true_colid: Nat = col_ids[xbestcol];// Debug.print("107");
-      Debug.print("TRUE_COLID: "#Nat.toText(true_colid)#" "#Nat.toText(mses.size())#" "#Nat.toText(mses_array.size()));
+      let true_colid: Nat = col_ids[xbestcol];
       // remove "true_colid" from col_ids before passing recursively
-      let next_col_ids: [Nat] = removeRowsVector([xbestcol], col_ids);Debug.print("108");
-      
-      // //let next_x: [[dataMember]] = cols(next_col_ids, x);Debug.print("109");
-      Debug.print("xbestcol: "#Nat.toText(xbestcol));
-      Debug.print("size(X): "#Nat.toText(transpose(x).size()));
-      let next_x: [[dataMember]] = transpose(removeRows([xbestcol], transpose(x))); Debug.print("109");
+      let next_col_ids: [Nat] = removeRowsVector([xbestcol], col_ids);
+  
+      let next_x: [[dataMember]] = transpose(removeRows([xbestcol], transpose(x)));
 
-      Debug.print("Next col ids: "#Nat.toText(next_col_ids.size())#":"#Nat.toText(transpose(next_x).size())); Debug.print("110");
-      let x_left = rows(left_rows,next_x);Debug.print("110a1");
-      let y_left = rowsVector(left_rows,y);Debug.print("110a2");
-      let x_right = rows(right_rows,next_x);Debug.print("110a3");
-      let y_right = rowsVector(right_rows,y);Debug.print("110a4");
+      let x_left = rows(left_rows,next_x);
+      let y_left = rowsVector(left_rows,y);
+      let x_right = rows(right_rows,next_x);
+      let y_right = rowsVector(right_rows,y);
 
       let lsize_zero:Bool = Nat.equal(x_left.size(),0);
       let leftNode_aux  = switch (lsize_zero) {
@@ -1578,14 +1507,13 @@ module {
       let leftNode = switch leftNode_aux {
          case (#ok(leftNode)) leftNode;
          case (#err(err)) return leftNode_aux;
-      };Debug.print("110a7");
+      };
       let rightNode = switch rightNode_aux {
          case (#ok(rightNode)) rightNode;
          case (#err(err)) return rightNode_aux;
-      };Debug.print("110a8");
+      };
 
       let thisNode: BinTree = setLeftRightBranch(?true_colid, ?bestth, #number(y_mean), leftNode, rightNode);
-      Debug.print("110a9");
       return #ok(thisNode);
     };   
 
@@ -1596,8 +1524,6 @@ module {
     public func isLeftNode(feature_: dataMember, th_: Float): (Bool) { 
       switch feature_ {
         case (#number(num)) {
-          //TBD
-          //Debug.print("numeric feature: " # Float.toText(num));
           if (num <= th_) {
             return true;
           }
@@ -1606,7 +1532,6 @@ module {
           };
         };
         case (#symbol(txt)) {
-          //Debug.print("symbol feature: " # txt);
           if (Text.equal(txt, "0")) {
             return true;
           }
@@ -1617,120 +1542,51 @@ module {
       };
     };
 
-    // public func predictTree(x : [dataMember], bintree : BinTree) : () {
-    //   // 1) check assert the size of x is > 0
-    //   // 2) check bintree is not nil
-    //   // 3) do until bintree in left or right is nil and return "value" (try first iterative , if not possible recursion)         
-    //   switch bintree {
-    //     case null {
-    //       //Debug.print("Do nothing");
-    //     };
-    //     case (?(xvar_id,xth,xvalue,bl,br)) {
-    //       switch xvar_id {
-    //         case null {
-    //           //Debug.print("I am in leaf node");
-    //           // node leaf: return the value
-    //           switch xvalue {
-    //             case (#number(val)) {
-    //               //TBD
-    //               Debug.print("Result: " # Float.toText(val));
-    //             };
-    //             case (#symbol(vec)) {
-    //               //TBD
-    //               Debug.print("Probs vector: ");
-    //               for (i in Iter.range(0, vec.size() - 1)) {
-    //                 Debug.print(Float.toText(vec[i]));
-    //               };
-    //             };
-    //             // case null {
-    //             //   //TBD
-    //             // };
-    //           };
-    //         };
-    //         case _ {
-    //           //Debug.print("I am in a tree node");
-    //           // get feature value
-    //           let var_id : Nat = switch xvar_id {
-    //             case null 0;
-    //             case (?Nat) Nat;
-    //           };
-    //           //Debug.print("var_id:" # Nat.toText(var_id));
-    //           let feature: dataMember = x[var_id]; 
-    //           let th : Float = switch xth {
-    //               case null 0;
-    //               case (?Float) Float;
-    //           };
-    //           //Debug.print("th:" # Float.toText(th));
-    //           if (isLeftNode(feature: dataMember, th: Float)) {
-    //              //Debug.print("predict left");
-    //              predictTree(x, bl);
-    //            }
-    //           else {
-    //              //predict right
-    //              //Debug.print("predict right");
-    //              predictTree(x, br);
-    //           };
-    //         }; 
-    //       };
-    //     };
-    //   };
-    // };
- 
-    public func predictTree(x : [dataMember], bintree : BinTree) : ([Float]) {
-      // 1) check assert the size of x is > 0
-      // 2) check bintree is not nil
-      // 3) do until bintree in left or right is nil and return "value" (try first iterative , if not possible recursion)         
+    public func predictTreeClassification(x : [dataMember], bintree : BinTree) : ([Float]) {       
       switch bintree {
         case null {
-          //Debug.print("Do nothing");
-          Debug.print("UNEXPECTED1");
+          Debug.print("UNEXPECTED: we should not get here");
           return [0,0,0];
         };
         case (?(xvar_id,xth,xvalue,bl,br)) {
-          switch xvar_id {
-            case null {
-              //Debug.print("I am in leaf node");
-              // node leaf: return the value
+          let isNL = isTreeNil(bl);
+          let isNR = isTreeNil(br);
+          switch (isNL, isNR) {
+            case (true, true) {
               switch xvalue {
                 case (#symbol(vec)) {
-                  //TBD
-                  // Debug.print("p1");
                   return vec;
                 };
                 case (#number(num)) {
                   return [num];
                 };
-                case (_) {
-                  Debug.print("UNEXPECTED2");
-                  return [0,0,0];
-                //   //TBD
-                };
               };
             };
-            case _ {
-              //Debug.print("I am in a tree node");
-              // get feature value
+            case (true, false) {
+              let vec = predictTreeClassification(x, br);
+              return vec;
+            };
+            case (false, true) {
+              let vec = predictTreeClassification(x, bl);
+              return vec;
+            };
+            case (false, false) {
               let var_id : Nat = switch xvar_id {
                 case null 0;
                 case (?Nat) Nat;
-              };// Debug.print("p2");
-              // Debug.print("var_id:" # Nat.toText(var_id));
-              let feature: dataMember = x[var_id]; // Debug.print("p3");
+              };
+              let feature: dataMember = x[var_id]; 
               let th : Float = switch xth {
                   case null 0;
                   case (?Float) Float;
-              };// Debug.print("p4");
-              //Debug.print("th:" # Float.toText(th));
-              if (isLeftNode(feature: dataMember, th: Float)) {
-                 //Debug.print("predict left");
-                 // Debug.print("p5");
-                 predictTree(x, bl);
+              };
+              if (isLeftNode(feature, th)) {
+                 let vec = predictTreeClassification(x, bl);
+                 return vec;
                }
               else {
-                 //predict right
-                 //Debug.print("predict right");
-                 // Debug.print("p6");
-                 predictTree(x, br);
+                 let vec = predictTreeClassification(x, br);
+                 return vec;
               };
             }; 
           };
@@ -1741,8 +1597,7 @@ module {
     public func predictTreeRegression(x : [dataMember], bintree : BinTree) : ([Float]) {        
       switch bintree {
         case null {
-          //Debug.print("Do nothing");
-          Debug.print("UNEXPECTED1: we should never get here");
+          Debug.print("UNEXPECTED: we should never get here");
           return [0,0,0];
         };
         case (?(xvar_id,xth,xvalue,bl,br)) {
@@ -1776,10 +1631,10 @@ module {
                   case (?Float) Float;
               };
               if (isLeftNode(feature, th)) {
-                 predictTree(x, bl);
+                 predictTreeRegression(x, bl);
                }
               else {
-                 predictTree(x, br);
+                 predictTreeRegression(x, br);
               };
             }; 
           }; 
