@@ -930,7 +930,8 @@ module {
     };
 
     public func max(rs: [Float]) : Float {
-      let aux = Array.sort(rs, Float.compare);
+      Debug.print("m0_"#Nat.toText(rs.size()));
+      let aux = Array.sort(rs, Float.compare);Debug.print("m1_"#Nat.toText(rs.size()));
       aux[rs.size()-1];
     };
 
@@ -1073,18 +1074,19 @@ module {
 
     func computeFeatureGini(xcol: [dataMember],y:[Text],y_uniques:[Text]): Result.Result<(Float,Float), MotokoLearnError> {
       // check whether this a nueric or a symbolic feature
-      let aux: dataMember = xcol[0];
+      Debug.print("g_0");
+      let aux: dataMember = xcol[0];Debug.print("g_01");
       switch(aux) {
         case (#number(num)) {
-          let xs = dataMemberVectorToFloatVector(xcol);
+          let xs = dataMemberVectorToFloatVector(xcol);Debug.print("g_1");
           switch (xs) {
             case (#ok(xs_num)) {
-              let xs_min = min(xs_num);
-              let xs_max = max(xs_num);
-              let th_vec: [Float] = linspace(xs_min,xs_max,NUM_CHECKS_GINI); // NUM_CHECKS_GINI : Nat = 10; it should be a private constant of the future module
-              let ginis = Buffer.Buffer<Float>(th_vec.size());
+              let xs_min = min(xs_num);Debug.print("g_2");
+              let xs_max = max(xs_num);Debug.print("g_3");
+              let th_vec: [Float] = linspace(xs_min,xs_max,NUM_CHECKS_GINI); Debug.print("g_4");// NUM_CHECKS_GINI : Nat = 10; it should be a private constant of the future module
+              let ginis = Buffer.Buffer<Float>(th_vec.size());Debug.print("g_5");
               for (i in Iter.range(0, th_vec.size() - 1)) {
-                let th = th_vec[i];
+                let th = th_vec[i];Debug.print("g"#Nat.toText(i));
                 let ret_xi = Array.mapEntries<Float, Bool>(xs_num, func (xx, ii) = (xx <= th));
                 let ret_xi_size: Nat = Array.filter<Bool>(ret_xi, func xx = xx == true).size();
                 let ret_yi_l = Buffer.Buffer<Text>(ret_xi_size);
@@ -1344,23 +1346,23 @@ module {
           let num_ys: Nat = Array.filter<Text>(y, func x = x == y_uniques[i]).size();
           let prob = Float.fromInt(num_ys) / Float.fromInt(y.size());
           probs.add(prob);
-        };
+        };Debug.print("f11");
      
-      let node_entropy = entropy(y, y_uniques);
-      let x_ncols = transpose(x).size();   // if we only have 1 feature, we finish branch 
+      let node_entropy = entropy(y, y_uniques);Debug.print("f12");
+      let x_ncols = transpose(x).size(); Debug.print("f13");  // if we only have 1 feature, we finish branch 
      
       if (x.size() <= min_node_data_size or current_depth >= max_depth or node_entropy==0 or x_ncols == 1) {
         let leafNode: BinTree  = setLeftRightBranch(null, null, #symbol(Buffer.toArray(probs)), nilTree(), nilTree());
         return #ok(leafNode);
-      };
+      };Debug.print("f14");
       // create node  
       // for all features
-      let xt = transpose(x);
-      let ginis = Buffer.Buffer<Float>(xt.size());
-      let ths = Buffer.Buffer<Float>(xt.size());
-      for (i in Iter.range(0, xt.size() - 1)) {
-        let xcol = xt[i];
-        let gini = computeFeatureGini(xcol,y,y_uniques);
+      let xt = transpose(x);Debug.print("f141");
+      let ginis = Buffer.Buffer<Float>(xt.size());Debug.print("f142");
+      let ths = Buffer.Buffer<Float>(xt.size());Debug.print("f143");
+      for (i in Iter.range(0, 20)) { //xt.size() - 1)) {
+        let xcol = xt[i];Debug.print("f144"#Nat.toText(i));
+        let gini = computeFeatureGini(xcol,y,y_uniques);Debug.print("f144"#Nat.toText(i)#"b");
         switch (gini) {
           case (#ok(gini_float, th_float)) {
             ginis.add(gini_float);
@@ -1370,7 +1372,7 @@ module {
             return #err(err);
           };
         }; 
-      }; 
+      }; Debug.print("f15");
       // compute gini index of the
       let ginis_array = Buffer.toArray(ginis);
       let ths_array: [Float] = Buffer.toArray(ths);
@@ -1378,11 +1380,11 @@ module {
       let bestcol: ?Nat = Array.indexOf<Float>(bestgini, ginis_array, Float.equal);
       if (bestcol==null) {
         return #err(#noBestGiniError);
-      };
+      };Debug.print("f16");
       let xbestcol : Nat = switch bestcol {
         case null 0;
         case (?Nat) Nat;
-      };
+      };Debug.print("f17");
       let bestth = ths_array[xbestcol];
       
       // recursive call left and right and connect to node and return 
@@ -1392,7 +1394,7 @@ module {
         case (#number(num)) computeThLeftRightNumeric(myx, bestth);
         case (#symbol(sym)) computeLeftRightSymbolic(myx);
       };
-
+      Debug.print("f1");
       let x2 = removeRows([xbestcol], x);
       
       // pick the true col_id from col_ids
@@ -1408,8 +1410,100 @@ module {
       let x_right = rows(right_rows,next_x);
       let y_right = rowsVector(right_rows,y);
 
-      let leftNode_aux  = fitClassification(x_left, y_left, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids);
-      let rightNode_aux  = fitClassification(x_right, y_right, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids);
+      let leftNode_aux  = fitClassification(x_left, y_left, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids);Debug.print("f18");
+      let rightNode_aux  = fitClassification(x_right, y_right, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids);Debug.print("f19");
+      let leftNode = switch leftNode_aux {
+        case (#ok(leftNode)) leftNode;
+        case (#err(err)) return leftNode_aux;
+      };
+      let rightNode = switch rightNode_aux {
+        case (#ok(rightNode)) rightNode;
+        case (#err(err)) return rightNode_aux;
+      };
+      let thisNode: BinTree = setLeftRightBranch(?true_colid, ?bestth, #symbol(Buffer.toArray(probs)), leftNode, rightNode);
+      
+      return #ok(thisNode);
+    }; 
+
+    public func fitClassification_OLD(x : [[dataMember]], 
+                           y : [Text], 
+                           current_depth : Nat, 
+                           y_uniques: [Text], 
+                           max_depth: Nat, 
+                           min_node_data_size: Nat,
+                           col_ids: [Nat]): Result.Result<BinTree, MotokoLearnError> {
+      // check size of x is at least the minimum size and we are not at the deepest level allowed
+      let probs = Buffer.Buffer<Float>(y_uniques.size());
+      for (i in Iter.range(0, y_uniques.size() - 1)) { 
+          let num_ys: Nat = Array.filter<Text>(y, func x = x == y_uniques[i]).size();
+          let prob = Float.fromInt(num_ys) / Float.fromInt(y.size());
+          probs.add(prob);
+        };Debug.print("f11");
+     
+      let node_entropy = entropy(y, y_uniques);Debug.print("f12");
+      let x_ncols = transpose(x).size(); Debug.print("f13");  // if we only have 1 feature, we finish branch 
+     
+      if (x.size() <= min_node_data_size or current_depth >= max_depth or node_entropy==0 or x_ncols == 1) {
+        let leafNode: BinTree  = setLeftRightBranch(null, null, #symbol(Buffer.toArray(probs)), nilTree(), nilTree());
+        return #ok(leafNode);
+      };Debug.print("f14");
+      // create node  
+      // for all features
+      let xt = transpose(x);Debug.print("f141");
+      let ginis = Buffer.Buffer<Float>(xt.size());Debug.print("f142");
+      let ths = Buffer.Buffer<Float>(xt.size());Debug.print("f143");
+      for (i in Iter.range(0, xt.size() - 1)) {
+        let xcol = xt[i];Debug.print("f144"#Nat.toText(i));
+        let gini = computeFeatureGini(xcol,y,y_uniques);Debug.print("f144"#Nat.toText(i)#"b");
+        switch (gini) {
+          case (#ok(gini_float, th_float)) {
+            ginis.add(gini_float);
+            ths.add(th_float);
+          };
+          case (#err(err)) {
+            return #err(err);
+          };
+        }; 
+      }; Debug.print("f15");
+      // compute gini index of the
+      let ginis_array = Buffer.toArray(ginis);
+      let ths_array: [Float] = Buffer.toArray(ths);
+      let bestgini = min(ginis_array);
+      let bestcol: ?Nat = Array.indexOf<Float>(bestgini, ginis_array, Float.equal);
+      if (bestcol==null) {
+        return #err(#noBestGiniError);
+      };Debug.print("f16");
+      let xbestcol : Nat = switch bestcol {
+        case null 0;
+        case (?Nat) Nat;
+      };Debug.print("f17");
+      let bestth = ths_array[xbestcol];
+      
+      // recursive call left and right and connect to node and return 
+      let myx = transpose(cols<dataMember>([xbestcol], x))[0];
+
+      let (left_rows,right_rows) = switch (myx[0]) {
+        case (#number(num)) computeThLeftRightNumeric(myx, bestth);
+        case (#symbol(sym)) computeLeftRightSymbolic(myx);
+      };
+      Debug.print("f1");
+      let x2 = removeRows([xbestcol], x);
+      
+      // pick the true col_id from col_ids
+      let true_colid: Nat = col_ids[xbestcol];
+      
+      // remove "true_colid" from col_ids before passing recursively
+      let next_col_ids: [Nat] = removeRowsVector([xbestcol], col_ids);
+ 
+      let next_x: [[dataMember]] = transpose(removeRows([xbestcol], transpose(x))); 
+
+      let x_left = rows(left_rows,next_x);
+      let y_left = rowsVector(left_rows,y);
+      let x_right = rows(right_rows,next_x);
+      let y_right = rowsVector(right_rows,y);
+
+      let leftNode_aux  = fitClassification(x_left, y_left, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids);Debug.print("f18");
+      let rightNode_aux  = fitClassification(x_right, y_right, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids);Debug.print("f19");
       let leftNode = switch leftNode_aux {
         case (#ok(leftNode)) leftNode;
         case (#err(err)) return leftNode_aux;
@@ -1640,5 +1734,19 @@ module {
           }; 
         };
       };
+    };
+
+    public func f1(i_:Nat) : async (Nat) {  
+      return i_;
+    };
+
+    public func f2() : async ([Nat]) {  
+      let ret = Buffer.Buffer<Nat>(10);
+      for (i in Iter.range(0, 10)) { 
+        let f1_async_nat: async Nat = f1(i);
+        let f1_nat : Nat = await f1_async_nat;
+        ret.add(f1_nat);
+      };
+      return Buffer.toArray(ret);
     };
 };

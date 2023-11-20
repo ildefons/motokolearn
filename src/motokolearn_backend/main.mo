@@ -1,11 +1,15 @@
 import Nat "mo:base/Nat";
+import Nat64 "mo:base/Nat64";
 import Float "mo:base/Float";
 import Text "mo:base/Text";
 import Array "mo:base/Array";
 import Iter "mo:base/Iter";
 import Debug "mo:base/Debug";
+import Comp "mo:base/ExperimentalInternetComputer";
+import Result "mo:base/Result";
 
 import mtkl "../Mtklearn/Mtklearn";
+import data "../Mtklearn/Datasets";
 
 
 actor {
@@ -19,6 +23,83 @@ actor {
     actor_data := data;
   };
   
+  public func doClassificationComp() : async (Nat64) {
+
+    let seed = 123456789; Debug.print("1");
+    let nsamples: Nat = 1000;Debug.print("11");
+    let alldata = data.digit_data;Debug.print("12");
+    let pos_vec = mtkl.randomSample(0, alldata.size()-1, nsamples, false, seed);Debug.print("13");
+
+    let train = mtkl.rows(pos_vec, alldata); Debug.print("14");
+    let test = mtkl.removeRows(pos_vec, alldata); Debug.print("15");
+    
+    let xcols = Iter.toArray(Iter.range(0, mtkl.transpose(train).size()-2));Debug.print("16");
+    let ycol = mtkl.transpose(train).size()-1;Debug.print("17");
+    let xtrain = mtkl.cols(xcols, train);Debug.print("18");
+    let yaux = mtkl.transpose(mtkl.cols([ycol], train))[0];Debug.print("19");
+    let ytrain = mtkl.dataMemberVectorToTextVector(yaux);Debug.print("110");
+    let xtest = mtkl.cols(xcols, test);Debug.print("1");
+    let yauxtest = mtkl.transpose(mtkl.cols([ycol], test))[0];Debug.print("111");
+    let ytest = mtkl.dataMemberVectorToTextVector(yauxtest);Debug.print("112");
+   
+    switch(ytrain) {
+      case (#ok(yvec)) {
+        let y_uniques = mtkl.uniquesText(yvec);Debug.print("113");
+        let myiter = Iter.range(0, xcols.size()-1);Debug.print("114");
+        let col_ids = Iter.toArray(myiter);Debug.print("115");
+        var ret_tree: mtkl.BinTree = mtkl.nilTree(); Debug.print("116");
+        let ninst = Comp.countInstructions (
+          func r {
+            let aux = mtkl.fitClassification(xtrain, yvec, 0, y_uniques, 5, 10, col_ids);Debug.print("117");
+            switch(aux) {
+              case (#ok(mytree)) {
+                ret_tree := mytree;
+              };
+              case (_) {
+                //TBD
+              };
+            };
+          }
+        );
+        Debug.print("Tree created: "#Nat64.toText(ninst));
+        switch(ytest) {
+          case (#ok(yvectest)) {
+            var ncorrect: Nat = 0; 
+            for (i in Iter.range(0, xtest.size() - 1)) {
+              //return mytree;
+              let sample: [mtkl.dataMember] = xtest[i]; 
+              let vec = mtkl.predictTreeClassification(sample, ret_tree);
+              let myindex = Array.indexOf<Float>(mtkl.max(vec), vec, Float.equal);
+              let xindex: Nat = switch(myindex) {
+                case (?Nat) Nat; 
+                case _ 10;
+              };
+              let text_sample = mtkl.printSample(sample);
+              //Debug.print("sample: " # text_sample);
+              if (Text.equal(y_uniques[xindex], yvectest[i])) {
+                //Debug.print("correct");
+                ncorrect := ncorrect + 1;  
+              }
+              else {
+                //Debug.print("wrong"#y_uniques[xindex]#":"#yvectest[i]); 
+              };
+            };
+            Debug.print("Percentage correct predictions:"#Float.toText(100*Float.fromInt(ncorrect)/Float.fromInt(yvectest.size())));
+            return ninst;
+          };
+          case (_) {
+            return 0;
+            //TBD
+          };
+        };
+      };
+      case (_) {
+        return 0;
+        //TBD
+      };
+    };
+  };
+
   public func doClassification() : async () {
 
     let seed = 123456789;
@@ -87,7 +168,6 @@ actor {
       };
     };
   };
-
 
   public func doRegression() : async () {
 
