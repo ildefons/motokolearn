@@ -14,788 +14,7 @@ import Debug "mo:base/Debug";
 import Fuzz "mo:fuzz";
 
 module {
-       public let wine_data: [[dataMember]] =  [[#number(14.2), #number(1.7), #number(2.4), #number(15.6), #number(127.0), #number(2.8), #number(3.1), #number(0.3), #number(2.3), #number(5.6), #number(1.0), #number(3.9), #number(1065.0), #symbol("0")],
-                  [#number(13.2), #number(1.8), #number(2.1), #number(11.2), #number(100.0), #number(2.6), #number(2.8), #number(0.3), #number(1.3), #number(4.4), #number(1.1), #number(3.4), #number(1050.0), #symbol("0")],
-                  [#number(13.2), #number(2.4), #number(2.7), #number(18.6), #number(101.0), #number(2.8), #number(3.2), #number(0.3), #number(2.8), #number(5.7), #number(1.0), #number(3.2), #number(1185.0), #symbol("0")],
-                  [#number(14.4), #number(1.9), #number(2.5), #number(16.8), #number(113.0), #number(3.9), #number(3.5), #number(0.2), #number(2.2), #number(7.8), #number(0.9), #number(3.5), #number(1480.0), #symbol("0")],
-                  [#number(13.2), #number(2.6), #number(2.9), #number(21.0), #number(118.0), #number(2.8), #number(2.7), #number(0.4), #number(1.8), #number(4.3), #number(1.0), #number(2.9), #number(735.0), #symbol("0")],
-                  [#number(14.2), #number(1.8), #number(2.5), #number(15.2), #number(112.0), #number(3.3), #number(3.4), #number(0.3), #number(2.0), #number(6.8), #number(1.1), #number(2.9), #number(1450.0), #symbol("0")],
-                  [#number(14.4), #number(1.9), #number(2.5), #number(14.6), #number(96.0), #number(2.5), #number(2.5), #number(0.3), #number(2.0), #number(5.2), #number(1.0), #number(3.6), #number(1290.0), #symbol("0")],
-                  [#number(14.1), #number(2.1), #number(2.6), #number(17.6), #number(121.0), #number(2.6), #number(2.5), #number(0.3), #number(1.2), #number(5.0), #number(1.1), #number(3.6), #number(1295.0), #symbol("0")],
-                  [#number(14.8), #number(1.6), #number(2.2), #number(14.0), #number(97.0), #number(2.8), #number(3.0), #number(0.3), #number(2.0), #number(5.2), #number(1.1), #number(2.9), #number(1045.0), #symbol("0")],
-                  [#number(13.9), #number(1.4), #number(2.3), #number(16.0), #number(98.0), #number(3.0), #number(3.1), #number(0.2), #number(1.9), #number(7.2), #number(1.0), #number(3.5), #number(1045.0), #symbol("0")],
-                  [#number(14.1), #number(2.2), #number(2.3), #number(18.0), #number(105.0), #number(3.0), #number(3.3), #number(0.2), #number(2.4), #number(5.8), #number(1.2), #number(3.2), #number(1510.0), #symbol("0")],
-                  [#number(14.1), #number(1.5), #number(2.3), #number(16.8), #number(95.0), #number(2.2), #number(2.4), #number(0.3), #number(1.6), #number(5.0), #number(1.2), #number(2.8), #number(1280.0), #symbol("0")],
-                  [#number(13.8), #number(1.7), #number(2.4), #number(16.0), #number(89.0), #number(2.6), #number(2.8), #number(0.3), #number(1.8), #number(5.6), #number(1.1), #number(2.9), #number(1320.0), #symbol("0")],
-                  [#number(14.8), #number(1.7), #number(2.4), #number(11.4), #number(91.0), #number(3.1), #number(3.7), #number(0.4), #number(2.8), #number(5.4), #number(1.2), #number(2.7), #number(1150.0), #symbol("0")],
-                  [#number(14.4), #number(1.9), #number(2.4), #number(12.0), #number(102.0), #number(3.3), #number(3.6), #number(0.3), #number(3.0), #number(7.5), #number(1.2), #number(3.0), #number(1547.0), #symbol("0")],
-                  [#number(13.6), #number(1.8), #number(2.7), #number(17.2), #number(112.0), #number(2.9), #number(2.9), #number(0.3), #number(1.5), #number(7.3), #number(1.3), #number(2.9), #number(1310.0), #symbol("0")],
-                  [#number(14.3), #number(1.9), #number(2.7), #number(20.0), #number(120.0), #number(2.8), #number(3.1), #number(0.3), #number(2.0), #number(6.2), #number(1.1), #number(2.6), #number(1280.0), #symbol("0")],
-                  [#number(13.8), #number(1.6), #number(2.6), #number(20.0), #number(115.0), #number(3.0), #number(3.4), #number(0.4), #number(1.7), #number(6.6), #number(1.1), #number(2.6), #number(1130.0), #symbol("0")],
-                  [#number(14.2), #number(1.6), #number(2.5), #number(16.5), #number(108.0), #number(3.3), #number(3.9), #number(0.3), #number(1.9), #number(8.7), #number(1.2), #number(2.8), #number(1680.0), #symbol("0")],
-                  [#number(13.6), #number(3.1), #number(2.6), #number(15.2), #number(116.0), #number(2.7), #number(3.0), #number(0.2), #number(1.7), #number(5.1), #number(1.0), #number(3.4), #number(845.0), #symbol("0")],
-                  [#number(14.1), #number(1.6), #number(2.3), #number(16.0), #number(126.0), #number(3.0), #number(3.2), #number(0.2), #number(2.1), #number(5.7), #number(1.1), #number(3.7), #number(780.0), #symbol("0")],
-                  [#number(12.9), #number(3.8), #number(2.6), #number(18.6), #number(102.0), #number(2.4), #number(2.4), #number(0.2), #number(2.0), #number(4.5), #number(1.0), #number(3.5), #number(770.0), #symbol("0")],
-                  [#number(13.7), #number(1.9), #number(2.4), #number(16.6), #number(101.0), #number(2.6), #number(2.9), #number(0.3), #number(1.7), #number(3.8), #number(1.1), #number(4.0), #number(1035.0), #symbol("0")],
-                  [#number(12.8), #number(1.6), #number(2.5), #number(17.8), #number(95.0), #number(2.5), #number(2.4), #number(0.3), #number(1.5), #number(3.9), #number(1.1), #number(3.6), #number(1015.0), #symbol("0")],
-                  [#number(13.5), #number(1.8), #number(2.6), #number(20.0), #number(96.0), #number(2.5), #number(2.6), #number(0.3), #number(1.7), #number(3.5), #number(1.1), #number(3.8), #number(845.0), #symbol("0")],
-                  [#number(13.1), #number(2.0), #number(3.2), #number(25.0), #number(124.0), #number(2.6), #number(2.7), #number(0.5), #number(1.9), #number(3.6), #number(1.1), #number(3.2), #number(830.0), #symbol("0")],
-                  [#number(13.4), #number(1.8), #number(2.6), #number(16.1), #number(93.0), #number(2.9), #number(2.9), #number(0.3), #number(1.4), #number(4.8), #number(0.9), #number(3.2), #number(1195.0), #symbol("0")],
-                  [#number(13.3), #number(1.7), #number(2.1), #number(17.0), #number(94.0), #number(2.4), #number(2.2), #number(0.3), #number(1.4), #number(4.0), #number(1.0), #number(2.8), #number(1285.0), #symbol("0")],
-                  [#number(13.9), #number(1.9), #number(2.8), #number(19.4), #number(107.0), #number(3.0), #number(3.0), #number(0.4), #number(1.8), #number(4.5), #number(1.2), #number(3.4), #number(915.0), #symbol("0")],
-                  [#number(14.0), #number(1.7), #number(2.2), #number(16.0), #number(96.0), #number(2.6), #number(2.3), #number(0.3), #number(2.0), #number(4.7), #number(1.0), #number(3.6), #number(1035.0), #symbol("0")],
-                  [#number(13.7), #number(1.5), #number(2.7), #number(22.5), #number(101.0), #number(3.0), #number(3.2), #number(0.3), #number(2.4), #number(5.7), #number(1.2), #number(2.7), #number(1285.0), #symbol("0")],
-                  [#number(13.6), #number(1.7), #number(2.4), #number(19.1), #number(106.0), #number(2.9), #number(3.2), #number(0.2), #number(1.9), #number(6.9), #number(1.1), #number(2.9), #number(1515.0), #symbol("0")],
-                  [#number(13.7), #number(1.8), #number(2.4), #number(17.2), #number(104.0), #number(2.4), #number(2.7), #number(0.4), #number(2.0), #number(3.8), #number(1.2), #number(2.9), #number(990.0), #symbol("0")],
-                  [#number(13.8), #number(1.5), #number(2.7), #number(19.5), #number(132.0), #number(3.0), #number(2.7), #number(0.5), #number(1.4), #number(5.4), #number(1.2), #number(3.0), #number(1235.0), #symbol("0")],
-                  [#number(13.5), #number(1.8), #number(2.6), #number(19.0), #number(110.0), #number(2.4), #number(2.5), #number(0.3), #number(1.5), #number(4.2), #number(1.1), #number(2.9), #number(1095.0), #symbol("0")],
-                  [#number(13.5), #number(1.8), #number(2.4), #number(20.5), #number(100.0), #number(2.7), #number(3.0), #number(0.3), #number(1.9), #number(5.1), #number(1.0), #number(3.5), #number(920.0), #symbol("0")],
-                  [#number(13.3), #number(1.6), #number(2.8), #number(15.5), #number(110.0), #number(2.6), #number(2.7), #number(0.3), #number(1.4), #number(4.6), #number(1.1), #number(2.8), #number(880.0), #symbol("0")],
-                  [#number(13.1), #number(1.6), #number(2.5), #number(18.0), #number(98.0), #number(2.5), #number(2.4), #number(0.3), #number(1.4), #number(4.2), #number(1.1), #number(2.5), #number(1105.0), #symbol("0")],
-                  [#number(13.1), #number(1.5), #number(2.1), #number(15.5), #number(98.0), #number(2.4), #number(2.6), #number(0.3), #number(1.4), #number(3.7), #number(1.2), #number(2.7), #number(1020.0), #symbol("0")],
-                  [#number(14.2), #number(4.0), #number(2.5), #number(13.2), #number(128.0), #number(3.0), #number(3.0), #number(0.2), #number(2.1), #number(5.1), #number(0.9), #number(3.5), #number(760.0), #symbol("0")],
-                  [#number(13.6), #number(1.7), #number(2.3), #number(16.2), #number(117.0), #number(3.1), #number(3.3), #number(0.3), #number(2.3), #number(6.1), #number(0.9), #number(3.4), #number(795.0), #symbol("0")],
-                  [#number(13.4), #number(3.8), #number(2.1), #number(18.8), #number(90.0), #number(2.5), #number(2.7), #number(0.3), #number(1.5), #number(4.3), #number(0.9), #number(3.0), #number(1035.0), #symbol("0")],
-                  [#number(13.9), #number(1.9), #number(2.6), #number(15.0), #number(101.0), #number(3.2), #number(3.6), #number(0.2), #number(1.7), #number(5.4), #number(0.9), #number(3.6), #number(1095.0), #symbol("0")],
-                  [#number(13.2), #number(4.0), #number(2.3), #number(17.5), #number(103.0), #number(2.6), #number(2.6), #number(0.3), #number(1.7), #number(4.4), #number(0.8), #number(3.0), #number(680.0), #symbol("0")],
-                  [#number(13.1), #number(1.8), #number(2.1), #number(17.0), #number(107.0), #number(3.0), #number(3.0), #number(0.3), #number(2.0), #number(5.0), #number(0.9), #number(3.4), #number(885.0), #symbol("0")],
-                  [#number(14.2), #number(4.0), #number(2.4), #number(18.9), #number(111.0), #number(2.9), #number(2.6), #number(0.3), #number(1.2), #number(5.2), #number(0.9), #number(3.3), #number(1080.0), #symbol("0")],
-                  [#number(14.4), #number(3.6), #number(2.3), #number(16.0), #number(102.0), #number(3.2), #number(3.2), #number(0.3), #number(2.2), #number(4.9), #number(1.0), #number(3.4), #number(1065.0), #symbol("0")],
-                  [#number(13.9), #number(1.7), #number(2.1), #number(16.0), #number(101.0), #number(3.1), #number(3.4), #number(0.2), #number(2.1), #number(6.1), #number(0.9), #number(3.3), #number(985.0), #symbol("0")],
-                  [#number(14.1), #number(2.0), #number(2.4), #number(18.8), #number(103.0), #number(2.8), #number(2.9), #number(0.3), #number(2.4), #number(6.2), #number(1.1), #number(2.8), #number(1060.0), #symbol("0")],
-                  [#number(13.9), #number(1.7), #number(2.3), #number(17.4), #number(108.0), #number(2.9), #number(3.5), #number(0.3), #number(2.1), #number(8.9), #number(1.1), #number(3.1), #number(1260.0), #symbol("0")],
-                  [#number(13.1), #number(1.7), #number(2.0), #number(12.4), #number(92.0), #number(2.7), #number(3.3), #number(0.2), #number(2.9), #number(7.2), #number(1.1), #number(2.9), #number(1150.0), #symbol("0")],
-                  [#number(13.8), #number(1.6), #number(2.6), #number(17.2), #number(94.0), #number(2.5), #number(3.0), #number(0.2), #number(2.3), #number(5.6), #number(1.2), #number(3.4), #number(1265.0), #symbol("0")],
-                  [#number(13.8), #number(1.8), #number(2.4), #number(14.0), #number(111.0), #number(3.9), #number(3.7), #number(0.3), #number(1.9), #number(7.0), #number(1.0), #number(3.3), #number(1190.0), #symbol("0")],
-                  [#number(13.8), #number(1.9), #number(2.7), #number(17.1), #number(115.0), #number(3.0), #number(2.8), #number(0.4), #number(1.7), #number(6.3), #number(1.1), #number(2.9), #number(1375.0), #symbol("0")],
-                  [#number(13.7), #number(1.7), #number(2.2), #number(16.4), #number(118.0), #number(2.6), #number(2.9), #number(0.2), #number(1.6), #number(5.8), #number(0.9), #number(3.2), #number(1060.0), #symbol("0")],
-                  [#number(13.6), #number(1.7), #number(2.5), #number(20.5), #number(116.0), #number(3.0), #number(2.8), #number(0.2), #number(2.5), #number(6.2), #number(1.0), #number(3.0), #number(1120.0), #symbol("0")],
-                  [#number(14.2), #number(1.7), #number(2.3), #number(16.3), #number(118.0), #number(3.2), #number(3.0), #number(0.3), #number(2.0), #number(6.4), #number(0.9), #number(3.3), #number(970.0), #symbol("0")],
-                  [#number(13.3), #number(2.0), #number(2.7), #number(16.8), #number(102.0), #number(3.0), #number(3.2), #number(0.3), #number(1.7), #number(6.0), #number(1.1), #number(2.8), #number(1270.0), #symbol("0")],
-                  [#number(13.7), #number(1.4), #number(2.5), #number(16.7), #number(108.0), #number(3.4), #number(3.7), #number(0.2), #number(2.0), #number(6.8), #number(0.9), #number(2.9), #number(1285.0), #symbol("0")],
-                  [#number(12.4), #number(0.9), #number(1.4), #number(10.6), #number(88.0), #number(2.0), #number(0.6), #number(0.3), #number(0.4), #number(1.9), #number(1.1), #number(1.8), #number(520.0), #symbol("1")],
-                  [#number(12.3), #number(1.1), #number(2.3), #number(16.0), #number(101.0), #number(2.0), #number(1.1), #number(0.6), #number(0.4), #number(3.3), #number(1.2), #number(1.7), #number(680.0), #symbol("1")],
-                  [#number(12.6), #number(1.4), #number(2.0), #number(16.8), #number(100.0), #number(2.0), #number(1.4), #number(0.5), #number(0.6), #number(5.8), #number(1.0), #number(1.6), #number(450.0), #symbol("1")],
-                  [#number(13.7), #number(1.2), #number(1.9), #number(18.0), #number(94.0), #number(2.1), #number(1.8), #number(0.3), #number(0.7), #number(3.8), #number(1.2), #number(2.5), #number(630.0), #symbol("1")],
-                  [#number(12.4), #number(1.1), #number(2.2), #number(19.0), #number(87.0), #number(3.5), #number(3.1), #number(0.2), #number(1.9), #number(4.5), #number(1.2), #number(2.9), #number(420.0), #symbol("1")],
-                  [#number(12.2), #number(1.4), #number(2.5), #number(19.0), #number(104.0), #number(1.9), #number(1.8), #number(0.5), #number(1.0), #number(3.0), #number(1.4), #number(2.2), #number(355.0), #symbol("1")],
-                  [#number(12.4), #number(1.2), #number(2.6), #number(18.1), #number(98.0), #number(2.4), #number(2.6), #number(0.4), #number(2.1), #number(4.6), #number(1.2), #number(2.3), #number(678.0), #symbol("1")],
-                  [#number(13.1), #number(1.0), #number(1.7), #number(15.0), #number(78.0), #number(3.0), #number(3.2), #number(0.3), #number(2.3), #number(5.3), #number(1.1), #number(3.2), #number(502.0), #symbol("1")],
-                  [#number(12.4), #number(1.2), #number(1.9), #number(19.6), #number(78.0), #number(2.1), #number(2.0), #number(0.3), #number(1.0), #number(4.7), #number(1.1), #number(3.5), #number(510.0), #symbol("1")],
-                  [#number(13.3), #number(0.9), #number(2.4), #number(17.0), #number(110.0), #number(2.5), #number(1.3), #number(0.6), #number(0.4), #number(3.2), #number(1.0), #number(1.9), #number(750.0), #symbol("1")],
-                  [#number(12.2), #number(1.2), #number(1.8), #number(16.8), #number(151.0), #number(1.9), #number(1.3), #number(0.1), #number(2.5), #number(2.9), #number(1.3), #number(3.1), #number(718.0), #symbol("1")],
-                  [#number(12.3), #number(1.6), #number(2.2), #number(20.4), #number(103.0), #number(1.1), #number(1.0), #number(0.4), #number(1.5), #number(3.0), #number(0.9), #number(1.8), #number(870.0), #symbol("1")],
-                  [#number(13.9), #number(1.5), #number(2.7), #number(25.0), #number(86.0), #number(3.0), #number(2.9), #number(0.2), #number(1.9), #number(3.4), #number(1.4), #number(3.2), #number(410.0), #symbol("1")],
-                  [#number(13.5), #number(1.7), #number(2.2), #number(24.0), #number(87.0), #number(1.9), #number(1.8), #number(0.3), #number(1.0), #number(3.7), #number(1.0), #number(2.8), #number(472.0), #symbol("1")],
-                  [#number(13.0), #number(1.7), #number(2.6), #number(30.0), #number(139.0), #number(3.3), #number(2.9), #number(0.2), #number(2.0), #number(3.4), #number(1.3), #number(3.5), #number(985.0), #symbol("1")],
-                  [#number(12.0), #number(1.1), #number(2.3), #number(21.0), #number(101.0), #number(3.4), #number(2.1), #number(0.1), #number(1.6), #number(3.2), #number(1.0), #number(3.1), #number(886.0), #symbol("1")],
-                  [#number(11.7), #number(1.9), #number(1.9), #number(16.0), #number(97.0), #number(1.6), #number(1.6), #number(0.3), #number(1.1), #number(3.8), #number(1.2), #number(2.1), #number(428.0), #symbol("1")],
-                  [#number(13.0), #number(0.9), #number(1.7), #number(16.0), #number(86.0), #number(1.9), #number(2.0), #number(0.2), #number(1.5), #number(4.6), #number(1.2), #number(2.5), #number(392.0), #symbol("1")],
-                  [#number(11.8), #number(2.9), #number(2.2), #number(18.0), #number(112.0), #number(1.7), #number(1.3), #number(0.4), #number(0.9), #number(2.6), #number(1.0), #number(2.5), #number(500.0), #symbol("1")],
-                  [#number(12.3), #number(1.0), #number(1.9), #number(14.8), #number(136.0), #number(1.9), #number(1.9), #number(0.3), #number(2.8), #number(3.4), #number(1.1), #number(2.3), #number(750.0), #symbol("1")],
-                  [#number(12.7), #number(3.9), #number(2.4), #number(23.0), #number(101.0), #number(2.8), #number(2.5), #number(0.4), #number(1.9), #number(2.6), #number(1.2), #number(3.1), #number(463.0), #symbol("1")],
-                  [#number(12.0), #number(0.9), #number(2.0), #number(19.0), #number(86.0), #number(2.4), #number(2.3), #number(0.3), #number(1.4), #number(2.5), #number(1.4), #number(3.1), #number(278.0), #symbol("1")],
-                  [#number(12.7), #number(1.8), #number(2.2), #number(18.8), #number(86.0), #number(2.2), #number(2.5), #number(0.3), #number(1.8), #number(3.9), #number(1.2), #number(3.1), #number(714.0), #symbol("1")],
-                  [#number(12.1), #number(1.1), #number(2.5), #number(24.0), #number(78.0), #number(2.0), #number(1.6), #number(0.4), #number(1.4), #number(2.2), #number(1.3), #number(2.7), #number(630.0), #symbol("1")],
-                  [#number(13.1), #number(3.9), #number(2.3), #number(22.5), #number(85.0), #number(1.6), #number(1.6), #number(0.6), #number(1.6), #number(4.8), #number(0.8), #number(2.0), #number(515.0), #symbol("1")],
-                  [#number(11.8), #number(0.9), #number(2.6), #number(18.0), #number(94.0), #number(2.2), #number(2.2), #number(0.2), #number(2.4), #number(3.0), #number(0.8), #number(3.1), #number(520.0), #symbol("1")],
-                  [#number(12.7), #number(1.0), #number(2.2), #number(18.0), #number(99.0), #number(2.2), #number(1.9), #number(0.3), #number(1.5), #number(2.6), #number(1.2), #number(3.2), #number(450.0), #symbol("1")],
-                  [#number(12.2), #number(1.6), #number(2.3), #number(22.8), #number(90.0), #number(1.8), #number(1.7), #number(0.4), #number(1.6), #number(2.5), #number(1.3), #number(2.3), #number(495.0), #symbol("1")],
-                  [#number(11.7), #number(1.7), #number(2.6), #number(26.0), #number(88.0), #number(1.9), #number(1.6), #number(0.4), #number(1.3), #number(2.6), #number(1.4), #number(3.2), #number(562.0), #symbol("1")],
-                  [#number(11.6), #number(2.1), #number(2.5), #number(21.6), #number(84.0), #number(1.9), #number(1.7), #number(0.5), #number(1.4), #number(2.8), #number(1.0), #number(2.8), #number(680.0), #symbol("1")],
-                  [#number(12.1), #number(1.3), #number(2.3), #number(23.6), #number(70.0), #number(2.2), #number(1.6), #number(0.4), #number(1.4), #number(1.7), #number(1.1), #number(3.2), #number(625.0), #symbol("1")],
-                  [#number(12.1), #number(1.8), #number(2.3), #number(18.5), #number(81.0), #number(1.6), #number(1.5), #number(0.5), #number(1.6), #number(2.4), #number(1.1), #number(2.3), #number(480.0), #symbol("1")],
-                  [#number(12.0), #number(1.5), #number(2.4), #number(22.0), #number(86.0), #number(1.4), #number(1.2), #number(0.5), #number(1.6), #number(3.6), #number(1.1), #number(2.6), #number(450.0), #symbol("1")],
-                  [#number(12.7), #number(1.5), #number(2.3), #number(20.7), #number(80.0), #number(1.4), #number(1.5), #number(0.6), #number(1.6), #number(3.0), #number(1.0), #number(2.1), #number(495.0), #symbol("1")],
-                  [#number(12.3), #number(2.8), #number(2.2), #number(18.0), #number(88.0), #number(2.5), #number(2.2), #number(0.2), #number(2.0), #number(2.1), #number(1.1), #number(3.3), #number(290.0), #symbol("1")],
-                  [#number(11.6), #number(2.0), #number(2.3), #number(18.0), #number(98.0), #number(3.0), #number(2.3), #number(0.2), #number(1.4), #number(3.2), #number(1.2), #number(3.0), #number(345.0), #symbol("1")],
-                  [#number(12.5), #number(1.5), #number(2.2), #number(19.0), #number(162.0), #number(2.5), #number(2.3), #number(0.3), #number(3.3), #number(2.6), #number(1.2), #number(2.6), #number(937.0), #symbol("1")],
-                  [#number(11.8), #number(2.1), #number(2.7), #number(21.5), #number(134.0), #number(1.6), #number(1.0), #number(0.1), #number(1.6), #number(2.5), #number(0.9), #number(2.3), #number(625.0), #symbol("1")],
-                  [#number(12.3), #number(1.4), #number(2.0), #number(16.0), #number(85.0), #number(2.5), #number(2.5), #number(0.3), #number(1.8), #number(2.9), #number(1.2), #number(2.7), #number(428.0), #symbol("1")],
-                  [#number(12.4), #number(1.1), #number(2.1), #number(18.5), #number(88.0), #number(3.5), #number(3.8), #number(0.2), #number(1.9), #number(4.5), #number(1.0), #number(2.8), #number(660.0), #symbol("1")],
-                  [#number(12.3), #number(3.2), #number(2.2), #number(18.0), #number(88.0), #number(2.9), #number(3.0), #number(0.5), #number(2.8), #number(2.3), #number(1.4), #number(2.8), #number(406.0), #symbol("1")],
-                  [#number(12.1), #number(2.1), #number(1.7), #number(17.5), #number(97.0), #number(2.2), #number(2.2), #number(0.3), #number(1.4), #number(3.3), #number(1.3), #number(3.0), #number(710.0), #symbol("1")],
-                  [#number(12.6), #number(1.3), #number(1.9), #number(18.5), #number(88.0), #number(1.4), #number(1.4), #number(0.3), #number(1.4), #number(2.5), #number(1.0), #number(2.8), #number(562.0), #symbol("1")],
-                  [#number(12.3), #number(2.5), #number(2.5), #number(21.0), #number(98.0), #number(2.6), #number(2.1), #number(0.3), #number(1.3), #number(2.8), #number(0.8), #number(3.4), #number(438.0), #symbol("1")],
-                  [#number(11.8), #number(1.7), #number(1.9), #number(19.5), #number(86.0), #number(2.5), #number(1.6), #number(0.4), #number(1.4), #number(2.1), #number(0.9), #number(2.4), #number(415.0), #symbol("1")],
-                  [#number(12.5), #number(1.7), #number(2.0), #number(20.5), #number(85.0), #number(2.2), #number(1.9), #number(0.3), #number(1.5), #number(2.9), #number(1.0), #number(3.6), #number(672.0), #symbol("1")],
-                  [#number(12.4), #number(2.5), #number(2.3), #number(22.0), #number(90.0), #number(1.7), #number(1.8), #number(0.7), #number(1.4), #number(2.7), #number(0.9), #number(3.3), #number(315.0), #symbol("1")],
-                  [#number(12.2), #number(1.7), #number(2.1), #number(19.0), #number(80.0), #number(1.6), #number(2.0), #number(0.4), #number(1.6), #number(3.4), #number(1.0), #number(3.2), #number(510.0), #symbol("1")],
-                  [#number(12.7), #number(1.8), #number(2.3), #number(22.5), #number(84.0), #number(1.4), #number(1.8), #number(0.5), #number(1.6), #number(3.3), #number(0.9), #number(2.4), #number(488.0), #symbol("1")],
-                  [#number(12.2), #number(1.3), #number(1.9), #number(19.0), #number(92.0), #number(2.4), #number(2.0), #number(0.4), #number(2.1), #number(2.7), #number(0.9), #number(3.0), #number(312.0), #symbol("1")],
-                  [#number(11.6), #number(1.4), #number(2.7), #number(20.0), #number(94.0), #number(2.7), #number(2.9), #number(0.3), #number(2.5), #number(2.6), #number(1.0), #number(3.3), #number(680.0), #symbol("1")],
-                  [#number(11.5), #number(3.7), #number(1.8), #number(19.5), #number(107.0), #number(3.2), #number(2.6), #number(0.2), #number(3.6), #number(2.9), #number(0.8), #number(2.8), #number(562.0), #symbol("1")],
-                  [#number(12.5), #number(2.4), #number(2.2), #number(21.0), #number(88.0), #number(2.5), #number(2.3), #number(0.3), #number(1.2), #number(2.0), #number(0.9), #number(2.8), #number(325.0), #symbol("1")],
-                  [#number(11.8), #number(2.7), #number(2.9), #number(20.0), #number(103.0), #number(1.8), #number(2.0), #number(0.6), #number(1.1), #number(3.8), #number(1.2), #number(2.5), #number(607.0), #symbol("1")],
-                  [#number(11.4), #number(0.7), #number(2.5), #number(21.0), #number(88.0), #number(2.5), #number(2.0), #number(0.4), #number(1.4), #number(3.1), #number(1.1), #number(2.3), #number(434.0), #symbol("1")],
-                  [#number(12.1), #number(1.4), #number(2.5), #number(22.5), #number(84.0), #number(2.6), #number(2.3), #number(0.4), #number(1.0), #number(2.9), #number(0.9), #number(3.2), #number(385.0), #symbol("1")],
-                  [#number(11.0), #number(1.5), #number(2.2), #number(21.5), #number(85.0), #number(2.5), #number(2.2), #number(0.5), #number(2.0), #number(1.9), #number(1.7), #number(2.9), #number(407.0), #symbol("1")],
-                  [#number(11.8), #number(1.5), #number(2.0), #number(20.8), #number(86.0), #number(2.0), #number(1.6), #number(0.3), #number(1.5), #number(1.9), #number(0.9), #number(3.3), #number(495.0), #symbol("1")],
-                  [#number(12.4), #number(1.6), #number(2.2), #number(22.5), #number(108.0), #number(2.0), #number(2.1), #number(0.3), #number(1.6), #number(2.1), #number(1.1), #number(3.0), #number(345.0), #symbol("1")],
-                  [#number(12.8), #number(3.4), #number(2.0), #number(16.0), #number(80.0), #number(1.6), #number(1.2), #number(0.4), #number(0.8), #number(3.4), #number(0.7), #number(2.1), #number(372.0), #symbol("1")],
-                  [#number(12.0), #number(3.4), #number(2.0), #number(19.0), #number(87.0), #number(2.0), #number(1.6), #number(0.4), #number(1.9), #number(1.3), #number(0.9), #number(3.0), #number(564.0), #symbol("1")],
-                  [#number(11.4), #number(2.4), #number(2.4), #number(20.0), #number(96.0), #number(2.9), #number(2.8), #number(0.3), #number(1.8), #number(3.2), #number(0.8), #number(3.4), #number(625.0), #symbol("1")],
-                  [#number(11.6), #number(2.0), #number(3.2), #number(28.5), #number(119.0), #number(3.2), #number(5.1), #number(0.5), #number(1.9), #number(6.0), #number(0.9), #number(3.7), #number(465.0), #symbol("1")],
-                  [#number(12.4), #number(4.4), #number(2.7), #number(26.5), #number(102.0), #number(2.2), #number(2.1), #number(0.4), #number(1.7), #number(2.1), #number(0.9), #number(3.1), #number(365.0), #symbol("1")],
-                  [#number(13.1), #number(5.8), #number(2.1), #number(21.5), #number(86.0), #number(2.6), #number(2.6), #number(0.3), #number(2.0), #number(2.6), #number(0.7), #number(3.1), #number(380.0), #symbol("1")],
-                  [#number(11.9), #number(4.3), #number(2.4), #number(21.0), #number(82.0), #number(2.9), #number(3.0), #number(0.2), #number(2.9), #number(2.8), #number(0.8), #number(3.6), #number(380.0), #symbol("1")],
-                  [#number(12.1), #number(2.2), #number(2.2), #number(21.0), #number(85.0), #number(2.6), #number(2.6), #number(0.4), #number(1.4), #number(2.8), #number(0.9), #number(3.3), #number(378.0), #symbol("1")],
-                  [#number(12.4), #number(1.5), #number(2.3), #number(21.5), #number(86.0), #number(2.7), #number(3.1), #number(0.4), #number(1.8), #number(3.9), #number(0.7), #number(2.8), #number(352.0), #symbol("1")],
-                  [#number(11.8), #number(2.1), #number(2.8), #number(28.5), #number(92.0), #number(2.1), #number(2.2), #number(0.6), #number(1.8), #number(3.0), #number(1.0), #number(2.4), #number(466.0), #symbol("1")],
-                  [#number(12.4), #number(1.6), #number(2.3), #number(24.5), #number(88.0), #number(2.2), #number(2.5), #number(0.4), #number(1.9), #number(2.1), #number(0.9), #number(2.8), #number(342.0), #symbol("1")],
-                  [#number(12.0), #number(4.3), #number(2.4), #number(22.0), #number(80.0), #number(2.1), #number(1.8), #number(0.4), #number(1.4), #number(2.6), #number(0.8), #number(2.6), #number(580.0), #symbol("1")],
-                  [#number(12.9), #number(1.4), #number(2.3), #number(18.0), #number(122.0), #number(1.5), #number(1.2), #number(0.2), #number(0.9), #number(4.1), #number(0.8), #number(1.3), #number(630.0), #symbol("2")],
-                  [#number(12.9), #number(3.0), #number(2.4), #number(20.0), #number(104.0), #number(1.3), #number(1.2), #number(0.2), #number(0.8), #number(5.4), #number(0.7), #number(1.4), #number(530.0), #symbol("2")],
-                  [#number(12.8), #number(2.3), #number(2.4), #number(24.0), #number(98.0), #number(1.1), #number(1.1), #number(0.3), #number(0.8), #number(5.7), #number(0.7), #number(1.4), #number(560.0), #symbol("2")],
-                  [#number(12.7), #number(3.5), #number(2.4), #number(21.5), #number(106.0), #number(1.7), #number(1.2), #number(0.2), #number(0.8), #number(5.0), #number(0.8), #number(1.3), #number(600.0), #symbol("2")],
-                  [#number(12.5), #number(1.2), #number(2.2), #number(17.5), #number(85.0), #number(2.0), #number(0.6), #number(0.6), #number(1.2), #number(5.5), #number(0.8), #number(1.5), #number(650.0), #symbol("2")],
-                  [#number(12.6), #number(2.5), #number(2.2), #number(18.5), #number(94.0), #number(1.6), #number(0.7), #number(0.6), #number(0.9), #number(7.1), #number(0.7), #number(1.6), #number(695.0), #symbol("2")],
-                  [#number(12.2), #number(4.7), #number(2.5), #number(21.0), #number(89.0), #number(1.4), #number(0.5), #number(0.5), #number(0.8), #number(3.9), #number(0.8), #number(1.3), #number(720.0), #symbol("2")],
-                  [#number(12.5), #number(5.5), #number(2.6), #number(25.0), #number(96.0), #number(1.8), #number(0.6), #number(0.6), #number(1.1), #number(5.0), #number(0.8), #number(1.7), #number(515.0), #symbol("2")],
-                  [#number(13.5), #number(3.6), #number(2.2), #number(19.5), #number(88.0), #number(1.6), #number(0.5), #number(0.6), #number(0.9), #number(5.7), #number(0.8), #number(1.8), #number(580.0), #symbol("2")],
-                  [#number(12.8), #number(3.0), #number(2.6), #number(24.0), #number(101.0), #number(2.3), #number(0.6), #number(0.5), #number(0.8), #number(4.9), #number(0.9), #number(2.1), #number(590.0), #symbol("2")],
-                  [#number(12.9), #number(2.8), #number(2.7), #number(21.0), #number(96.0), #number(1.5), #number(0.5), #number(0.5), #number(0.8), #number(4.6), #number(0.8), #number(2.3), #number(600.0), #symbol("2")],
-                  [#number(13.4), #number(2.6), #number(2.4), #number(20.0), #number(89.0), #number(1.4), #number(0.5), #number(0.4), #number(0.6), #number(5.6), #number(0.7), #number(2.5), #number(780.0), #symbol("2")],
-                  [#number(13.5), #number(3.2), #number(2.7), #number(23.5), #number(97.0), #number(1.6), #number(0.5), #number(0.5), #number(0.6), #number(4.3), #number(0.9), #number(2.1), #number(520.0), #symbol("2")],
-                  [#number(13.6), #number(5.0), #number(2.4), #number(20.0), #number(92.0), #number(2.0), #number(0.8), #number(0.5), #number(1.0), #number(4.4), #number(0.9), #number(2.0), #number(550.0), #symbol("2")],
-                  [#number(12.2), #number(3.9), #number(2.2), #number(18.5), #number(112.0), #number(1.4), #number(0.8), #number(0.3), #number(1.1), #number(8.2), #number(0.7), #number(2.0), #number(855.0), #symbol("2")],
-                  [#number(13.2), #number(3.6), #number(2.1), #number(21.0), #number(102.0), #number(1.5), #number(0.6), #number(0.4), #number(1.3), #number(4.0), #number(0.6), #number(1.7), #number(830.0), #symbol("2")],
-                  [#number(13.9), #number(5.0), #number(2.2), #number(20.0), #number(80.0), #number(1.0), #number(0.3), #number(0.4), #number(0.7), #number(4.9), #number(0.6), #number(1.3), #number(415.0), #symbol("2")],
-                  [#number(12.9), #number(4.6), #number(2.5), #number(21.5), #number(86.0), #number(1.7), #number(0.7), #number(0.5), #number(0.9), #number(7.7), #number(0.5), #number(1.9), #number(625.0), #symbol("2")],
-                  [#number(13.3), #number(3.2), #number(2.4), #number(21.5), #number(92.0), #number(1.9), #number(0.8), #number(0.5), #number(1.2), #number(8.4), #number(0.6), #number(1.6), #number(650.0), #symbol("2")],
-                  [#number(13.1), #number(3.9), #number(2.4), #number(21.5), #number(113.0), #number(1.4), #number(1.4), #number(0.3), #number(1.1), #number(9.4), #number(0.6), #number(1.3), #number(550.0), #symbol("2")],
-                  [#number(13.5), #number(3.1), #number(2.6), #number(24.0), #number(123.0), #number(1.4), #number(1.6), #number(0.2), #number(1.2), #number(8.6), #number(0.6), #number(1.3), #number(500.0), #symbol("2")],
-                  [#number(12.8), #number(2.7), #number(2.5), #number(22.0), #number(112.0), #number(1.5), #number(1.4), #number(0.2), #number(1.3), #number(10.8), #number(0.5), #number(1.5), #number(480.0), #symbol("2")],
-                  [#number(13.1), #number(1.9), #number(2.8), #number(25.5), #number(116.0), #number(2.2), #number(1.3), #number(0.3), #number(1.6), #number(7.1), #number(0.6), #number(1.3), #number(425.0), #symbol("2")],
-                  [#number(13.2), #number(3.3), #number(2.3), #number(18.5), #number(98.0), #number(1.8), #number(0.8), #number(0.6), #number(1.9), #number(10.5), #number(0.6), #number(1.5), #number(675.0), #symbol("2")],
-                  [#number(12.6), #number(1.3), #number(2.1), #number(20.0), #number(103.0), #number(1.5), #number(0.6), #number(0.5), #number(1.4), #number(7.6), #number(0.6), #number(1.6), #number(640.0), #symbol("2")],
-                  [#number(13.2), #number(5.2), #number(2.3), #number(22.0), #number(93.0), #number(1.7), #number(0.6), #number(0.6), #number(1.6), #number(7.9), #number(0.6), #number(1.5), #number(725.0), #symbol("2")],
-                  [#number(13.8), #number(4.1), #number(2.4), #number(19.5), #number(89.0), #number(1.8), #number(0.8), #number(0.5), #number(1.6), #number(9.0), #number(0.6), #number(1.6), #number(480.0), #symbol("2")],
-                  [#number(12.4), #number(3.0), #number(2.6), #number(27.0), #number(97.0), #number(1.9), #number(0.6), #number(0.6), #number(1.1), #number(7.5), #number(0.7), #number(1.7), #number(880.0), #symbol("2")],
-                  [#number(14.3), #number(1.7), #number(2.7), #number(25.0), #number(98.0), #number(2.8), #number(1.3), #number(0.5), #number(2.7), #number(13.0), #number(0.6), #number(2.0), #number(660.0), #symbol("2")],
-                  [#number(13.5), #number(1.7), #number(2.6), #number(22.5), #number(89.0), #number(2.6), #number(1.1), #number(0.5), #number(2.3), #number(11.8), #number(0.6), #number(1.8), #number(620.0), #symbol("2")],
-                  [#number(12.4), #number(3.8), #number(2.4), #number(21.0), #number(88.0), #number(2.3), #number(0.9), #number(0.5), #number(1.0), #number(7.7), #number(0.6), #number(1.6), #number(520.0), #symbol("2")],
-                  [#number(13.7), #number(3.3), #number(2.5), #number(20.0), #number(107.0), #number(1.8), #number(0.6), #number(0.5), #number(0.8), #number(5.9), #number(1.0), #number(1.8), #number(680.0), #symbol("2")],
-                  [#number(12.8), #number(3.3), #number(2.6), #number(22.0), #number(106.0), #number(1.6), #number(0.6), #number(0.6), #number(1.0), #number(5.6), #number(0.9), #number(2.1), #number(570.0), #symbol("2")],
-                  [#number(13.0), #number(3.5), #number(2.4), #number(18.5), #number(106.0), #number(1.4), #number(0.7), #number(0.4), #number(0.9), #number(5.3), #number(0.7), #number(1.8), #number(675.0), #symbol("2")],
-                  [#number(13.8), #number(2.8), #number(2.3), #number(22.0), #number(90.0), #number(1.4), #number(0.7), #number(0.4), #number(1.0), #number(9.6), #number(0.7), #number(1.7), #number(615.0), #symbol("2")],
-                  [#number(13.7), #number(4.4), #number(2.3), #number(22.5), #number(88.0), #number(1.3), #number(0.5), #number(0.5), #number(1.1), #number(6.6), #number(0.8), #number(1.8), #number(520.0), #symbol("2")],
-                  [#number(13.4), #number(3.7), #number(2.6), #number(23.0), #number(111.0), #number(1.7), #number(0.9), #number(0.4), #number(1.5), #number(10.7), #number(0.8), #number(1.6), #number(695.0), #symbol("2")],
-                  [#number(12.8), #number(3.4), #number(2.3), #number(19.5), #number(88.0), #number(1.5), #number(0.7), #number(0.4), #number(1.0), #number(10.3), #number(0.7), #number(1.8), #number(685.0), #symbol("2")],
-                  [#number(13.6), #number(2.6), #number(2.7), #number(24.5), #number(105.0), #number(1.6), #number(0.8), #number(0.4), #number(1.5), #number(8.7), #number(0.7), #number(1.8), #number(750.0), #symbol("2")],
-                  [#number(13.4), #number(4.6), #number(2.9), #number(25.0), #number(112.0), #number(2.0), #number(1.0), #number(0.3), #number(1.1), #number(8.5), #number(0.7), #number(1.9), #number(630.0), #symbol("2")],
-                  [#number(12.2), #number(3.0), #number(2.3), #number(19.0), #number(96.0), #number(1.2), #number(0.5), #number(0.4), #number(0.7), #number(5.5), #number(0.7), #number(1.8), #number(510.0), #symbol("2")],
-                  [#number(12.8), #number(2.4), #number(2.3), #number(19.5), #number(86.0), #number(1.4), #number(0.5), #number(0.5), #number(0.6), #number(9.9), #number(0.6), #number(1.6), #number(470.0), #symbol("2")],
-                  [#number(14.2), #number(2.5), #number(2.5), #number(20.0), #number(91.0), #number(1.7), #number(0.7), #number(0.4), #number(1.2), #number(9.7), #number(0.6), #number(1.7), #number(660.0), #symbol("2")],
-                  [#number(13.7), #number(5.7), #number(2.5), #number(20.5), #number(95.0), #number(1.7), #number(0.6), #number(0.5), #number(1.1), #number(7.7), #number(0.6), #number(1.7), #number(740.0), #symbol("2")],
-                  [#number(13.4), #number(3.9), #number(2.5), #number(23.0), #number(102.0), #number(1.8), #number(0.8), #number(0.4), #number(1.4), #number(7.3), #number(0.7), #number(1.6), #number(750.0), #symbol("2")],
-                  [#number(13.3), #number(4.3), #number(2.3), #number(20.0), #number(120.0), #number(1.6), #number(0.7), #number(0.4), #number(1.4), #number(10.2), #number(0.6), #number(1.6), #number(835.0), #symbol("2")],
-                  [#number(13.2), #number(2.6), #number(2.4), #number(20.0), #number(120.0), #number(1.6), #number(0.7), #number(0.5), #number(1.5), #number(9.3), #number(0.6), #number(1.6), #number(840.0), #symbol("2")],
-                  [#number(14.1), #number(4.1), #number(2.7), #number(24.5), #number(96.0), #number(2.0), #number(0.8), #number(0.6), #number(1.4), #number(9.2), #number(0.6), #number(1.6), #number(560.0), #symbol("2")]];
-
-    public let iris_data: [[dataMember]] =  [[#number(5.1), #number(3.5), #number(1.4), #number(0.2), #symbol("0")],
-                                      [#number(4.9), #number(3.0), #number(1.4), #number(0.2), #symbol("0")],
-                                      [#number(4.7), #number(3.2), #number(1.3), #number(0.2), #symbol("0")],
-                                      [#number(4.6), #number(3.1), #number(1.5), #number(0.2), #symbol("0")],
-                                      [#number(5.0), #number(3.6), #number(1.4), #number(0.2), #symbol("0")],
-                                      [#number(5.4), #number(3.9), #number(1.7), #number(0.4), #symbol("0")],
-                                      [#number(4.6), #number(3.4), #number(1.4), #number(0.3), #symbol("0")],
-                                      [#number(5.0), #number(3.4), #number(1.5), #number(0.2), #symbol("0")],
-                                      [#number(4.4), #number(2.9), #number(1.4), #number(0.2), #symbol("0")],
-                                      [#number(4.9), #number(3.1), #number(1.5), #number(0.1), #symbol("0")],
-                                      [#number(5.4), #number(3.7), #number(1.5), #number(0.2), #symbol("0")],
-                                      [#number(4.8), #number(3.4), #number(1.6), #number(0.2), #symbol("0")],
-                                      [#number(4.8), #number(3.0), #number(1.4), #number(0.1), #symbol("0")],
-                                      [#number(4.3), #number(3.0), #number(1.1), #number(0.1), #symbol("0")],
-                                      [#number(5.8), #number(4.0), #number(1.2), #number(0.2), #symbol("0")],
-                                      [#number(5.7), #number(4.4), #number(1.5), #number(0.4), #symbol("0")],
-                                      [#number(5.4), #number(3.9), #number(1.3), #number(0.4), #symbol("0")],
-                                      [#number(5.1), #number(3.5), #number(1.4), #number(0.3), #symbol("0")],
-                                      [#number(5.7), #number(3.8), #number(1.7), #number(0.3), #symbol("0")],
-                                      [#number(5.1), #number(3.8), #number(1.5), #number(0.3), #symbol("0")],
-                                      [#number(5.4), #number(3.4), #number(1.7), #number(0.2), #symbol("0")],
-                                      [#number(5.1), #number(3.7), #number(1.5), #number(0.4), #symbol("0")],
-                                      [#number(4.6), #number(3.6), #number(1.0), #number(0.2), #symbol("0")],
-                                      [#number(5.1), #number(3.3), #number(1.7), #number(0.5), #symbol("0")],
-                                      [#number(4.8), #number(3.4), #number(1.9), #number(0.2), #symbol("0")],
-                                      [#number(5.0), #number(3.0), #number(1.6), #number(0.2), #symbol("0")],
-                                      [#number(5.0), #number(3.4), #number(1.6), #number(0.4), #symbol("0")],
-                                      [#number(5.2), #number(3.5), #number(1.5), #number(0.2), #symbol("0")],
-                                      [#number(5.2), #number(3.4), #number(1.4), #number(0.2), #symbol("0")],
-                                      [#number(4.7), #number(3.2), #number(1.6), #number(0.2), #symbol("0")],
-                                      [#number(4.8), #number(3.1), #number(1.6), #number(0.2), #symbol("0")],
-                                      [#number(5.4), #number(3.4), #number(1.5), #number(0.4), #symbol("0")],
-                                      [#number(5.2), #number(4.1), #number(1.5), #number(0.1), #symbol("0")],
-                                      [#number(5.5), #number(4.2), #number(1.4), #number(0.2), #symbol("0")],
-                                      [#number(4.9), #number(3.1), #number(1.5), #number(0.2), #symbol("0")],
-                                      [#number(5.0), #number(3.2), #number(1.2), #number(0.2), #symbol("0")],
-                                      [#number(5.5), #number(3.5), #number(1.3), #number(0.2), #symbol("0")],
-                                      [#number(4.9), #number(3.6), #number(1.4), #number(0.1), #symbol("0")],
-                                      [#number(4.4), #number(3.0), #number(1.3), #number(0.2), #symbol("0")],
-                                      [#number(5.1), #number(3.4), #number(1.5), #number(0.2), #symbol("0")],
-                                      [#number(5.0), #number(3.5), #number(1.3), #number(0.3), #symbol("0")],
-                                      [#number(4.5), #number(2.3), #number(1.3), #number(0.3), #symbol("0")],
-                                      [#number(4.4), #number(3.2), #number(1.3), #number(0.2), #symbol("0")],
-                                      [#number(5.0), #number(3.5), #number(1.6), #number(0.6), #symbol("0")],
-                                      [#number(5.1), #number(3.8), #number(1.9), #number(0.4), #symbol("0")],
-                                      [#number(4.8), #number(3.0), #number(1.4), #number(0.3), #symbol("0")],
-                                      [#number(5.1), #number(3.8), #number(1.6), #number(0.2), #symbol("0")],
-                                      [#number(4.6), #number(3.2), #number(1.4), #number(0.2), #symbol("0")],
-                                      [#number(5.3), #number(3.7), #number(1.5), #number(0.2), #symbol("0")],
-                                      [#number(5.0), #number(3.3), #number(1.4), #number(0.2), #symbol("0")],
-                                      [#number(7.0), #number(3.2), #number(4.7), #number(1.4), #symbol("1")],
-                                      [#number(6.4), #number(3.2), #number(4.5), #number(1.5), #symbol("1")],
-                                      [#number(6.9), #number(3.1), #number(4.9), #number(1.5), #symbol("1")],
-                                      [#number(5.5), #number(2.3), #number(4.0), #number(1.3), #symbol("1")],
-                                      [#number(6.5), #number(2.8), #number(4.6), #number(1.5), #symbol("1")],
-                                      [#number(5.7), #number(2.8), #number(4.5), #number(1.3), #symbol("1")],
-                                      [#number(6.3), #number(3.3), #number(4.7), #number(1.6), #symbol("1")],
-                                      [#number(4.9), #number(2.4), #number(3.3), #number(1.0), #symbol("1")],
-                                      [#number(6.6), #number(2.9), #number(4.6), #number(1.3), #symbol("1")],
-                                      [#number(5.2), #number(2.7), #number(3.9), #number(1.4), #symbol("1")],
-                                      [#number(5.0), #number(2.0), #number(3.5), #number(1.0), #symbol("1")],
-                                      [#number(5.9), #number(3.0), #number(4.2), #number(1.5), #symbol("1")],
-                                      [#number(6.0), #number(2.2), #number(4.0), #number(1.0), #symbol("1")],
-                                      [#number(6.1), #number(2.9), #number(4.7), #number(1.4), #symbol("1")],
-                                      [#number(5.6), #number(2.9), #number(3.6), #number(1.3), #symbol("1")],
-                                      [#number(6.7), #number(3.1), #number(4.4), #number(1.4), #symbol("1")],
-                                      [#number(5.6), #number(3.0), #number(4.5), #number(1.5), #symbol("1")],
-                                      [#number(5.8), #number(2.7), #number(4.1), #number(1.0), #symbol("1")],
-                                      [#number(6.2), #number(2.2), #number(4.5), #number(1.5), #symbol("1")],
-                                      [#number(5.6), #number(2.5), #number(3.9), #number(1.1), #symbol("1")],
-                                      [#number(5.9), #number(3.2), #number(4.8), #number(1.8), #symbol("1")],
-                                      [#number(6.1), #number(2.8), #number(4.0), #number(1.3), #symbol("1")],
-                                      [#number(6.3), #number(2.5), #number(4.9), #number(1.5), #symbol("1")],
-                                      [#number(6.1), #number(2.8), #number(4.7), #number(1.2), #symbol("1")],
-                                      [#number(6.4), #number(2.9), #number(4.3), #number(1.3), #symbol("1")],
-                                      [#number(6.6), #number(3.0), #number(4.4), #number(1.4), #symbol("1")],
-                                      [#number(6.8), #number(2.8), #number(4.8), #number(1.4), #symbol("1")],
-                                      [#number(6.7), #number(3.0), #number(5.0), #number(1.7), #symbol("1")],
-                                      [#number(6.0), #number(2.9), #number(4.5), #number(1.5), #symbol("1")],
-                                      [#number(5.7), #number(2.6), #number(3.5), #number(1.0), #symbol("1")],
-                                      [#number(5.5), #number(2.4), #number(3.8), #number(1.1), #symbol("1")],
-                                      [#number(5.5), #number(2.4), #number(3.7), #number(1.0), #symbol("1")],
-                                      [#number(5.8), #number(2.7), #number(3.9), #number(1.2), #symbol("1")],
-                                      [#number(6.0), #number(2.7), #number(5.1), #number(1.6), #symbol("1")],
-                                      [#number(5.4), #number(3.0), #number(4.5), #number(1.5), #symbol("1")],
-                                      [#number(6.0), #number(3.4), #number(4.5), #number(1.6), #symbol("1")],
-                                      [#number(6.7), #number(3.1), #number(4.7), #number(1.5), #symbol("1")],
-                                      [#number(6.3), #number(2.3), #number(4.4), #number(1.3), #symbol("1")],
-                                      [#number(5.6), #number(3.0), #number(4.1), #number(1.3), #symbol("1")],
-                                      [#number(5.5), #number(2.5), #number(4.0), #number(1.3), #symbol("1")],
-                                      [#number(5.5), #number(2.6), #number(4.4), #number(1.2), #symbol("1")],
-                                      [#number(6.1), #number(3.0), #number(4.6), #number(1.4), #symbol("1")],
-                                      [#number(5.8), #number(2.6), #number(4.0), #number(1.2), #symbol("1")],
-                                      [#number(5.0), #number(2.3), #number(3.3), #number(1.0), #symbol("1")],
-                                      [#number(5.6), #number(2.7), #number(4.2), #number(1.3), #symbol("1")],
-                                      [#number(5.7), #number(3.0), #number(4.2), #number(1.2), #symbol("1")],
-                                      [#number(5.7), #number(2.9), #number(4.2), #number(1.3), #symbol("1")],
-                                      [#number(6.2), #number(2.9), #number(4.3), #number(1.3), #symbol("1")],
-                                      [#number(5.1), #number(2.5), #number(3.0), #number(1.1), #symbol("1")],
-                                      [#number(5.7), #number(2.8), #number(4.1), #number(1.3), #symbol("1")],
-                                      [#number(6.3), #number(3.3), #number(6.0), #number(2.5), #symbol("2")],
-                                      [#number(5.8), #number(2.7), #number(5.1), #number(1.9), #symbol("2")],
-                                      [#number(7.1), #number(3.0), #number(5.9), #number(2.1), #symbol("2")],
-                                      [#number(6.3), #number(2.9), #number(5.6), #number(1.8), #symbol("2")],
-                                      [#number(6.5), #number(3.0), #number(5.8), #number(2.2), #symbol("2")],
-                                      [#number(7.6), #number(3.0), #number(6.6), #number(2.1), #symbol("2")],
-                                      [#number(4.9), #number(2.5), #number(4.5), #number(1.7), #symbol("2")],
-                                      [#number(7.3), #number(2.9), #number(6.3), #number(1.8), #symbol("2")],
-                                      [#number(6.7), #number(2.5), #number(5.8), #number(1.8), #symbol("2")],
-                                      [#number(7.2), #number(3.6), #number(6.1), #number(2.5), #symbol("2")],
-                                      [#number(6.5), #number(3.2), #number(5.1), #number(2.0), #symbol("2")],
-                                      [#number(6.4), #number(2.7), #number(5.3), #number(1.9), #symbol("2")],
-                                      [#number(6.8), #number(3.0), #number(5.5), #number(2.1), #symbol("2")],
-                                      [#number(5.7), #number(2.5), #number(5.0), #number(2.0), #symbol("2")],
-                                      [#number(5.8), #number(2.8), #number(5.1), #number(2.4), #symbol("2")],
-                                      [#number(6.4), #number(3.2), #number(5.3), #number(2.3), #symbol("2")],
-                                      [#number(6.5), #number(3.0), #number(5.5), #number(1.8), #symbol("2")],
-                                      [#number(7.7), #number(3.8), #number(6.7), #number(2.2), #symbol("2")],
-                                      [#number(7.7), #number(2.6), #number(6.9), #number(2.3), #symbol("2")],
-                                      [#number(6.0), #number(2.2), #number(5.0), #number(1.5), #symbol("2")],
-                                      [#number(6.9), #number(3.2), #number(5.7), #number(2.3), #symbol("2")],
-                                      [#number(5.6), #number(2.8), #number(4.9), #number(2.0), #symbol("2")],
-                                      [#number(7.7), #number(2.8), #number(6.7), #number(2.0), #symbol("2")],
-                                      [#number(6.3), #number(2.7), #number(4.9), #number(1.8), #symbol("2")],
-                                      [#number(6.7), #number(3.3), #number(5.7), #number(2.1), #symbol("2")],
-                                      [#number(7.2), #number(3.2), #number(6.0), #number(1.8), #symbol("2")],
-                                      [#number(6.2), #number(2.8), #number(4.8), #number(1.8), #symbol("2")],
-                                      [#number(6.1), #number(3.0), #number(4.9), #number(1.8), #symbol("2")],
-                                      [#number(6.4), #number(2.8), #number(5.6), #number(2.1), #symbol("2")],
-                                      [#number(7.2), #number(3.0), #number(5.8), #number(1.6), #symbol("2")],
-                                      [#number(7.4), #number(2.8), #number(6.1), #number(1.9), #symbol("2")],
-                                      [#number(7.9), #number(3.8), #number(6.4), #number(2.0), #symbol("2")],
-                                      [#number(6.4), #number(2.8), #number(5.6), #number(2.2), #symbol("2")],
-                                      [#number(6.3), #number(2.8), #number(5.1), #number(1.5), #symbol("2")],
-                                      [#number(6.1), #number(2.6), #number(5.6), #number(1.4), #symbol("2")],
-                                      [#number(7.7), #number(3.0), #number(6.1), #number(2.3), #symbol("2")],
-                                      [#number(6.3), #number(3.4), #number(5.6), #number(2.4), #symbol("2")],
-                                      [#number(6.4), #number(3.1), #number(5.5), #number(1.8), #symbol("2")],
-                                      [#number(6.0), #number(3.0), #number(4.8), #number(1.8), #symbol("2")],
-                                      [#number(6.9), #number(3.1), #number(5.4), #number(2.1), #symbol("2")],
-                                      [#number(6.7), #number(3.1), #number(5.6), #number(2.4), #symbol("2")],
-                                      [#number(6.9), #number(3.1), #number(5.1), #number(2.3), #symbol("2")],
-                                      [#number(5.8), #number(2.7), #number(5.1), #number(1.9), #symbol("2")],
-                                      [#number(6.8), #number(3.2), #number(5.9), #number(2.3), #symbol("2")],
-                                      [#number(6.7), #number(3.3), #number(5.7), #number(2.5), #symbol("2")],
-                                      [#number(6.7), #number(3.0), #number(5.2), #number(2.3), #symbol("2")],
-                                      [#number(6.3), #number(2.5), #number(5.0), #number(1.9), #symbol("2")],
-                                      [#number(6.5), #number(3.0), #number(5.2), #number(2.0), #symbol("2")],
-                                      [#number(6.2), #number(3.4), #number(5.4), #number(2.3), #symbol("2")],
-                                      [#number(5.9), #number(3.0), #number(5.1), #number(1.8), #symbol("2")]];
-
-    public let dummy_classification_data: [[dataMember]] = [[#symbol("0"), #number(1), #number(2), #symbol("0")],
-                                          [#symbol("0"), #number(2), #number(3), #symbol("0")],
-                                          [#symbol("0"), #number(5), #number(4), #symbol("1")],
-                                          [#symbol("0"), #number(8), #number(5), #symbol("1")],
-                                          [#symbol("1"), #number(5), #number(2), #symbol("1")],
-                                          [#symbol("1"), #number(6), #number(3), #symbol("1")],
-                                          [#symbol("1"), #number(3), #number(4), #symbol("0")],
-                                          [#symbol("1"), #number(4), #number(5), #symbol("1")]];
-
-    public let diabetes_data: [[dataMember]] = [[#number(0.0), #number(0.1), #number(0.1), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(151.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(-0.1), #number(-0.1), #number(75.0)],
-                                              [#number(0.1), #number(0.1), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(141.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(-0.0), #number(206.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(135.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(0.0), #number(-0.1), #number(-0.0), #number(-0.1), #number(97.0)],
-                                              [#number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(138.0)],
-                                              [#number(0.1), #number(0.1), #number(-0.0), #number(0.1), #number(0.1), #number(0.1), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(63.0)],
-                                              [#number(0.0), #number(0.1), #number(0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(110.0)],
-                                              [#number(-0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(310.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.1), #number(0.0), #number(-0.1), #number(-0.1), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.0), #number(101.0)],
-                                              [#number(0.0), #number(0.1), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.1), #number(0.1), #number(-0.1), #number(-0.1), #number(69.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(179.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(185.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.1), #number(118.0)],
-                                              [#number(-0.1), #number(0.1), #number(-0.0), #number(0.1), #number(0.1), #number(0.1), #number(-0.0), #number(0.1), #number(0.0), #number(-0.0), #number(171.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(0.1), #number(0.0), #number(166.0)],
-                                              [#number(0.1), #number(0.1), #number(0.0), #number(0.1), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(-0.0), #number(144.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(97.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(168.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(68.0)],
-                                              [#number(-0.1), #number(0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(49.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(68.0)],
-                                              [#number(0.0), #number(0.1), #number(0.1), #number(0.0), #number(0.0), #number(-0.0), #number(-0.1), #number(0.1), #number(0.1), #number(0.1), #number(245.0)],
-                                              [#number(-0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(184.0)],
-                                              [#number(-0.1), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.1), #number(0.0), #number(0.0), #number(-0.0), #number(202.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.1), #number(-0.0), #number(-0.1), #number(-0.1), #number(0.0), #number(-0.1), #number(-0.0), #number(-0.0), #number(137.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(85.0)],
-                                              [#number(0.1), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(131.0)],
-                                              [#number(0.1), #number(0.1), #number(-0.0), #number(0.1), #number(-0.0), #number(-0.1), #number(0.1), #number(-0.1), #number(0.1), #number(0.1), #number(283.0)],
-                                              [#number(-0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(129.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.0), #number(-0.1), #number(0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(59.0)],
-                                              [#number(0.0), #number(0.1), #number(0.1), #number(0.0), #number(-0.1), #number(-0.0), #number(-0.1), #number(0.1), #number(0.0), #number(0.0), #number(341.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.1), #number(0.1), #number(-0.1), #number(-0.0), #number(0.0), #number(87.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(65.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.1), #number(-0.1), #number(0.0), #number(0.0), #number(102.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.0), #number(0.1), #number(0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(265.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.0), #number(-0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(276.0)],
-                                              [#number(-0.0), #number(0.1), #number(0.1), #number(0.1), #number(0.1), #number(0.1), #number(-0.0), #number(0.1), #number(0.1), #number(0.0), #number(252.0)],
-                                              [#number(-0.0), #number(0.1), #number(0.0), #number(-0.1), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(90.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(0.0), #number(0.1), #number(0.1), #number(-0.0), #number(0.0), #number(0.0), #number(0.1), #number(100.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.1), #number(-0.1), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(55.0)],
-                                              [#number(-0.1), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(0.0), #number(-0.0), #number(-0.0), #number(61.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(0.0), #number(-0.0), #number(0.1), #number(-0.1), #number(-0.0), #number(0.1), #number(92.0)],
-                                              [#number(0.0), #number(0.1), #number(0.1), #number(0.0), #number(-0.0), #number(0.0), #number(-0.1), #number(0.1), #number(0.0), #number(-0.0), #number(259.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(53.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(190.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(142.0)],
-                                              [#number(0.1), #number(0.1), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(75.0)],
-                                              [#number(-0.0), #number(0.1), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.1), #number(0.1), #number(0.0), #number(-0.0), #number(142.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(155.0)],
-                                              [#number(0.1), #number(0.1), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(225.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(59.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.0), #number(0.1), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(104.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(182.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(-0.1), #number(0.0), #number(128.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(-0.0), #number(52.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.1), #number(-0.1), #number(0.1), #number(-0.1), #number(-0.1), #number(-0.1), #number(37.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.1), #number(0.0), #number(0.0), #number(-0.1), #number(0.2), #number(-0.1), #number(-0.0), #number(-0.1), #number(170.0)],
-                                              [#number(0.1), #number(0.1), #number(-0.0), #number(0.0), #number(0.1), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(170.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(0.1), #number(-0.1), #number(-0.1), #number(-0.0), #number(61.0)],
-                                              [#number(-0.0), #number(0.1), #number(0.0), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.1), #number(0.1), #number(0.0), #number(0.0), #number(144.0)],
-                                              [#number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(-0.1), #number(-0.0), #number(52.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(128.0)],
-                                              [#number(0.1), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(71.0)],
-                                              [#number(-0.0), #number(0.1), #number(-0.0), #number(0.1), #number(0.0), #number(0.0), #number(-0.1), #number(0.1), #number(0.0), #number(0.0), #number(163.0)],
-                                              [#number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.1), #number(0.1), #number(0.0), #number(0.0), #number(150.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(97.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(160.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.1), #number(0.0), #number(178.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(-0.1), #number(0.0), #number(48.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.0), #number(0.1), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.1), #number(270.0)],
-                                              [#number(0.1), #number(0.1), #number(-0.0), #number(-0.0), #number(0.1), #number(0.0), #number(0.1), #number(-0.0), #number(0.1), #number(-0.0), #number(202.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(111.0)],
-                                              [#number(0.0), #number(0.1), #number(0.0), #number(0.1), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.1), #number(85.0)],
-                                              [#number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(42.0)],
-                                              [#number(-0.0), #number(0.1), #number(0.0), #number(0.1), #number(-0.1), #number(-0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(170.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(200.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.1), #number(-0.0), #number(0.0), #number(-0.1), #number(252.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(113.0)],
-                                              [#number(0.1), #number(-0.0), #number(0.0), #number(0.0), #number(0.1), #number(0.1), #number(0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(143.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(51.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.1), #number(-0.0), #number(-0.1), #number(-0.1), #number(52.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(210.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.1), #number(-0.1), #number(-0.1), #number(65.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.1), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(141.0)],
-                                              [#number(-0.1), #number(0.1), #number(-0.1), #number(-0.0), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(55.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.1), #number(0.0), #number(0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(134.0)],
-                                              [#number(-0.1), #number(0.1), #number(-0.0), #number(-0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.1), #number(42.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(111.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.1), #number(-0.1), #number(-0.1), #number(0.0), #number(98.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.1), #number(-0.1), #number(0.1), #number(0.1), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(164.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.0), #number(0.1), #number(0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(0.0), #number(0.0), #number(48.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.1), #number(96.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.1), #number(90.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(162.0)],
-                                              [#number(0.1), #number(0.1), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.1), #number(0.0), #number(150.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.1), #number(279.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(92.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.1), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(-0.1), #number(83.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.1), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(128.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(0.1), #number(0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(102.0)],
-                                              [#number(-0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(302.0)],
-                                              [#number(0.1), #number(0.1), #number(0.0), #number(0.0), #number(0.0), #number(0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(198.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(95.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(53.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(134.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.0), #number(-0.1), #number(-0.0), #number(0.0), #number(-0.1), #number(0.1), #number(-0.1), #number(-0.0), #number(144.0)],
-                                              [#number(0.0), #number(0.1), #number(0.0), #number(0.0), #number(-0.1), #number(-0.1), #number(-0.1), #number(0.0), #number(0.0), #number(0.0), #number(232.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.1), #number(0.1), #number(-0.0), #number(0.1), #number(81.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.1), #number(0.0), #number(104.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(59.0)],
-                                              [#number(-0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(246.0)],
-                                              [#number(0.0), #number(0.1), #number(0.0), #number(0.1), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.1), #number(297.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.1), #number(0.1), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.1), #number(0.0), #number(258.0)],
-                                              [#number(-0.0), #number(0.1), #number(0.0), #number(-0.0), #number(0.1), #number(0.0), #number(-0.0), #number(0.1), #number(0.1), #number(0.0), #number(229.0)],
-                                              [#number(0.0), #number(0.1), #number(0.1), #number(0.1), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(275.0)],
-                                              [#number(0.1), #number(-0.0), #number(-0.0), #number(0.1), #number(0.0), #number(0.0), #number(-0.0), #number(0.1), #number(0.1), #number(0.1), #number(281.0)],
-                                              [#number(-0.1), #number(0.1), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.1), #number(179.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(200.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(200.0)],
-                                              [#number(0.1), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(173.0)],
-                                              [#number(0.0), #number(0.1), #number(0.1), #number(0.0), #number(0.0), #number(0.1), #number(-0.1), #number(0.1), #number(0.0), #number(0.0), #number(180.0)],
-                                              [#number(0.0), #number(0.1), #number(0.0), #number(-0.0), #number(0.2), #number(0.2), #number(-0.1), #number(0.2), #number(0.0), #number(0.1), #number(84.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(121.0)],
-                                              [#number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(-0.0), #number(0.1), #number(0.0), #number(161.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.1), #number(-0.0), #number(-0.1), #number(-0.1), #number(0.0), #number(-0.1), #number(-0.1), #number(-0.1), #number(99.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.1), #number(-0.0), #number(0.0), #number(-0.1), #number(109.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(115.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.1), #number(268.0)],
-                                              [#number(-0.1), #number(0.1), #number(0.1), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.1), #number(274.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(158.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(107.0)],
-                                              [#number(-0.0), #number(0.1), #number(-0.1), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(83.0)],
-                                              [#number(-0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(103.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(0.0), #number(0.1), #number(0.1), #number(272.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.1), #number(-0.1), #number(0.0), #number(-0.1), #number(-0.1), #number(-0.0), #number(85.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(280.0)],
-                                              [#number(0.0), #number(0.1), #number(0.1), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.1), #number(336.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.1), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(281.0)],
-                                              [#number(0.0), #number(0.1), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(118.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.1), #number(-0.1), #number(0.1), #number(0.0), #number(0.1), #number(317.0)],
-                                              [#number(0.0), #number(0.1), #number(0.0), #number(0.0), #number(0.1), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(235.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(60.0)],
-                                              [#number(0.0), #number(0.1), #number(0.0), #number(-0.0), #number(0.0), #number(0.1), #number(-0.1), #number(0.1), #number(0.0), #number(0.0), #number(174.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.1), #number(0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(259.0)],
-                                              [#number(-0.0), #number(0.1), #number(0.1), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(178.0)],
-                                              [#number(-0.1), #number(-0.0), #number(0.1), #number(-0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(128.0)],
-                                              [#number(-0.1), #number(0.1), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(96.0)],
-                                              [#number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(0.1), #number(0.1), #number(-0.0), #number(126.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.1), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(288.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(88.0)],
-                                              [#number(-0.0), #number(0.1), #number(-0.0), #number(0.1), #number(0.0), #number(0.1), #number(-0.1), #number(0.1), #number(0.0), #number(0.1), #number(292.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(71.0)],
-                                              [#number(0.1), #number(0.1), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(197.0)],
-                                              [#number(-0.0), #number(0.1), #number(0.1), #number(0.0), #number(0.1), #number(0.1), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(186.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(25.0)],
-                                              [#number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(84.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(96.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.0), #number(0.1), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(195.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(53.0)],
-                                              [#number(-0.0), #number(0.1), #number(0.1), #number(0.1), #number(0.1), #number(0.1), #number(-0.0), #number(0.1), #number(0.1), #number(0.1), #number(217.0)],
-                                              [#number(-0.1), #number(-0.0), #number(0.0), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(172.0)],
-                                              [#number(0.0), #number(0.1), #number(0.1), #number(0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.1), #number(131.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(214.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(59.0)],
-                                              [#number(-0.1), #number(0.1), #number(-0.1), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(70.0)],
-                                              [#number(0.1), #number(-0.0), #number(0.1), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.1), #number(0.1), #number(220.0)],
-                                              [#number(0.0), #number(0.1), #number(0.1), #number(-0.0), #number(0.1), #number(0.1), #number(-0.1), #number(0.1), #number(0.1), #number(0.1), #number(268.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(0.1), #number(0.1), #number(0.0), #number(152.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(-0.1), #number(-0.0), #number(47.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(74.0)],
-                                              [#number(0.0), #number(0.1), #number(0.1), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.1), #number(0.1), #number(295.0)],
-                                              [#number(-0.1), #number(0.1), #number(-0.1), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(101.0)],
-                                              [#number(0.0), #number(0.1), #number(0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(151.0)],
-                                              [#number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(127.0)],
-                                              [#number(0.0), #number(0.1), #number(0.0), #number(0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(237.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(-0.1), #number(0.1), #number(0.1), #number(0.0), #number(225.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(81.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(-0.0), #number(151.0)],
-                                              [#number(-0.0), #number(0.1), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(-0.0), #number(107.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(0.0), #number(0.1), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(64.0)],
-                                              [#number(0.0), #number(0.1), #number(0.0), #number(0.1), #number(0.1), #number(0.1), #number(-0.0), #number(0.1), #number(0.0), #number(-0.0), #number(138.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.1), #number(185.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(265.0)],
-                                              [#number(-0.1), #number(0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(0.0), #number(0.1), #number(-0.0), #number(101.0)],
-                                              [#number(-0.1), #number(0.1), #number(0.0), #number(-0.0), #number(0.0), #number(0.1), #number(-0.1), #number(0.1), #number(0.0), #number(-0.0), #number(137.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.1), #number(-0.0), #number(-0.1), #number(-0.1), #number(0.0), #number(-0.1), #number(-0.1), #number(-0.1), #number(143.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.1), #number(0.1), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(141.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.1), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(79.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(-0.0), #number(292.0)],
-                                              [#number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(178.0)],
-                                              [#number(0.1), #number(0.1), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(91.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(-0.1), #number(0.1), #number(0.1), #number(-0.0), #number(0.1), #number(0.0), #number(0.0), #number(116.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.1), #number(0.0), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(86.0)],
-                                              [#number(0.0), #number(0.1), #number(0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(122.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(72.0)],
-                                              [#number(0.0), #number(0.1), #number(0.0), #number(0.1), #number(-0.0), #number(0.0), #number(-0.1), #number(0.0), #number(0.0), #number(0.0), #number(129.0)],
-                                              [#number(-0.1), #number(-0.0), #number(0.1), #number(-0.0), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(142.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.1), #number(0.0), #number(90.0)],
-                                              [#number(0.1), #number(-0.0), #number(-0.1), #number(-0.0), #number(0.1), #number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(158.0)],
-                                              [#number(-0.0), #number(0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.1), #number(0.0), #number(39.0)],
-                                              [#number(0.1), #number(0.1), #number(0.0), #number(0.0), #number(0.1), #number(0.1), #number(0.0), #number(0.0), #number(0.1), #number(-0.0), #number(196.0)],
-                                              [#number(-0.0), #number(0.1), #number(0.0), #number(0.1), #number(0.0), #number(0.1), #number(-0.0), #number(0.1), #number(0.0), #number(0.0), #number(222.0)],
-                                              [#number(0.1), #number(0.1), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.1), #number(277.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(99.0)],
-                                              [#number(0.0), #number(0.1), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(196.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(202.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.0), #number(0.1), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.1), #number(155.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(0.1), #number(-0.1), #number(-0.0), #number(-0.1), #number(0.0), #number(-0.0), #number(-0.0), #number(77.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.1), #number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.1), #number(191.0)],
-                                              [#number(0.1), #number(-0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(70.0)],
-                                              [#number(0.1), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(73.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(49.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(0.1), #number(-0.1), #number(-0.0), #number(-0.1), #number(65.0)],
-                                              [#number(0.0), #number(0.1), #number(0.1), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.1), #number(263.0)],
-                                              [#number(0.0), #number(0.1), #number(0.0), #number(0.0), #number(0.1), #number(0.1), #number(-0.1), #number(0.1), #number(0.0), #number(0.0), #number(248.0)],
-                                              [#number(0.1), #number(-0.0), #number(0.0), #number(0.1), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(296.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(-0.0), #number(214.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(185.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(78.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(93.0)],
-                                              [#number(-0.0), #number(0.1), #number(-0.0), #number(0.0), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(252.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.1), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(150.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(77.0)],
-                                              [#number(0.0), #number(0.1), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(0.0), #number(0.1), #number(0.0), #number(208.0)],
-                                              [#number(-0.1), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(77.0)],
-                                              [#number(0.1), #number(0.1), #number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(0.1), #number(-0.1), #number(-0.0), #number(0.0), #number(108.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(160.0)],
-                                              [#number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(53.0)],
-                                              [#number(-0.0), #number(0.1), #number(0.1), #number(-0.1), #number(0.2), #number(0.2), #number(0.0), #number(0.1), #number(0.1), #number(0.1), #number(220.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(154.0)],
-                                              [#number(0.0), #number(0.1), #number(0.0), #number(-0.0), #number(0.0), #number(0.1), #number(-0.0), #number(0.1), #number(0.0), #number(0.0), #number(259.0)],
-                                              [#number(0.1), #number(-0.0), #number(0.0), #number(-0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(90.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.1), #number(0.1), #number(246.0)],
-                                              [#number(0.1), #number(0.1), #number(-0.0), #number(0.1), #number(-0.1), #number(-0.0), #number(-0.1), #number(0.0), #number(-0.0), #number(0.0), #number(124.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.1), #number(0.1), #number(0.0), #number(0.0), #number(0.0), #number(0.0), #number(67.0)],
-                                              [#number(0.1), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(72.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.1), #number(0.1), #number(0.0), #number(-0.0), #number(257.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.1), #number(0.0), #number(0.1), #number(-0.0), #number(0.1), #number(0.0), #number(262.0)],
-                                              [#number(0.0), #number(0.1), #number(0.1), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(275.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.1), #number(177.0)],
-                                              [#number(-0.1), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(71.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(47.0)],
-                                              [#number(-0.1), #number(0.1), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(187.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(125.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(0.1), #number(0.1), #number(0.1), #number(-0.0), #number(0.0), #number(-0.1), #number(78.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.1), #number(51.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.0), #number(0.1), #number(0.1), #number(0.1), #number(-0.0), #number(0.1), #number(0.1), #number(0.0), #number(258.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.1), #number(0.1), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.1), #number(0.0), #number(215.0)],
-                                              [#number(0.1), #number(-0.0), #number(0.1), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.1), #number(0.0), #number(303.0)],
-                                              [#number(-0.1), #number(0.1), #number(0.1), #number(0.1), #number(0.1), #number(0.0), #number(-0.1), #number(0.1), #number(0.1), #number(0.0), #number(243.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.1), #number(-0.1), #number(0.0), #number(0.1), #number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(91.0)],
-                                              [#number(0.1), #number(-0.0), #number(0.0), #number(0.0), #number(0.1), #number(0.1), #number(-0.0), #number(0.0), #number(0.0), #number(0.1), #number(150.0)],
-                                              [#number(0.0), #number(0.1), #number(0.1), #number(0.1), #number(0.0), #number(-0.0), #number(-0.0), #number(0.1), #number(0.1), #number(0.1), #number(310.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(153.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.2), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(346.0)],
-                                              [#number(-0.0), #number(0.1), #number(-0.1), #number(0.0), #number(-0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.1), #number(63.0)],
-                                              [#number(0.1), #number(0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(0.1), #number(-0.1), #number(0.1), #number(-0.0), #number(0.1), #number(89.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.0), #number(50.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(0.0), #number(-0.0), #number(0.2), #number(-0.1), #number(-0.1), #number(-0.0), #number(39.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(0.1), #number(0.0), #number(-0.0), #number(0.2), #number(-0.1), #number(-0.0), #number(0.0), #number(103.0)],
-                                              [#number(-0.0), #number(0.1), #number(0.1), #number(0.1), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(308.0)],
-                                              [#number(-0.1), #number(0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(116.0)],
-                                              [#number(0.0), #number(0.1), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(-0.1), #number(-0.0), #number(145.0)],
-                                              [#number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(74.0)],
-                                              [#number(-0.1), #number(0.1), #number(-0.1), #number(0.0), #number(-0.0), #number(-0.0), #number(0.1), #number(-0.1), #number(-0.1), #number(0.0), #number(45.0)],
-                                              [#number(0.1), #number(-0.0), #number(-0.0), #number(-0.1), #number(0.1), #number(0.1), #number(0.0), #number(0.0), #number(0.0), #number(0.0), #number(115.0)],
-                                              [#number(0.1), #number(0.1), #number(0.1), #number(0.1), #number(0.0), #number(0.0), #number(-0.1), #number(0.1), #number(0.0), #number(0.1), #number(264.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.2), #number(-0.1), #number(-0.0), #number(-0.0), #number(87.0)],
-                                              [#number(0.0), #number(0.1), #number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(202.0)],
-                                              [#number(0.0), #number(0.1), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(127.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.0), #number(-0.1), #number(-0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(182.0)],
-                                              [#number(0.1), #number(0.1), #number(-0.0), #number(0.0), #number(0.1), #number(0.0), #number(-0.0), #number(0.1), #number(0.1), #number(0.0), #number(241.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(66.0)],
-                                              [#number(-0.0), #number(0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.1), #number(94.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.0), #number(0.1), #number(0.1), #number(0.1), #number(0.1), #number(-0.0), #number(0.1), #number(-0.0), #number(283.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.1), #number(0.0), #number(-0.1), #number(-0.1), #number(0.1), #number(-0.1), #number(-0.0), #number(0.0), #number(64.0)],
-                                              [#number(0.1), #number(0.1), #number(-0.0), #number(-0.1), #number(-0.0), #number(0.0), #number(-0.1), #number(0.0), #number(0.0), #number(0.0), #number(102.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(200.0)],
-                                              [#number(0.0), #number(0.1), #number(0.0), #number(0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(265.0)],
-                                              [#number(-0.1), #number(0.1), #number(-0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(94.0)],
-                                              [#number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.1), #number(0.1), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(230.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(181.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(0.0), #number(-0.1), #number(-0.0), #number(-0.1), #number(-0.0), #number(0.0), #number(-0.1), #number(156.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(-0.1), #number(0.1), #number(0.1), #number(-0.0), #number(233.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.0), #number(-0.1), #number(0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(60.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.1), #number(0.1), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(219.0)],
-                                              [#number(0.1), #number(0.1), #number(-0.0), #number(0.0), #number(0.0), #number(0.1), #number(0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(80.0)],
-                                              [#number(-0.1), #number(0.1), #number(0.1), #number(-0.0), #number(0.1), #number(0.1), #number(-0.0), #number(0.1), #number(0.1), #number(-0.0), #number(68.0)],
-                                              [#number(0.1), #number(0.1), #number(0.1), #number(0.0), #number(0.0), #number(0.0), #number(-0.1), #number(0.0), #number(0.0), #number(0.0), #number(332.0)],
-                                              [#number(0.1), #number(-0.0), #number(0.0), #number(0.1), #number(0.1), #number(0.0), #number(0.0), #number(-0.0), #number(0.1), #number(-0.1), #number(248.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(0.1), #number(-0.1), #number(-0.1), #number(-0.0), #number(84.0)],
-                                              [#number(-0.1), #number(-0.0), #number(0.1), #number(0.0), #number(0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.1), #number(-0.0), #number(200.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(55.0)],
-                                              [#number(-0.1), #number(0.1), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(85.0)],
-                                              [#number(0.1), #number(-0.0), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(89.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(31.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(129.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(83.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(275.0)],
-                                              [#number(-0.0), #number(0.1), #number(-0.0), #number(0.1), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(65.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(198.0)],
-                                              [#number(0.1), #number(-0.0), #number(0.0), #number(0.1), #number(0.1), #number(0.0), #number(0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(236.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(0.1), #number(0.1), #number(0.1), #number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(253.0)],
-                                              [#number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.1), #number(0.1), #number(0.0), #number(-0.1), #number(124.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(44.0)],
-                                              [#number(0.1), #number(0.1), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.1), #number(172.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(0.0), #number(-0.1), #number(-0.1), #number(-0.1), #number(114.0)],
-                                              [#number(-0.0), #number(0.1), #number(0.0), #number(-0.0), #number(0.1), #number(0.1), #number(0.0), #number(-0.0), #number(0.0), #number(0.1), #number(142.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.1), #number(0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.0), #number(109.0)],
-                                              [#number(0.1), #number(-0.0), #number(0.0), #number(-0.1), #number(0.0), #number(0.1), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(180.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(144.0)],
-                                              [#number(0.1), #number(0.1), #number(0.1), #number(0.1), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.1), #number(-0.0), #number(163.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(147.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(0.0), #number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(97.0)],
-                                              [#number(0.0), #number(0.1), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.1), #number(0.0), #number(220.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(0.1), #number(0.1), #number(0.1), #number(-0.0), #number(0.0), #number(0.0), #number(0.1), #number(190.0)],
-                                              [#number(0.1), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(0.0), #number(0.1), #number(-0.0), #number(0.0), #number(0.0), #number(109.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.1), #number(0.1), #number(-0.0), #number(0.0), #number(0.1), #number(191.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.1), #number(0.1), #number(-0.0), #number(0.1), #number(0.0), #number(0.0), #number(122.0)],
-                                              [#number(0.1), #number(-0.0), #number(0.1), #number(0.1), #number(0.1), #number(0.0), #number(-0.1), #number(0.1), #number(0.1), #number(0.1), #number(230.0)],
-                                              [#number(0.0), #number(0.1), #number(0.1), #number(0.1), #number(0.0), #number(-0.0), #number(-0.1), #number(0.2), #number(0.1), #number(0.1), #number(242.0)],
-                                              [#number(0.1), #number(0.1), #number(-0.0), #number(0.0), #number(0.1), #number(-0.0), #number(-0.1), #number(0.1), #number(0.1), #number(0.1), #number(248.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.1), #number(0.1), #number(-0.0), #number(0.1), #number(0.1), #number(0.0), #number(249.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.1), #number(-0.1), #number(0.1), #number(0.1), #number(-0.0), #number(0.1), #number(0.1), #number(0.0), #number(192.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(131.0)],
-                                              [#number(0.1), #number(-0.0), #number(0.1), #number(0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(237.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(78.0)],
-                                              [#number(-0.0), #number(0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(135.0)],
-                                              [#number(0.0), #number(0.1), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(-0.1), #number(0.1), #number(-0.0), #number(0.0), #number(244.0)],
-                                              [#number(0.1), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(199.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.1), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.1), #number(0.0), #number(0.1), #number(0.0), #number(270.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(0.0), #number(0.0), #number(0.0), #number(164.0)],
-                                              [#number(-0.1), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(72.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(-0.1), #number(-0.1), #number(96.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(0.1), #number(0.1), #number(-0.1), #number(0.1), #number(0.1), #number(0.1), #number(306.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(91.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(214.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(0.1), #number(0.1), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(95.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(216.0)],
-                                              [#number(0.0), #number(0.1), #number(0.1), #number(0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(263.0)],
-                                              [#number(0.1), #number(0.1), #number(0.0), #number(0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(178.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.0), #number(0.1), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.1), #number(0.0), #number(113.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.1), #number(-0.0), #number(0.0), #number(0.0), #number(-0.0), #number(200.0)],
-                                              [#number(0.1), #number(0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(139.0)],
-                                              [#number(0.0), #number(0.1), #number(0.0), #number(0.0), #number(0.1), #number(0.1), #number(-0.0), #number(0.1), #number(0.1), #number(0.0), #number(139.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(-0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(88.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(148.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.1), #number(-0.0), #number(-0.1), #number(-0.0), #number(-0.1), #number(0.0), #number(-0.1), #number(-0.1), #number(88.0)],
-                                              [#number(-0.0), #number(0.1), #number(0.1), #number(0.1), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.1), #number(0.1), #number(243.0)],
-                                              [#number(-0.1), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(71.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.1), #number(-0.0), #number(-0.1), #number(-0.1), #number(0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(77.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.1), #number(-0.0), #number(0.1), #number(-0.0), #number(0.0), #number(0.0), #number(0.1), #number(0.0), #number(109.0)],
-                                              [#number(-0.0), #number(0.1), #number(0.0), #number(0.0), #number(0.1), #number(0.1), #number(0.0), #number(0.0), #number(0.1), #number(0.1), #number(272.0)],
-                                              [#number(-0.1), #number(0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(60.0)],
-                                              [#number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(54.0)],
-                                              [#number(-0.1), #number(0.1), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.1), #number(221.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.1), #number(-0.1), #number(-0.0), #number(90.0)],
-                                              [#number(0.0), #number(0.1), #number(0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.1), #number(311.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(281.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.1), #number(-0.1), #number(-0.1), #number(0.0), #number(182.0)],
-                                              [#number(0.0), #number(0.1), #number(0.1), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(321.0)],
-                                              [#number(-0.0), #number(0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(0.0), #number(0.0), #number(0.0), #number(58.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.1), #number(262.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.1), #number(206.0)],
-                                              [#number(-0.0), #number(0.1), #number(0.1), #number(-0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.1), #number(0.1), #number(0.0), #number(233.0)],
-                                              [#number(-0.0), #number(0.1), #number(0.2), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(242.0)],
-                                              [#number(-0.0), #number(0.1), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.1), #number(0.1), #number(123.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.0), #number(167.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(-0.1), #number(-0.1), #number(63.0)],
-                                              [#number(0.1), #number(0.1), #number(-0.0), #number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(0.1), #number(-0.0), #number(197.0)],
-                                              [#number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(71.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(168.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.1), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(140.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(0.1), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(217.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(0.1), #number(0.1), #number(-0.0), #number(0.1), #number(0.0), #number(-0.0), #number(121.0)],
-                                              [#number(0.0), #number(0.1), #number(0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.1), #number(0.1), #number(0.0), #number(-0.1), #number(235.0)],
-                                              [#number(0.0), #number(0.1), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.1), #number(0.0), #number(0.0), #number(-0.0), #number(245.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.1), #number(-0.1), #number(0.0), #number(-0.1), #number(-0.0), #number(0.0), #number(40.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.0), #number(0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(52.0)],
-                                              [#number(-0.1), #number(0.1), #number(-0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(104.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(-0.0), #number(0.1), #number(0.0), #number(132.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(88.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(0.0), #number(0.1), #number(0.1), #number(0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(69.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(0.0), #number(-0.1), #number(-0.1), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(219.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(72.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.0), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(201.0)],
-                                              [#number(0.1), #number(0.1), #number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(110.0)],
-                                              [#number(-0.0), #number(0.1), #number(0.0), #number(-0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(51.0)],
-                                              [#number(0.0), #number(0.1), #number(0.1), #number(0.1), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.1), #number(0.1), #number(277.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.1), #number(-0.1), #number(0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(63.0)],
-                                              [#number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.1), #number(118.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(69.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.0), #number(0.1), #number(0.0), #number(-0.1), #number(-0.1), #number(0.1), #number(0.1), #number(0.0), #number(273.0)],
-                                              [#number(-0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.0), #number(-0.1), #number(258.0)],
-                                              [#number(-0.1), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(43.0)],
-                                              [#number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(198.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.1), #number(242.0)],
-                                              [#number(0.1), #number(0.1), #number(0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(232.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(175.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(-0.1), #number(0.1), #number(-0.1), #number(-0.0), #number(0.0), #number(93.0)],
-                                              [#number(0.1), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.1), #number(0.1), #number(0.0), #number(0.0), #number(168.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.1), #number(0.0), #number(275.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.1), #number(0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(293.0)],
-                                              [#number(0.0), #number(0.1), #number(0.1), #number(0.1), #number(-0.1), #number(-0.1), #number(-0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(281.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(72.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.1), #number(-0.1), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.0), #number(140.0)],
-                                              [#number(0.1), #number(-0.0), #number(-0.1), #number(0.1), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.1), #number(0.0), #number(189.0)],
-                                              [#number(-0.1), #number(0.1), #number(-0.0), #number(0.1), #number(0.1), #number(0.1), #number(-0.0), #number(0.1), #number(0.0), #number(-0.0), #number(181.0)],
-                                              [#number(-0.0), #number(0.1), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.1), #number(-0.0), #number(209.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(-0.1), #number(-0.1), #number(0.0), #number(-0.1), #number(-0.1), #number(-0.0), #number(136.0)],
-                                              [#number(0.1), #number(-0.0), #number(0.1), #number(0.1), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.1), #number(261.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(113.0)],
-                                              [#number(0.1), #number(0.1), #number(0.0), #number(-0.0), #number(0.1), #number(0.1), #number(-0.0), #number(0.1), #number(0.1), #number(0.0), #number(131.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.0), #number(-0.1), #number(0.0), #number(0.0), #number(-0.0), #number(0.1), #number(0.0), #number(0.0), #number(174.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.1), #number(0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.0), #number(257.0)],
-                                              [#number(-0.1), #number(-0.0), #number(0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(55.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.1), #number(0.1), #number(0.1), #number(-0.0), #number(-0.0), #number(0.0), #number(84.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.1), #number(-0.1), #number(0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(42.0)],
-                                              [#number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(0.1), #number(146.0)],
-                                              [#number(0.0), #number(0.1), #number(0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.1), #number(0.0), #number(0.0), #number(212.0)],
-                                              [#number(-0.1), #number(0.1), #number(0.1), #number(0.1), #number(0.1), #number(0.1), #number(0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(233.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(0.0), #number(0.0), #number(0.1), #number(-0.1), #number(0.1), #number(0.0), #number(-0.0), #number(91.0)],
-                                              [#number(0.0), #number(0.1), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(111.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.1), #number(0.0), #number(-0.1), #number(-0.0), #number(-0.1), #number(152.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(0.0), #number(0.1), #number(0.1), #number(-0.0), #number(0.1), #number(0.0), #number(0.1), #number(120.0)],
-                                              [#number(-0.0), #number(0.1), #number(0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(67.0)],
-                                              [#number(0.0), #number(0.1), #number(0.1), #number(0.1), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.1), #number(0.1), #number(310.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(94.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(183.0)],
-                                              [#number(0.1), #number(0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(66.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.1), #number(-0.0), #number(0.1), #number(0.0), #number(-0.0), #number(0.0), #number(0.1), #number(0.1), #number(173.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.1), #number(-0.0), #number(0.0), #number(0.0), #number(0.1), #number(-0.0), #number(-0.1), #number(-0.0), #number(72.0)],
-                                              [#number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(49.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(64.0)],
-                                              [#number(-0.1), #number(-0.0), #number(-0.1), #number(-0.1), #number(-0.0), #number(-0.0), #number(0.1), #number(-0.1), #number(-0.1), #number(-0.0), #number(48.0)],
-                                              [#number(0.0), #number(0.1), #number(0.0), #number(0.1), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(178.0)],
-                                              [#number(-0.0), #number(0.1), #number(-0.0), #number(-0.1), #number(0.0), #number(0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(0.0), #number(104.0)],
-                                              [#number(0.0), #number(0.1), #number(-0.0), #number(0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(-0.0), #number(0.0), #number(132.0)],
-                                              [#number(-0.0), #number(-0.0), #number(0.0), #number(0.0), #number(0.0), #number(0.0), #number(-0.0), #number(0.0), #number(0.0), #number(-0.0), #number(220.0)],
-                                              [#number(-0.0), #number(-0.0), #number(-0.1), #number(-0.1), #number(0.1), #number(0.0), #number(0.2), #number(-0.0), #number(-0.0), #number(0.0), #number(57.0)]];
-
+           
     public type MotokoLearnError = {
       #notAllYsAreSymbol;
       #sizeMissmatchXY;
@@ -930,8 +149,7 @@ module {
     };
 
     public func max(rs: [Float]) : Float {
-      Debug.print("m0_"#Nat.toText(rs.size()));
-      let aux = Array.sort(rs, Float.compare);Debug.print("m1_"#Nat.toText(rs.size()));
+      let aux = Array.sort(rs, Float.compare);
       aux[rs.size()-1];
     };
 
@@ -1075,19 +293,18 @@ module {
 
     func computeFeatureGini(xcol: [dataMember],y:[Text],y_uniques:[Text]): Result.Result<(Float,Float), MotokoLearnError> {
       // check whether this a nueric or a symbolic feature
-      Debug.print("g_0");
-      let aux: dataMember = xcol[0];Debug.print("g_01");
+      let aux: dataMember = xcol[0];
       switch(aux) {
         case (#number(num)) {
-          let xs = dataMemberVectorToFloatVector(xcol);Debug.print("g_1");
+          let xs = dataMemberVectorToFloatVector(xcol);
           switch (xs) {
             case (#ok(xs_num)) {
-              let xs_min = min(xs_num);Debug.print("g_2");
-              let xs_max = max(xs_num);Debug.print("g_3");
-              let th_vec: [Float] = linspace(xs_min,xs_max,NUM_CHECKS_GINI); Debug.print("g_4");// NUM_CHECKS_GINI : Nat = 10; it should be a private constant of the future module
-              let ginis = Buffer.Buffer<Float>(th_vec.size());Debug.print("g_5");
+              let xs_min = min(xs_num);
+              let xs_max = max(xs_num);
+              let th_vec: [Float] = linspace(xs_min,xs_max,NUM_CHECKS_GINI);// NUM_CHECKS_GINI : Nat = 10; it should be a private constant of the future module
+              let ginis = Buffer.Buffer<Float>(th_vec.size());
               for (i in Iter.range(0, th_vec.size() - 1)) {
-                let th = th_vec[i];Debug.print("g"#Nat.toText(i));
+                let th = th_vec[i];
                 let ret_xi = Array.mapEntries<Float, Bool>(xs_num, func (xx, ii) = (xx <= th));
                 let ret_xi_size: Nat = Array.filter<Bool>(ret_xi, func xx = xx == true).size();
                 let ret_yi_l = Buffer.Buffer<Text>(ret_xi_size);
@@ -1348,28 +565,27 @@ module {
           let num_ys: Nat = Array.filter<Text>(y, func x = x == y_uniques[i]).size();
           let prob = Float.fromInt(num_ys) / Float.fromInt(y.size());
           probs.add(prob);
-        };Debug.print("f11");
+        };
      
-      let node_entropy = entropy(y, y_uniques);Debug.print("f12");
-      let x_ncols = transpose(x).size(); Debug.print("f13");  // if we only have 1 feature, we finish branch 
+      let node_entropy = entropy(y, y_uniques);
+      let x_ncols = transpose(x).size();
      
       if (x.size() <= min_node_data_size or current_depth >= max_depth or node_entropy==0 or x_ncols == 1) {
         let leafNode: BinTree  = setLeftRightBranch(null, null, #symbol(Buffer.toArray(probs)), nilTree(), nilTree());
         return #ok(leafNode);
-      };Debug.print("f14");
+      };
       // create node  
       // for all features
-      let xt = transpose(x);Debug.print("f141");
-      let ginis = Buffer.Buffer<Float>(xt.size());Debug.print("f142");
-      let ths = Buffer.Buffer<Float>(xt.size());Debug.print("f143");
+      let xt = transpose(x);
+      let ginis = Buffer.Buffer<Float>(xt.size());
+      let ths = Buffer.Buffer<Float>(xt.size());
       
-      //<-----IMHERE
       let num_features = Nat.min(MAX_FEATURE_VALIDATIONS, xt.size());
       let pos_vector: [Nat] = randomSample(0, xt.size()-1, num_features, false, seed);
 
-      for (i in Iter.fromArray(pos_vector)) {//Iter.range(0, num_features - 1)) { //xt.size() - 1)) {
-        let xcol = xt[i];Debug.print("f144"#Nat.toText(i));
-        let gini = computeFeatureGini(xcol,y,y_uniques);Debug.print("f144"#Nat.toText(i)#"b");
+      for (i in Iter.fromArray(pos_vector)) {
+        let xcol = xt[i];
+        let gini = computeFeatureGini(xcol,y,y_uniques);
         switch (gini) {
           case (#ok(gini_float, th_float)) {
             ginis.add(gini_float);
@@ -1379,9 +595,7 @@ module {
             return #err(err);
           };
         }; 
-      }; Debug.print("f15");
-
-      //<---IMHERE
+      };
 
       // compute gini index of the
       let ginis_array = Buffer.toArray(ginis);
@@ -1390,44 +604,36 @@ module {
       let bestcol: ?Nat = Array.indexOf<Float>(bestgini, ginis_array, Float.equal);
       if (bestcol==null) {
         return #err(#noBestGiniError);
-      };Debug.print("f16");
+      };
       let xbestcol : Nat = switch bestcol {
         case null 0;
         case (?Nat) Nat;
-      };Debug.print("f17");
+      };
       let bestth = ths_array[xbestcol];
       
       // recursive call left and right and connect to node and return 
       let myx = transpose(cols<dataMember>([pos_vector[xbestcol]], x))[0]; // redirection because real feature index is inside pos_vector
-      //let myx = transpose(cols<dataMember>([xbestcol], x))[0];
 
       let (left_rows,right_rows) = switch (myx[0]) {
         case (#number(num)) computeThLeftRightNumeric(myx, bestth);
         case (#symbol(sym)) computeLeftRightSymbolic(myx);
       };
-      Debug.print("f1");
       let x2 = removeRows([pos_vector[xbestcol]], x);
-      //let x2 = removeRows([xbestcol], x);
       
       // pick the true col_id from col_ids
       let true_colid: Nat = col_ids[pos_vector[xbestcol]];
-      //let true_colid: Nat = col_ids[xbestcol];
-      
-      // remove "true_colid" from col_ids before passing recursively
+ 
       let next_col_ids: [Nat] = removeRowsVector([pos_vector[xbestcol]], col_ids);
-      //let next_col_ids: [Nat] = removeRowsVector([xbestcol], col_ids);
  
       let next_x: [[dataMember]] = transpose(removeRows([pos_vector[xbestcol]], transpose(x))); 
-      //let next_x: [[dataMember]] = transpose(removeRows([xbestcol], transpose(x))); 
 
-      //<-----IMHERE
       let x_left = rows(left_rows,next_x);
       let y_left = rowsVector(left_rows,y);
       let x_right = rows(right_rows,next_x);
       let y_right = rowsVector(right_rows,y);
 
-      let leftNode_aux  = fitClassification(x_left, y_left, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids,seed+1);Debug.print("f18");
-      let rightNode_aux  = fitClassification(x_right, y_right, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids,seed+2);Debug.print("f19");
+      let leftNode_aux  = fitClassification(x_left, y_left, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids,seed+1);
+      let rightNode_aux  = fitClassification(x_right, y_right, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids,seed+2);
       let leftNode = switch leftNode_aux {
         case (#ok(leftNode)) leftNode;
         case (#err(err)) return leftNode_aux;
@@ -1538,6 +744,111 @@ module {
                            current_depth : Nat,  
                            max_depth: Nat, 
                            min_node_data_size: Nat,
+                           col_ids: [Nat],
+                           seed: Nat): Result.Result<BinTree, MotokoLearnError> {
+
+      // For regression predictive modeling problems the cost function that is minimized to choose split points is the sum squared error 
+      //     across all training samples that fall within the rectangle: sum(y – prediction)^2
+     
+      let y_mean: Float = mean(y); 
+
+      let x_ncols = transpose(x).size();
+      if (x.size() <= min_node_data_size or current_depth >= max_depth or x_ncols == 1) {
+         let leafNode: BinTree  = setLeftRightBranch(null, null, #number(y_mean), nilTree(), nilTree());
+         return #ok(leafNode);
+      }; 
+      // create node  
+      // for all features
+
+      let xt = transpose(x);
+      let mses = Buffer.Buffer<Float>(xt.size());
+      let ths = Buffer.Buffer<Float>(xt.size());
+      //<---------IMHERE  
+      let num_features = Nat.min(MAX_FEATURE_VALIDATIONS, xt.size());
+      let pos_vector: [Nat] = randomSample(0, xt.size()-1, num_features, false, seed);
+
+      for (i in Iter.fromArray(pos_vector)) {
+        let xcol = xt[i];
+        let mse = computeFeatureMSE(xcol,y); 
+        switch (mse) {
+          case (#ok(gini_float, th_float)) {
+            mses.add(gini_float);
+            ths.add(th_float);
+          };
+          case (#err(err)) {
+            return #err(err);
+          };
+        }; 
+      }; 
+      // // compute gini index of the
+      let mses_array = Buffer.toArray(mses);
+      let ths_array: [Float] = Buffer.toArray(ths);
+      let bestgini = min(mses_array);
+      let bestcol: ?Nat = Array.indexOf<Float>(bestgini, mses_array, Float.equal);
+      if (bestcol==null) {
+         return #err(#noBestGiniError);
+      };
+      let xbestcol : Nat = switch bestcol {
+         case null 0;
+         case (?Nat) Nat;
+      };
+      let bestth = ths_array[xbestcol];
+      
+      // recursive call left and right and connect to node and return 
+      let myx = transpose(cols<dataMember>([pos_vector[xbestcol]], x))[0];
+      //let myx = transpose(cols<dataMember>([xbestcol], x))[0];
+      
+      let (left_rows,right_rows) = switch (myx[0]) {
+         case (#number(num)) computeThLeftRightNumeric(myx, bestth);
+         case (#symbol(sym)) computeLeftRightSymbolic(myx);
+      };
+
+      //let x2 = removeRows([xbestcol], x); 
+      let x2 = removeRows([pos_vector[xbestcol]], x); 
+
+      // pick the true col_id from col_ids
+      //let true_colid: Nat = col_ids[xbestcol];
+      let true_colid: Nat = col_ids[pos_vector[xbestcol]];
+
+      // remove "true_colid" from col_ids before passing recursively
+      let next_col_ids: [Nat] = removeRowsVector([pos_vector[xbestcol]], col_ids);
+  
+      let next_x: [[dataMember]] = transpose(removeRows([pos_vector[xbestcol]], transpose(x)));
+
+      let x_left = rows(left_rows,next_x);
+      let y_left = rowsVector(left_rows,y);
+      let x_right = rows(right_rows,next_x);
+      let y_right = rowsVector(right_rows,y);
+
+      let lsize_zero:Bool = Nat.equal(x_left.size(),0);
+      let leftNode_aux  = switch (lsize_zero) {
+        case (true) #ok(nilTree());
+        case (false) fitRegression(x_left, y_left, current_depth + 1, max_depth, min_node_data_size, next_col_ids, seed+1);
+      };
+      let rsize_zero:Bool = Nat.equal(x_right.size(),0);
+      let rightNode_aux  = switch (rsize_zero) {
+        case (true) #ok(nilTree());
+        case _ fitRegression(x_right, y_right, current_depth + 1, max_depth, min_node_data_size, next_col_ids, seed+2);
+      };
+      
+      let leftNode = switch leftNode_aux {
+         case (#ok(leftNode)) leftNode;
+         case (#err(err)) return leftNode_aux;
+      };
+      let rightNode = switch rightNode_aux {
+         case (#ok(rightNode)) rightNode;
+         case (#err(err)) return rightNode_aux;
+      };
+
+      let thisNode: BinTree = setLeftRightBranch(?true_colid, ?bestth, #number(y_mean), leftNode, rightNode);
+      return #ok(thisNode);
+    };   
+
+    public func fitRegressionOLD(x : [[dataMember]], 
+                           y : [Float], 
+                           current_depth : Nat,  
+                           max_depth: Nat, 
+                           min_node_data_size: Nat,
                            col_ids: [Nat]): Result.Result<BinTree, MotokoLearnError> {
 
       // For regression predictive modeling problems the cost function that is minimized to choose split points is the sum squared error 
@@ -1606,12 +917,12 @@ module {
       let lsize_zero:Bool = Nat.equal(x_left.size(),0);
       let leftNode_aux  = switch (lsize_zero) {
         case (true) #ok(nilTree());
-        case (false) fitRegression(x_left, y_left, current_depth + 1, max_depth, min_node_data_size, next_col_ids);
+        case (false) fitRegressionOLD(x_left, y_left, current_depth + 1, max_depth, min_node_data_size, next_col_ids);
       };
       let rsize_zero:Bool = Nat.equal(x_right.size(),0);
       let rightNode_aux  = switch (rsize_zero) {
         case (true) #ok(nilTree());
-        case _ fitRegression(x_right, y_right, current_depth + 1, max_depth, min_node_data_size, next_col_ids);
+        case _ fitRegressionOLD(x_right, y_right, current_depth + 1, max_depth, min_node_data_size, next_col_ids);
       };
       
       let leftNode = switch leftNode_aux {

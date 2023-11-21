@@ -25,33 +25,33 @@ actor {
   
   public func doClassificationComp() : async (Nat64) {
 
-    let seed = 123456789; Debug.print("1");
-    let nsamples: Nat = 1000;Debug.print("11");
-    let alldata = data.digit_data;Debug.print("12");
-    let pos_vec = mtkl.randomSample(0, alldata.size()-1, nsamples, false, seed);Debug.print("13");
+    let seed = 123456789; 
+    let nsamples: Nat = 1000;
+    let alldata = data.digit_data;
+    let pos_vec = mtkl.randomSample(0, alldata.size()-1, nsamples, false, seed);
 
-    let train = mtkl.rows(pos_vec, alldata); Debug.print("14");
-    let test = mtkl.removeRows(pos_vec, alldata); Debug.print("15");
+    let train = mtkl.rows(pos_vec, alldata); 
+    let test = mtkl.removeRows(pos_vec, alldata); 
     
-    let xcols = Iter.toArray(Iter.range(0, mtkl.transpose(train).size()-2));Debug.print("16");
-    let ycol = mtkl.transpose(train).size()-1;Debug.print("17");
-    let xtrain = mtkl.cols(xcols, train);Debug.print("18");
-    let yaux = mtkl.transpose(mtkl.cols([ycol], train))[0];Debug.print("19");
-    let ytrain = mtkl.dataMemberVectorToTextVector(yaux);Debug.print("110");
-    let xtest = mtkl.cols(xcols, test);Debug.print("1");
-    let yauxtest = mtkl.transpose(mtkl.cols([ycol], test))[0];Debug.print("111");
-    let ytest = mtkl.dataMemberVectorToTextVector(yauxtest);Debug.print("112");
+    let xcols = Iter.toArray(Iter.range(0, mtkl.transpose(train).size()-2));
+    let ycol = mtkl.transpose(train).size()-1;
+    let xtrain = mtkl.cols(xcols, train);
+    let yaux = mtkl.transpose(mtkl.cols([ycol], train))[0];
+    let ytrain = mtkl.dataMemberVectorToTextVector(yaux);
+    let xtest = mtkl.cols(xcols, test);
+    let yauxtest = mtkl.transpose(mtkl.cols([ycol], test))[0];
+    let ytest = mtkl.dataMemberVectorToTextVector(yauxtest);
    
     switch(ytrain) {
       case (#ok(yvec)) {
-        let y_uniques = mtkl.uniquesText(yvec);Debug.print("113");
-        let myiter = Iter.range(0, xcols.size()-1);Debug.print("114");
-        let col_ids = Iter.toArray(myiter);Debug.print("115");
-        var ret_tree: mtkl.BinTree = mtkl.nilTree(); Debug.print("116");
+        let y_uniques = mtkl.uniquesText(yvec);
+        let myiter = Iter.range(0, xcols.size()-1);
+        let col_ids = Iter.toArray(myiter);
+        var ret_tree: mtkl.BinTree = mtkl.nilTree(); 
         let ninst = Comp.countInstructions (
           func r {
             
-            let aux = mtkl.fitClassification(xtrain, yvec, 0, y_uniques, 5, 10, col_ids, seed+1);Debug.print("117"); // seed+1
+            let aux = mtkl.fitClassification(xtrain, yvec, 0, y_uniques, 5, 10, col_ids, seed+1);
 
             switch(aux) {
               case (#ok(mytree)) {
@@ -106,7 +106,7 @@ actor {
 
     let seed = 123456789;
     let nsamples: Nat = 50;
-    let alldata = mtkl.iris_data;
+    let alldata = data.iris_data;
     let pos_vec = mtkl.randomSample(0, alldata.size()-1, nsamples, false, seed);
 
     let train = mtkl.rows(pos_vec, alldata); 
@@ -174,10 +174,10 @@ actor {
   public func doRegression() : async () {
 
     let seed = 123456789;
-    let nsamples: Nat = 50;
-    let max_depth: Nat = 7;
+    let nsamples: Nat = 300;
+    let max_depth: Nat = 10;
     let min_num_samples: Nat = 5;
-    let alldata = mtkl.diabetes_data;
+    let alldata = data.diabetes_data;
     let pos_vec = mtkl.randomSample(0, alldata.size()-1, nsamples, false, seed);
 
     let train = mtkl.rows(pos_vec, alldata); 
@@ -195,7 +195,7 @@ actor {
       case (#ok(yvec)) {
         let myiter = Iter.range(0, xcols.size()-1);
         let col_ids = Iter.toArray(myiter);
-        let ret_tree = mtkl.fitRegression(xtrain, yvec, 0, max_depth, min_num_samples, col_ids);
+        let ret_tree = mtkl.fitRegressionOLD(xtrain, yvec, 0, max_depth, min_num_samples, col_ids);
         Debug.print("Tree created");
         switch(ret_tree) {
           case (#ok(mytree)) {
