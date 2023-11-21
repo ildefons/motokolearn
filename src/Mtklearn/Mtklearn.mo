@@ -1070,6 +1070,7 @@ module {
     };
 
     public let NUM_CHECKS_GINI : Nat = 10;
+    public let MAX_FEATURE_VALIDATIONS : Nat = 20;
     public let X_UNIQUES : [Text] = ["0","1"];
 
     func computeFeatureGini(xcol: [dataMember],y:[Text],y_uniques:[Text]): Result.Result<(Float,Float), MotokoLearnError> {
@@ -1339,7 +1340,8 @@ module {
                            y_uniques: [Text], 
                            max_depth: Nat, 
                            min_node_data_size: Nat,
-                           col_ids: [Nat]): Result.Result<BinTree, MotokoLearnError> {
+                           col_ids: [Nat],
+                           seed: Nat): Result.Result<BinTree, MotokoLearnError> {
       // check size of x is at least the minimum size and we are not at the deepest level allowed
       let probs = Buffer.Buffer<Float>(y_uniques.size());
       for (i in Iter.range(0, y_uniques.size() - 1)) { 
@@ -1360,7 +1362,12 @@ module {
       let xt = transpose(x);Debug.print("f141");
       let ginis = Buffer.Buffer<Float>(xt.size());Debug.print("f142");
       let ths = Buffer.Buffer<Float>(xt.size());Debug.print("f143");
-      for (i in Iter.range(0, 20)) { //xt.size() - 1)) {
+      
+      //<-----IMHERE
+      let num_features = Nat.min(MAX_FEATURE_VALIDATIONS, xt.size());
+      let pos_vector: [Nat] = randomSample(0, xt.size()-1, num_features, false, seed);
+
+      for (i in Iter.fromArray(pos_vector)) {//Iter.range(0, num_features - 1)) { //xt.size() - 1)) {
         let xcol = xt[i];Debug.print("f144"#Nat.toText(i));
         let gini = computeFeatureGini(xcol,y,y_uniques);Debug.print("f144"#Nat.toText(i)#"b");
         switch (gini) {
@@ -1373,6 +1380,9 @@ module {
           };
         }; 
       }; Debug.print("f15");
+
+      //<---IMHERE
+
       // compute gini index of the
       let ginis_array = Buffer.toArray(ginis);
       let ths_array: [Float] = Buffer.toArray(ths);
@@ -1388,30 +1398,36 @@ module {
       let bestth = ths_array[xbestcol];
       
       // recursive call left and right and connect to node and return 
-      let myx = transpose(cols<dataMember>([xbestcol], x))[0];
+      let myx = transpose(cols<dataMember>([pos_vector[xbestcol]], x))[0]; // redirection because real feature index is inside pos_vector
+      //let myx = transpose(cols<dataMember>([xbestcol], x))[0];
 
       let (left_rows,right_rows) = switch (myx[0]) {
         case (#number(num)) computeThLeftRightNumeric(myx, bestth);
         case (#symbol(sym)) computeLeftRightSymbolic(myx);
       };
       Debug.print("f1");
-      let x2 = removeRows([xbestcol], x);
+      let x2 = removeRows([pos_vector[xbestcol]], x);
+      //let x2 = removeRows([xbestcol], x);
       
       // pick the true col_id from col_ids
-      let true_colid: Nat = col_ids[xbestcol];
+      let true_colid: Nat = col_ids[pos_vector[xbestcol]];
+      //let true_colid: Nat = col_ids[xbestcol];
       
       // remove "true_colid" from col_ids before passing recursively
-      let next_col_ids: [Nat] = removeRowsVector([xbestcol], col_ids);
+      let next_col_ids: [Nat] = removeRowsVector([pos_vector[xbestcol]], col_ids);
+      //let next_col_ids: [Nat] = removeRowsVector([xbestcol], col_ids);
  
-      let next_x: [[dataMember]] = transpose(removeRows([xbestcol], transpose(x))); 
+      let next_x: [[dataMember]] = transpose(removeRows([pos_vector[xbestcol]], transpose(x))); 
+      //let next_x: [[dataMember]] = transpose(removeRows([xbestcol], transpose(x))); 
 
+      //<-----IMHERE
       let x_left = rows(left_rows,next_x);
       let y_left = rowsVector(left_rows,y);
       let x_right = rows(right_rows,next_x);
       let y_right = rowsVector(right_rows,y);
 
-      let leftNode_aux  = fitClassification(x_left, y_left, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids);Debug.print("f18");
-      let rightNode_aux  = fitClassification(x_right, y_right, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids);Debug.print("f19");
+      let leftNode_aux  = fitClassification(x_left, y_left, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids,seed+1);Debug.print("f18");
+      let rightNode_aux  = fitClassification(x_right, y_right, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids,seed+2);Debug.print("f19");
       let leftNode = switch leftNode_aux {
         case (#ok(leftNode)) leftNode;
         case (#err(err)) return leftNode_aux;
@@ -1502,8 +1518,8 @@ module {
       let x_right = rows(right_rows,next_x);
       let y_right = rowsVector(right_rows,y);
 
-      let leftNode_aux  = fitClassification(x_left, y_left, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids);Debug.print("f18");
-      let rightNode_aux  = fitClassification(x_right, y_right, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids);Debug.print("f19");
+      let leftNode_aux  = fitClassification_OLD(x_left, y_left, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids);Debug.print("f18");
+      let rightNode_aux  = fitClassification_OLD(x_right, y_right, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids);Debug.print("f19");
       let leftNode = switch leftNode_aux {
         case (#ok(leftNode)) leftNode;
         case (#err(err)) return leftNode_aux;

@@ -50,7 +50,9 @@ actor {
         var ret_tree: mtkl.BinTree = mtkl.nilTree(); Debug.print("116");
         let ninst = Comp.countInstructions (
           func r {
-            let aux = mtkl.fitClassification(xtrain, yvec, 0, y_uniques, 5, 10, col_ids);Debug.print("117");
+            
+            let aux = mtkl.fitClassification(xtrain, yvec, 0, y_uniques, 5, 10, col_ids, seed+1);Debug.print("117"); // seed+1
+
             switch(aux) {
               case (#ok(mytree)) {
                 ret_tree := mytree;
@@ -124,7 +126,7 @@ actor {
         let y_uniques = mtkl.uniquesText(yvec);
         let myiter = Iter.range(0, xcols.size()-1);
         let col_ids = Iter.toArray(myiter);
-        let ret_tree = mtkl.fitClassification(xtrain, yvec, 0, y_uniques, 3, 10, col_ids);
+        let ret_tree = mtkl.fitClassification_OLD(xtrain, yvec, 0, y_uniques, 3, 10, col_ids);
         Debug.print("Tree created");
         switch(ret_tree) {
           case (#ok(mytree)) {
