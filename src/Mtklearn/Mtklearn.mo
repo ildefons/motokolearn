@@ -111,7 +111,6 @@ module {
 
     public func ncols<T>(m : [[T]]) : Nat {
       // TODO: check all rows habve same number of elements
-      Debug.print("m rows:"#Nat.toText(m.size()));
       m[0].size();
     };
 
@@ -120,13 +119,13 @@ module {
     };
 
     public func transpose<T>(m : [[T]]) : [[T]] {
-      let myncols = ncols(m);Debug.print("T1");
-      let trans = Buffer.Buffer<[T]>(myncols); Debug.print("T12");
-      for (i in Iter.range(0, myncols - 1)) {Debug.print("T131");
-        let ys = cols([i], m);Debug.print("T132");
-        let ys2 = Array.flatten(ys);Debug.print("T133");
-        trans.add(ys2);Debug.print("T134");
-      }; Debug.print("T14");
+      let myncols = ncols(m);
+      let trans = Buffer.Buffer<[T]>(myncols);
+      for (i in Iter.range(0, myncols - 1)) {
+        let ys = cols([i], m);
+        let ys2 = Array.flatten(ys);
+        trans.add(ys2);
+      }; 
       Buffer.toArray(trans); 
     };
   
@@ -561,22 +560,22 @@ module {
                            col_ids: [Nat],
                            seed: Nat): Result.Result<BinTree, MotokoLearnError> {
       // check size of x is at least the minimum size and we are not at the deepest level allowed
-      let probs = Buffer.Buffer<Float>(y_uniques.size());Debug.print("1");
-      for (i in Iter.range(0, y_uniques.size() - 1)) { Debug.print("2");
+      let probs = Buffer.Buffer<Float>(y_uniques.size());
+      for (i in Iter.range(0, y_uniques.size() - 1)) { 
           let num_ys: Nat = Array.filter<Text>(y, func x = x == y_uniques[i]).size();
           let prob = Float.fromInt(num_ys) / Float.fromInt(y.size());
           probs.add(prob);
         };
      
-      let node_entropy = entropy(y, y_uniques);Debug.print("13");
+      let node_entropy = entropy(y, y_uniques);
       
       if (x.size() <= min_node_data_size or current_depth >= max_depth or node_entropy==0) {
-        let leafNode: BinTree  = setLeftRightBranch(null, null, #symbol(Buffer.toArray(probs)), nilTree(), nilTree());Debug.print("15");
+        let leafNode: BinTree  = setLeftRightBranch(null, null, #symbol(Buffer.toArray(probs)), nilTree(), nilTree());
         return #ok(leafNode);
       };
-      let x_ncols = transpose(x).size();Debug.print("14");
+      let x_ncols = transpose(x).size();
       if (x_ncols == 1) {
-        let leafNode: BinTree  = setLeftRightBranch(null, null, #symbol(Buffer.toArray(probs)), nilTree(), nilTree());Debug.print("15b");
+        let leafNode: BinTree  = setLeftRightBranch(null, null, #symbol(Buffer.toArray(probs)), nilTree(), nilTree());
         return #ok(leafNode);
       };
 
@@ -584,13 +583,13 @@ module {
       // for all features
       let xt = transpose(x);
       let ginis = Buffer.Buffer<Float>(xt.size());
-      let ths = Buffer.Buffer<Float>(xt.size());Debug.print("16");
+      let ths = Buffer.Buffer<Float>(xt.size());
       
       let num_features = Nat.min(MAX_FEATURE_VALIDATIONS, xt.size());
-      let pos_vector: [Nat] = randomSample(0, xt.size()-1, num_features, false, seed);Debug.print("17");
+      let pos_vector: [Nat] = randomSample(0, xt.size()-1, num_features, false, seed);
 
       for (i in Iter.fromArray(pos_vector)) {
-        let xcol = xt[i];Debug.print("18");
+        let xcol = xt[i];
         let gini = computeFeatureGini(xcol,y,y_uniques);
         switch (gini) {
           case (#ok(gini_float, th_float)) {
@@ -618,7 +617,7 @@ module {
       let bestth = ths_array[xbestcol];
       
       // recursive call left and right and connect to node and return 
-      let myx = transpose(cols<dataMember>([pos_vector[xbestcol]], x))[0]; Debug.print("19");// redirection because real feature index is inside pos_vector
+      let myx = transpose(cols<dataMember>([pos_vector[xbestcol]], x))[0]; // redirection because real feature index is inside pos_vector
 
       let (left_rows,right_rows) = switch (myx[0]) {
         case (#number(num)) computeThLeftRightNumeric(myx, bestth);
@@ -627,19 +626,19 @@ module {
       let x2 = removeRows([pos_vector[xbestcol]], x);
       
       // pick the true col_id from col_ids
-      let true_colid: Nat = col_ids[pos_vector[xbestcol]];Debug.print("10");
+      let true_colid: Nat = col_ids[pos_vector[xbestcol]];
  
-      let next_col_ids: [Nat] = removeRowsVector([pos_vector[xbestcol]], col_ids);Debug.print("111");
+      let next_col_ids: [Nat] = removeRowsVector([pos_vector[xbestcol]], col_ids);
  
-      let next_x: [[dataMember]] = transpose(removeRows([pos_vector[xbestcol]], transpose(x))); Debug.print("112");
+      let next_x: [[dataMember]] = transpose(removeRows([pos_vector[xbestcol]], transpose(x)));
 
       let x_left = rows(left_rows,next_x);
       let y_left = rowsVector(left_rows,y);
       let x_right = rows(right_rows,next_x);
       let y_right = rowsVector(right_rows,y);
 
-      let leftNode_aux  = fitClassification(x_left, y_left, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids,seed+1);Debug.print("113");
-      let rightNode_aux  = fitClassification(x_right, y_right, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids,seed+2);Debug.print("114");
+      let leftNode_aux  = fitClassification(x_left, y_left, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids,seed+1);
+      let rightNode_aux  = fitClassification(x_right, y_right, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids,seed+2);
       let leftNode = switch leftNode_aux {
         case (#ok(leftNode)) leftNode;
         case (#err(err)) return leftNode_aux;
@@ -666,23 +665,23 @@ module {
           let num_ys: Nat = Array.filter<Text>(y, func x = x == y_uniques[i]).size();
           let prob = Float.fromInt(num_ys) / Float.fromInt(y.size());
           probs.add(prob);
-        };Debug.print("f11");
+        };
      
-      let node_entropy = entropy(y, y_uniques);Debug.print("f12");
-      let x_ncols = transpose(x).size(); Debug.print("f13");  // if we only have 1 feature, we finish branch 
+      let node_entropy = entropy(y, y_uniques);
+      let x_ncols = transpose(x).size(); // if we only have 1 feature, we finish branch 
      
       if (x.size() <= min_node_data_size or current_depth >= max_depth or node_entropy==0 or x_ncols == 1) {
         let leafNode: BinTree  = setLeftRightBranch(null, null, #symbol(Buffer.toArray(probs)), nilTree(), nilTree());
         return #ok(leafNode);
-      };Debug.print("f14");
+      };
       // create node  
       // for all features
-      let xt = transpose(x);Debug.print("f141");
-      let ginis = Buffer.Buffer<Float>(xt.size());Debug.print("f142");
-      let ths = Buffer.Buffer<Float>(xt.size());Debug.print("f143");
+      let xt = transpose(x);
+      let ginis = Buffer.Buffer<Float>(xt.size());
+      let ths = Buffer.Buffer<Float>(xt.size());
       for (i in Iter.range(0, xt.size() - 1)) {
-        let xcol = xt[i];Debug.print("f144"#Nat.toText(i));
-        let gini = computeFeatureGini(xcol,y,y_uniques);Debug.print("f144"#Nat.toText(i)#"b");
+        let xcol = xt[i];
+        let gini = computeFeatureGini(xcol,y,y_uniques);
         switch (gini) {
           case (#ok(gini_float, th_float)) {
             ginis.add(gini_float);
@@ -692,7 +691,7 @@ module {
             return #err(err);
           };
         }; 
-      }; Debug.print("f15");
+      }; 
       // compute gini index of the
       let ginis_array = Buffer.toArray(ginis);
       let ths_array: [Float] = Buffer.toArray(ths);
@@ -700,11 +699,11 @@ module {
       let bestcol: ?Nat = Array.indexOf<Float>(bestgini, ginis_array, Float.equal);
       if (bestcol==null) {
         return #err(#noBestGiniError);
-      };Debug.print("f16");
+      };
       let xbestcol : Nat = switch bestcol {
         case null 0;
         case (?Nat) Nat;
-      };Debug.print("f17");
+      };
       let bestth = ths_array[xbestcol];
       
       // recursive call left and right and connect to node and return 
@@ -714,7 +713,7 @@ module {
         case (#number(num)) computeThLeftRightNumeric(myx, bestth);
         case (#symbol(sym)) computeLeftRightSymbolic(myx);
       };
-      Debug.print("f1");
+     
       let x2 = removeRows([xbestcol], x);
       
       // pick the true col_id from col_ids
@@ -730,8 +729,8 @@ module {
       let x_right = rows(right_rows,next_x);
       let y_right = rowsVector(right_rows,y);
 
-      let leftNode_aux  = fitClassification_OLD(x_left, y_left, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids);Debug.print("f18");
-      let rightNode_aux  = fitClassification_OLD(x_right, y_right, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids);Debug.print("f19");
+      let leftNode_aux  = fitClassification_OLD(x_left, y_left, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids);
+      let rightNode_aux  = fitClassification_OLD(x_right, y_right, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids);
       let leftNode = switch leftNode_aux {
         case (#ok(leftNode)) leftNode;
         case (#err(err)) return leftNode_aux;
@@ -758,8 +757,12 @@ module {
      
       let y_mean: Float = mean(y); 
 
+      if (x.size() <= min_node_data_size or current_depth >= max_depth) {
+         let leafNode: BinTree  = setLeftRightBranch(null, null, #number(y_mean), nilTree(), nilTree());
+         return #ok(leafNode);
+      }; 
       let x_ncols = transpose(x).size();
-      if (x.size() <= min_node_data_size or current_depth >= max_depth or x_ncols == 1) {
+      if (x_ncols == 1) {
          let leafNode: BinTree  = setLeftRightBranch(null, null, #number(y_mean), nilTree(), nilTree());
          return #ok(leafNode);
       }; 
