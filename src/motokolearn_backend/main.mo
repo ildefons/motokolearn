@@ -229,9 +229,12 @@ actor {
     };
   };
 
-  public func doRF() : async () {
+  public func doRFClassifier() : async () {
 
     let seed = 123456789; 
+    let ntrees = 10;
+    let max_depth: Nat = 10;
+    let min_num_samples: Nat = 5;
     let nsamples: Nat = 1000;
     let alldata = data.digit_data;
     let pos_vec = mtkl.randomSample(0, alldata.size()-1, nsamples, false, seed);
@@ -255,7 +258,15 @@ actor {
         let col_ids = Iter.toArray(myiter);
         var ret_tree: mtkl.BinTree = mtkl.nilTree(); 
         
-        let f1_async_nat = await mtkl.f1(3);
+        let rfreturn = await mtkl.fitRandomForestClassifier(xtrain, 
+                                                            yvec, 
+                                                            y_uniques, 
+                                                            ntrees, 
+                                                            0, 
+                                                            min_num_samples, 
+                                                            max_depth, 
+                                                            col_ids, 
+                                                            seed+1);
             //let f1_nat : Nat = await f1_async_nat;
             //let aux = await mtkl.f2();//mtkl.fitClassification(xtrain, yvec, 0, y_uniques, 5, 10, col_ids, seed+1);
 

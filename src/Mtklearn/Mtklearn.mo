@@ -111,6 +111,7 @@ module {
 
     public func ncols<T>(m : [[T]]) : Nat {
       // TODO: check all rows habve same number of elements
+      Debug.print("m rows:"#Nat.toText(m.size()));
       m[0].size();
     };
 
@@ -119,13 +120,13 @@ module {
     };
 
     public func transpose<T>(m : [[T]]) : [[T]] {
-      let myncols = ncols(m);
-      let trans = Buffer.Buffer<[T]>(myncols); 
-      for (i in Iter.range(0, myncols - 1)) {
-        let ys = cols([i], m);
-        let ys2 = Array.flatten(ys);
-        trans.add(ys2);
-      };
+      let myncols = ncols(m);Debug.print("T1");
+      let trans = Buffer.Buffer<[T]>(myncols); Debug.print("T12");
+      for (i in Iter.range(0, myncols - 1)) {Debug.print("T131");
+        let ys = cols([i], m);Debug.print("T132");
+        let ys2 = Array.flatten(ys);Debug.print("T133");
+        trans.add(ys2);Debug.print("T134");
+      }; Debug.print("T14");
       Buffer.toArray(trans); 
     };
   
@@ -560,31 +561,36 @@ module {
                            col_ids: [Nat],
                            seed: Nat): Result.Result<BinTree, MotokoLearnError> {
       // check size of x is at least the minimum size and we are not at the deepest level allowed
-      let probs = Buffer.Buffer<Float>(y_uniques.size());
-      for (i in Iter.range(0, y_uniques.size() - 1)) { 
+      let probs = Buffer.Buffer<Float>(y_uniques.size());Debug.print("1");
+      for (i in Iter.range(0, y_uniques.size() - 1)) { Debug.print("2");
           let num_ys: Nat = Array.filter<Text>(y, func x = x == y_uniques[i]).size();
           let prob = Float.fromInt(num_ys) / Float.fromInt(y.size());
           probs.add(prob);
         };
      
-      let node_entropy = entropy(y, y_uniques);
-      let x_ncols = transpose(x).size();
-     
-      if (x.size() <= min_node_data_size or current_depth >= max_depth or node_entropy==0 or x_ncols == 1) {
-        let leafNode: BinTree  = setLeftRightBranch(null, null, #symbol(Buffer.toArray(probs)), nilTree(), nilTree());
+      let node_entropy = entropy(y, y_uniques);Debug.print("13");
+      
+      if (x.size() <= min_node_data_size or current_depth >= max_depth or node_entropy==0) {
+        let leafNode: BinTree  = setLeftRightBranch(null, null, #symbol(Buffer.toArray(probs)), nilTree(), nilTree());Debug.print("15");
         return #ok(leafNode);
       };
+      let x_ncols = transpose(x).size();Debug.print("14");
+      if (x_ncols == 1) {
+        let leafNode: BinTree  = setLeftRightBranch(null, null, #symbol(Buffer.toArray(probs)), nilTree(), nilTree());Debug.print("15b");
+        return #ok(leafNode);
+      };
+
       // create node  
       // for all features
       let xt = transpose(x);
       let ginis = Buffer.Buffer<Float>(xt.size());
-      let ths = Buffer.Buffer<Float>(xt.size());
+      let ths = Buffer.Buffer<Float>(xt.size());Debug.print("16");
       
       let num_features = Nat.min(MAX_FEATURE_VALIDATIONS, xt.size());
-      let pos_vector: [Nat] = randomSample(0, xt.size()-1, num_features, false, seed);
+      let pos_vector: [Nat] = randomSample(0, xt.size()-1, num_features, false, seed);Debug.print("17");
 
       for (i in Iter.fromArray(pos_vector)) {
-        let xcol = xt[i];
+        let xcol = xt[i];Debug.print("18");
         let gini = computeFeatureGini(xcol,y,y_uniques);
         switch (gini) {
           case (#ok(gini_float, th_float)) {
@@ -612,7 +618,7 @@ module {
       let bestth = ths_array[xbestcol];
       
       // recursive call left and right and connect to node and return 
-      let myx = transpose(cols<dataMember>([pos_vector[xbestcol]], x))[0]; // redirection because real feature index is inside pos_vector
+      let myx = transpose(cols<dataMember>([pos_vector[xbestcol]], x))[0]; Debug.print("19");// redirection because real feature index is inside pos_vector
 
       let (left_rows,right_rows) = switch (myx[0]) {
         case (#number(num)) computeThLeftRightNumeric(myx, bestth);
@@ -621,19 +627,19 @@ module {
       let x2 = removeRows([pos_vector[xbestcol]], x);
       
       // pick the true col_id from col_ids
-      let true_colid: Nat = col_ids[pos_vector[xbestcol]];
+      let true_colid: Nat = col_ids[pos_vector[xbestcol]];Debug.print("10");
  
-      let next_col_ids: [Nat] = removeRowsVector([pos_vector[xbestcol]], col_ids);
+      let next_col_ids: [Nat] = removeRowsVector([pos_vector[xbestcol]], col_ids);Debug.print("111");
  
-      let next_x: [[dataMember]] = transpose(removeRows([pos_vector[xbestcol]], transpose(x))); 
+      let next_x: [[dataMember]] = transpose(removeRows([pos_vector[xbestcol]], transpose(x))); Debug.print("112");
 
       let x_left = rows(left_rows,next_x);
       let y_left = rowsVector(left_rows,y);
       let x_right = rows(right_rows,next_x);
       let y_right = rowsVector(right_rows,y);
 
-      let leftNode_aux  = fitClassification(x_left, y_left, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids,seed+1);
-      let rightNode_aux  = fitClassification(x_right, y_right, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids,seed+2);
+      let leftNode_aux  = fitClassification(x_left, y_left, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids,seed+1);Debug.print("113");
+      let rightNode_aux  = fitClassification(x_right, y_right, current_depth + 1, y_uniques, max_depth, min_node_data_size, next_col_ids,seed+2);Debug.print("114");
       let leftNode = switch leftNode_aux {
         case (#ok(leftNode)) leftNode;
         case (#err(err)) return leftNode_aux;
@@ -1063,8 +1069,61 @@ module {
       };
     };
 
-    public func f1(i_:Nat) : async (Nat) {  
-      return i_;
+    public func fitClassificationAsync(x : [[dataMember]], 
+                                        y : [Text], 
+                                        current_depth : Nat, 
+                                        y_uniques: [Text], 
+                                        max_depth: Nat, 
+                                        min_node_data_size: Nat,
+                                        col_ids: [Nat],
+                                        seed: Nat): async (Result.Result<BinTree, MotokoLearnError>) {
+
+      let fitclas_return = fitClassification(x,
+                                             y,
+                                             current_depth,
+                                             y_uniques,
+                                             max_depth,
+                                             min_node_data_size,
+                                             col_ids,
+                                             seed); 
+      return fitclas_return;//#ok(nilTree());
+    };
+
+    public func fitRandomForestClassifier(x : [[dataMember]], 
+                                          y : [Text],
+                                          y_uniques: [Text], 
+                                          ntrees : Nat, 
+                                          current_depth : Nat,  
+                                          max_depth: Nat, 
+                                          min_node_data_size: Nat,
+                                          col_ids: [Nat],
+                                          seed: Nat): async (Result.Result<[BinTree], MotokoLearnError>) {  
+
+      // iterate ntree times and return a vector of classifier trees
+      let ret = Buffer.Buffer<BinTree>(ntrees);
+      for (i in Iter.range(0, ntrees-1)) {
+        let fitclas_return = await fitClassificationAsync(x,
+                                                          y,
+                                                          current_depth,
+                                                          y_uniques,
+                                                          max_depth,
+                                                          min_node_data_size,
+                                                          col_ids,
+                                                          seed+i); 
+        switch(fitclas_return) {
+          case (#ok(mytree)) {
+            Debug.print("adding tree");
+            ret.add(mytree);
+            Debug.print("Tree added");
+          };
+          case (#err(err)) {
+            Debug.print("There is an error");
+            return #err(err);
+          };
+        };
+      }; 
+
+      return #ok(Buffer.toArray(ret));
     };
 
     // public func f2() : async ([Nat]) {  
