@@ -1067,13 +1067,13 @@ module {
       return i_;
     };
 
-    public func f2() : async ([Nat]) {  
-      let ret = Buffer.Buffer<Nat>(10);
-      for (i in Iter.range(0, 10)) { 
-        let f1_async_nat: async Nat = f1(i);
-        let f1_nat : Nat = await f1_async_nat;
-        ret.add(f1_nat);
-      };
-      return Buffer.toArray(ret);
-    };
+    // public func f2() : async ([Nat]) {  
+    //   let ret = Buffer.Buffer<Nat>(10);
+    //   for (i in Iter.range(0, 10)) { 
+    //     let f1_async_nat: async Nat = f1(i);
+    //     let f1_nat : Nat = await f1_async_nat;
+    //     ret.add(f1_nat);
+    //   };
+    //   return Buffer.toArray(ret);
+    // };
 };
