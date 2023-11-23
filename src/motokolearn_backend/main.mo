@@ -252,8 +252,8 @@ actor {
     let xtest = mtkl.cols(xcols, test);
     let yauxtest = mtkl.transpose(mtkl.cols([ycol], test))[0];
     let ytest = mtkl.dataMemberVectorToTextVector(yauxtest);
-    //return ();  <-----------
-    switch(ytest) {//<--------------IMHERE: do preditions using the first tree
+    
+    switch(ytest) {
       case (#ok(yvectest)) {
         var ncorrect: Nat = 0; 
         let mytree: mtkl.BinTree = rf_classifier_vec[0];
@@ -269,7 +269,7 @@ actor {
         for (i in Iter.range(0, xtest.size() - 1)) {
           //return mytree;
           let sample: [mtkl.dataMember] = xtest[i];
-          let vec = mtkl.predictTreeClassification(sample, mytree);
+          let vec = mtkl.predictRFClassification(sample,rf_classifier_vec);
           let myindex = Array.indexOf<Float>(mtkl.max(vec), vec, Float.equal);
           let xindex: Nat = switch(myindex) {
             case (?Nat) Nat; 
