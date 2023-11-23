@@ -1200,24 +1200,17 @@ module {
       };
       return Buffer.toArray(probs_buf);
     };   
-    
-    //<----------IMHERE
+
     public func predictRFRegression(x : [dataMember], bintrees : [BinTree]) : ([Float]) {       
       let ntrees = bintrees.size();
-      let vecs = Buffer.Buffer<[Float]>(ntrees);
+      let yhats = Buffer.Buffer<Float>(ntrees);
       for (i in Iter.range(0, ntrees-1)) {
         let mytree = bintrees[i];
-        let vec = predictTreeClassification(x, mytree);
-        vecs.add(vec);
+        let yhat = predictTreeRegression(x, mytree)[0];
+        yhats.add(yhat);
       };
-      let vecs_array: [[Float]] = Buffer.toArray(vecs);
-      let vecs_array_t = transpose(vecs_array);
-      let probsize = vecs_array[0].size();
-      let probs_buf = Buffer.Buffer<Float>(probsize);
-      for (i in Iter.range(0, probsize-1)) {
-        let norm_prob = Array.foldLeft<Float, Float>(vecs_array_t[i], 0, func(sumSoFar, x) = sumSoFar + x)/Float.fromInt(ntrees);
-        probs_buf.add(norm_prob);
-      };
-      return Buffer.toArray(probs_buf);
+      let yhats_array: [Float] = Buffer.toArray(yhats);
+      let ret = mean(yhats_array);
+      return [ret];
     };
 };
