@@ -1129,13 +1129,22 @@ module {
       return #ok(Buffer.toArray(ret));
     };
 
-    // public func f2() : async ([Nat]) {  
-    //   let ret = Buffer.Buffer<Nat>(10);
-    //   for (i in Iter.range(0, 10)) { 
-    //     let f1_async_nat: async Nat = f1(i);
-    //     let f1_nat : Nat = await f1_async_nat;
-    //     ret.add(f1_nat);
-    //   };
-    //   return Buffer.toArray(ret);
-    // };
+    public func predictRFClassification(x : [dataMember], bintrees : [BinTree]) : ([Float]) {       
+      let ntrees = bintrees.size();
+      let vecs = Buffer.Buffer<[Float]>(ntrees);
+      for (i in Iter.range(0, ntrees-1)) {
+        let mytree = bintrees[i];
+        let vec = predictTreeClassification(x, mytree);
+        vecs.add(vec);
+      };
+      let vecs_array: [[Float]] = Buffer.toArray(vecs);
+      let vecs_array_t = transpose(vecs_array);
+      let probsize = vecs_array[0].size();
+      let probs_buf = Buffer.Buffer<Float>(probsize);
+      for (i in Iter.range(0, probsize-1)) {
+        let norm_prob = Array.foldLeft<Float, Float>(vecs_array_t[i], 0, func(sumSoFar, x) = sumSoFar + x)/Float.fromInt(ntrees);
+        probs_buf.add(norm_prob);
+      };
+      return Buffer.toArray(probs_buf);
+    };
 };
