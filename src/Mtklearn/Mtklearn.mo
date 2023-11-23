@@ -1089,7 +1089,25 @@ module {
                                              min_node_data_size,
                                              col_ids,
                                              seed); 
-      return fitclas_return;//#ok(nilTree());
+      return fitclas_return;
+    };
+
+    public func fitRegressionAsync(x : [[dataMember]], 
+                                   y : [Float], 
+                                   current_depth : Nat, 
+                                   max_depth: Nat, 
+                                   min_node_data_size: Nat,
+                                   col_ids: [Nat],
+                                   seed: Nat): async (Result.Result<BinTree, MotokoLearnError>) {
+
+      let ret = fitRegression(x,
+                              y,
+                              current_depth,
+                              max_depth,
+                              min_node_data_size,
+                              col_ids,
+                              seed); 
+      return ret;
     };
 
     public func fitRandomForestClassifier(x : [[dataMember]], 
@@ -1129,7 +1147,62 @@ module {
       return #ok(Buffer.toArray(ret));
     };
 
+    public func fitRandomForestRegression(x : [[dataMember]], 
+                                          y : [Float],
+                                          ntrees : Nat, 
+                                          current_depth : Nat,  
+                                          max_depth: Nat, 
+                                          min_node_data_size: Nat,
+                                          col_ids: [Nat],
+                                          seed: Nat): async (Result.Result<[BinTree], MotokoLearnError>) {  
+
+      // iterate ntree times and return a vector of regression trees
+      let ret_buf = Buffer.Buffer<BinTree>(ntrees);
+      for (i in Iter.range(0, ntrees-1)) {
+        let ret = await fitRegressionAsync(x,
+                                           y,
+                                           current_depth,
+                                           max_depth,
+                                           min_node_data_size,
+                                           col_ids,
+                                           seed+i); 
+        switch(ret) {
+          case (#ok(mytree)) {
+            Debug.print("adding tree");
+            ret_buf.add(mytree);
+            Debug.print("Tree added");
+          };
+          case (#err(err)) {
+            Debug.print("There is an error");
+            return #err(err);
+          };
+        };
+      }; 
+
+      return #ok(Buffer.toArray(ret_buf));
+    };
+
     public func predictRFClassification(x : [dataMember], bintrees : [BinTree]) : ([Float]) {       
+      let ntrees = bintrees.size();
+      let vecs = Buffer.Buffer<[Float]>(ntrees);
+      for (i in Iter.range(0, ntrees-1)) {
+        let mytree = bintrees[i];
+        let vec = predictTreeClassification(x, mytree);
+        vecs.add(vec);
+      };
+      let vecs_array: [[Float]] = Buffer.toArray(vecs);
+      let vecs_array_t = transpose(vecs_array);
+      let probsize = vecs_array[0].size();
+      let probs_buf = Buffer.Buffer<Float>(probsize);
+      for (i in Iter.range(0, probsize-1)) {
+        let norm_prob = Array.foldLeft<Float, Float>(vecs_array_t[i], 0, func(sumSoFar, x) = sumSoFar + x)/Float.fromInt(ntrees);
+        probs_buf.add(norm_prob);
+      };
+      return Buffer.toArray(probs_buf);
+    };   
+    
+    //<----------IMHERE
+    public func predictRFRegression(x : [dataMember], bintrees : [BinTree]) : ([Float]) {       
       let ntrees = bintrees.size();
       let vecs = Buffer.Buffer<[Float]>(ntrees);
       for (i in Iter.range(0, ntrees-1)) {
