@@ -6,6 +6,8 @@ import Nat32 "mo:base/Nat32";
 import Array "mo:base/Array";
 import Iter "mo:base/Iter";
 import Nat "mo:base/Nat";
+import Nat64 "mo:base/Nat64";
+import Int "mo:base/Int";
 import Buffer "mo:base/Buffer";
 import TrieSet "mo:base/TrieSet";
 import Result "mo:base/Result";
@@ -210,6 +212,10 @@ module {
     };
 
     public func randomSample(min_: Nat, max_: Nat, nsamples_: Nat, withRepetition_: Bool, seed: Nat): [Nat] {
+      Debug.print(Nat.toText(min_));
+      Debug.print(Nat.toText(max_));
+      Debug.print(Nat.toText(nsamples_));
+      Debug.print(Nat.toText(seed));
       let bufaux = Buffer.Buffer<Nat>(nsamples_);
       let fuzz = Fuzz.fromSeed(seed);
       if (withRepetition_ == false) {
@@ -1118,13 +1124,22 @@ module {
                                           max_depth: Nat, 
                                           min_node_data_size: Nat,
                                           col_ids: [Nat],
+                                          pct_train: Float,
                                           seed: Nat): async (Result.Result<[BinTree], MotokoLearnError>) {  
 
       // iterate ntree times and return a vector of classifier trees
       let ret = Buffer.Buffer<BinTree>(ntrees);
       for (i in Iter.range(0, ntrees-1)) {
-        let fitclas_return = await fitClassificationAsync(x,
-                                                          y,
+        let ntotal = x.size();
+        let nsamples: Nat = Nat64.toNat(Nat64.fromIntWrap(Float.toInt(Float.fromInt(ntotal)*pct_train)));
+        //let nsamples2: Nat = Nat64.toNat(Float.toInt(Float.fromInt(ntotal)*pct_train));
+        Debug.print(Nat.toText(nsamples));
+        let pos_vec = randomSample(0, ntotal-1, nsamples, false, seed);
+        Debug.print(Nat.toText(nsamples));
+        let xtrain = rows(pos_vec, x); 
+        let ytrain = rowsVector(pos_vec, y); 
+        let fitclas_return = await fitClassificationAsync(xtrain,
+                                                          ytrain,
                                                           current_depth,
                                                           y_uniques,
                                                           max_depth,

@@ -230,6 +230,7 @@ actor {
   };
 
   var rf_classifier_vec: [mtkl.BinTree] = [mtkl.nilTree()];
+  var rf_regression_vec: [mtkl.BinTree] = [mtkl.nilTree()];
 
   public func doPredictRFClassifier() : () {
 
@@ -299,6 +300,7 @@ actor {
     let ntrees = 10;
     let max_depth: Nat = 10;
     let min_num_samples: Nat = 5;
+    let pct_train: Float = 0.9;
     let nsamples: Nat = 1000;
     let alldata = data.digit_data;
     let pos_vec = mtkl.randomSample(0, alldata.size()-1, nsamples, false, seed);
@@ -330,6 +332,7 @@ actor {
                                                             min_num_samples, 
                                                             max_depth, 
                                                             col_ids, 
+                                                            pct_train,
                                                             seed+1);
         switch(rfreturn) {
           case (#ok(tree_vec)) {
@@ -347,6 +350,98 @@ actor {
     };
   };
 
+  public func doPredictRFRegression() : () {
+
+    let seed = 123456789; 
+    let nsamples: Nat = 300;
+    let alldata = data.diabetes_data;
+    let pos_vec = mtkl.randomSample(0, alldata.size()-1, nsamples, false, seed);
+
+    let train = mtkl.rows(pos_vec, alldata); 
+    let test = mtkl.removeRows(pos_vec, alldata); 
+    
+    let xcols = Iter.toArray(Iter.range(0, mtkl.transpose(train).size()-2));
+    let ycol = mtkl.transpose(train).size()-1;
+    let xtrain = mtkl.cols(xcols, train);
+    let yaux = mtkl.transpose(mtkl.cols([ycol], train))[0];
+    let ytrain = mtkl.dataMemberVectorToFloatVector(yaux);
+    let xtest = mtkl.cols(xcols, test);
+    let yauxtest = mtkl.transpose(mtkl.cols([ycol], test))[0];
+    let ytest = mtkl.dataMemberVectorToFloatVector(yauxtest);
+    
+    switch(ytest) {
+      case (#ok(yvectest)) {
+        var total_rmse: Float = 0; 
+        for (i in Iter.range(0, xtest.size() - 1)) {
+          //return mytree;
+          //Debug.print(Nat.toText(i));
+          let sample: [mtkl.dataMember] = xtest[i]; 
+          let y_hat = mtkl.predictRFRegression(sample, rf_regression_vec)[0];
+          let sample_error = mtkl.rmse(y_hat, yvectest[i]);
+          total_rmse := total_rmse + sample_error;
+          //Debug.print(Nat.toText(i)#":sample error: " # Float.toText(sample_error));
+        };
+        Debug.print("Total RMSE:"#Float.toText(total_rmse/Float.fromInt(xtest.size())));
+      };
+      case (_) {
+        //TBD
+      };
+    };
+  };
+
+  public func doRFRegression() : async () {
+
+    let seed = 123456789; 
+    let ntrees = 100;
+    let max_depth: Nat = 10;
+    let min_num_samples: Nat = 5;
+    let nsamples: Nat = 300;
+    let alldata = data.diabetes_data;
+    let pos_vec = mtkl.randomSample(0, alldata.size()-1, nsamples, false, seed);
+
+    let train = mtkl.rows(pos_vec, alldata); 
+    let test = mtkl.removeRows(pos_vec, alldata); 
+    
+    let xcols = Iter.toArray(Iter.range(0, mtkl.transpose(train).size()-2));
+    let ycol = mtkl.transpose(train).size()-1;
+    let xtrain = mtkl.cols(xcols, train);
+    let yaux = mtkl.transpose(mtkl.cols([ycol], train))[0];
+    let ytrain = mtkl.dataMemberVectorToFloatVector(yaux);
+    let xtest = mtkl.cols(xcols, test);
+    let yauxtest = mtkl.transpose(mtkl.cols([ycol], test))[0];
+    let ytest = mtkl.dataMemberVectorToFloatVector(yauxtest);
+   
+    switch(ytrain) {
+      case (#ok(yvec)) {
+        let myiter = Iter.range(0, xcols.size()-1);
+        let col_ids = Iter.toArray(myiter);
+        var ret_tree: mtkl.BinTree = mtkl.nilTree(); 
+        
+        let rfreturn = await mtkl.fitRandomForestRegression(xtrain, 
+                                                            yvec, 
+                                                            ntrees, 
+                                                            0, 
+                                                            min_num_samples, 
+                                                            max_depth, 
+                                                            col_ids, 
+                                                            seed+1);
+        switch(rfreturn) {
+          case (#ok(tree_vec)) {
+            rf_regression_vec := tree_vec;
+          };
+          case (_) {
+            //
+          };
+        };
+      }; 
+      case (_) {
+        //return 0;
+        //TBD
+      };
+    };
+  };
+
+  
     // How to create a classifiation tree manually
     // let LeftLeftTree: mtkl.BinTree  = mtkl.setLeftRightBranch(null, null, #symbol([1,0]), mtkl.nilTree(), mtkl.nilTree());
     // let LeftRightTree: mtkl.BinTree = mtkl.setLeftRightBranch(null, null, #symbol([0,1]), mtkl.nilTree(), mtkl.nilTree());
