@@ -441,7 +441,13 @@ actor {
     };
   };
 
-  
+  public func test1() : async () {
+    let vec: [Nat] = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23];
+    let aux = mtkl.randomShuffle(vec,123);
+    for (i in Iter.range(0, aux.size() - 1)) {
+      Debug.print(Nat.toText(aux[i]));
+    };
+  };
     // How to create a classifiation tree manually
     // let LeftLeftTree: mtkl.BinTree  = mtkl.setLeftRightBranch(null, null, #symbol([1,0]), mtkl.nilTree(), mtkl.nilTree());
     // let LeftRightTree: mtkl.BinTree = mtkl.setLeftRightBranch(null, null, #symbol([0,1]), mtkl.nilTree(), mtkl.nilTree());

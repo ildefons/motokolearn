@@ -211,6 +211,30 @@ module {
       -h_total;
     };
 
+    // Fisher-Yates fast random shuffle algorithm
+    public func randomShuffle(vec: [Nat], seed: Nat): [Nat] {
+      let fuzz = Fuzz.fromSeed(seed);
+      let vsize = vec.size();
+      let vect = Array.thaw<Nat>(vec);
+      for (j in Iter.range(0,vsize-3)) {
+        let i: Nat = vsize - 1 - j;
+        let p: Nat = fuzz.nat.randomRange(0, i);
+        let aux = vect[i];
+        vect[i] := vect[p];
+        vect[p] := aux;
+        //Debug.print(Nat.toText(j)#Nat.toText(i)#Nat.toText(p));
+      };
+      let vectf = Array.freeze<Nat>(vect);
+      return vectf;
+    };
+
+    public func randomSamplePro(min_: Nat, max_: Nat, nsamples_: Nat, withRepetition_: Bool, seed: Nat): [Nat] {
+      let vec: [Nat] = Iter.toArray(Iter.range(min_,max_));
+      let vec_shuffled = randomShuffle(vec, seed);
+      let ret = Array.subArray(vec_shuffled, 0, nsamples_);
+      return ret;
+    };
+
     public func randomSample(min_: Nat, max_: Nat, nsamples_: Nat, withRepetition_: Bool, seed: Nat): [Nat] {
       Debug.print(Nat.toText(min_));
       Debug.print(Nat.toText(max_));
@@ -218,19 +242,23 @@ module {
       Debug.print(Nat.toText(seed));
       let bufaux = Buffer.Buffer<Nat>(nsamples_);
       let fuzz = Fuzz.fromSeed(seed);
-      if (withRepetition_ == false) {
+      var cc: Nat = 0;
+      if (withRepetition_ == false) {Debug.print("r1");
         while (TrieSet.toArray<Nat>(TrieSet.fromArray<Nat>(Buffer.toArray<Nat>(bufaux),Hash.hash, Nat.equal)).size() < nsamples_) { 
           let randNat: Nat = fuzz.nat.randomRange(min_, max_);
           bufaux.add(randNat);
+          cc := cc+1;
+          let ms = TrieSet.toArray<Nat>(TrieSet.fromArray<Nat>(Buffer.toArray<Nat>(bufaux),Hash.hash, Nat.equal)).size();
+          Debug.print(Nat.toText(cc)#":"#Nat.toText(ms));
         };
       }
-      else {
+      else {Debug.print("r2");
         while (Buffer.toArray<Nat>(bufaux).size() < nsamples_) { 
           let randNat: Nat = fuzz.nat.randomRange(min_, max_);
           bufaux.add(randNat);
         };
-      };
-      let pos_vec = TrieSet.toArray<Nat>(TrieSet.fromArray<Nat>(Buffer.toArray<Nat>(bufaux),Hash.hash, Nat.equal)); 
+      };Debug.print("r3");
+      let pos_vec = TrieSet.toArray<Nat>(TrieSet.fromArray<Nat>(Buffer.toArray<Nat>(bufaux),Hash.hash, Nat.equal)); Debug.print("r4");
       return pos_vec;
     };
 
@@ -1133,9 +1161,9 @@ module {
         let ntotal = x.size();
         let nsamples: Nat = Nat64.toNat(Nat64.fromIntWrap(Float.toInt(Float.fromInt(ntotal)*pct_train)));
         //let nsamples2: Nat = Nat64.toNat(Float.toInt(Float.fromInt(ntotal)*pct_train));
-        Debug.print(Nat.toText(nsamples));
-        let pos_vec = randomSample(0, ntotal-1, nsamples, false, seed);
-        Debug.print(Nat.toText(nsamples));
+        Debug.print("before rs:"#Nat.toText(nsamples));
+        let pos_vec = randomSamplePro(0, ntotal-1, nsamples, false, seed);  //<----IMHERE!!!
+        Debug.print("before rs:"#Nat.toText(nsamples));
         let xtrain = rows(pos_vec, x); 
         let ytrain = rowsVector(pos_vec, y); 
         let fitclas_return = await fitClassificationAsync(xtrain,
