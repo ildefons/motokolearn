@@ -255,13 +255,13 @@ actor {
     let ytest = mtkl.dataMemberVectorToTextVector(yauxtest);
     
     switch(ytest) {
-      case (#ok(yvectest)) {
+      case (#ok(yvectest)) {Debug.print("1");
         var ncorrect: Nat = 0; 
-        let mytree: mtkl.BinTree = rf_classifier_vec[0];
-        var y_uniques: [Text] = [];
+        let mytree: mtkl.BinTree = rf_classifier_vec[0];Debug.print("12");
+        var y_uniques: [Text] = [];Debug.print("13");
         switch(ytrain) {
           case (#ok(yvec)) {
-            y_uniques := mtkl.uniquesText(yvec);
+            y_uniques := mtkl.uniquesText(yvec);Debug.print("14");
           };
           case (_) {
             //
@@ -269,20 +269,27 @@ actor {
         };
         for (i in Iter.range(0, xtest.size() - 1)) {
           //return mytree;
-          let sample: [mtkl.dataMember] = xtest[i];
-          let vec = mtkl.predictRFClassification(sample,rf_classifier_vec);
-          let myindex = Array.indexOf<Float>(mtkl.max(vec), vec, Float.equal);
+          let sample: [mtkl.dataMember] = xtest[i];Debug.print("15"#":"#Nat.toText(xtest.size())#":"#Nat.toText(i));
+          let vec = mtkl.predictRFClassification(sample,rf_classifier_vec);Debug.print("16");
+          let myindex = Array.indexOf<Float>(mtkl.max(vec), vec, Float.equal);Debug.print("17");
           let xindex: Nat = switch(myindex) {
             case (?Nat) Nat; 
             case _ 10;
           };
-          let text_sample = mtkl.printSample(sample);
+          let text_sample = mtkl.printSample(sample);Debug.print("171"#":"#Nat.toText(xindex)#":"#Nat.toText(y_uniques.size()));
           //Debug.print("sample: " # text_sample);
-          if (Text.equal(y_uniques[xindex], yvectest[i])) {
-            //Debug.print("correct");
+          for (i in Iter.range(0, y_uniques.size() - 1)) {
+             Debug.print(y_uniques[i]);
+          };
+          Debug.print("max:"#Float.toText(mtkl.max(vec)));
+          for (i in Iter.range(0, vec.size() - 1)) {
+             Debug.print(Float.toText(vec[i]));
+          };
+          if (Text.equal(y_uniques[xindex], yvectest[i])) {Debug.print("172");
+            Debug.print("correct");
             ncorrect := ncorrect + 1;  
           }
-          else {
+          else {Debug.print("173");
             //Debug.print("wrong"#y_uniques[xindex]#":"#yvectest[i]); 
           };
         };
@@ -323,7 +330,9 @@ actor {
         let myiter = Iter.range(0, xcols.size()-1);
         let col_ids = Iter.toArray(myiter);
         var ret_tree: mtkl.BinTree = mtkl.nilTree(); 
-        
+        for (i in Iter.range(0, y_uniques.size() - 1)) {
+          Debug.print(y_uniques[i]);
+        };
         let rfreturn = await mtkl.fitRandomForestClassifier(xtrain, 
                                                             yvec, 
                                                             y_uniques, 

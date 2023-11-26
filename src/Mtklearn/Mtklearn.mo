@@ -236,29 +236,27 @@ module {
     };
 
     public func randomSample(min_: Nat, max_: Nat, nsamples_: Nat, withRepetition_: Bool, seed: Nat): [Nat] {
-      Debug.print(Nat.toText(min_));
-      Debug.print(Nat.toText(max_));
-      Debug.print(Nat.toText(nsamples_));
-      Debug.print(Nat.toText(seed));
       let bufaux = Buffer.Buffer<Nat>(nsamples_);
       let fuzz = Fuzz.fromSeed(seed);
       var cc: Nat = 0;
-      if (withRepetition_ == false) {Debug.print("r1");
-        while (TrieSet.toArray<Nat>(TrieSet.fromArray<Nat>(Buffer.toArray<Nat>(bufaux),Hash.hash, Nat.equal)).size() < nsamples_) { 
-          let randNat: Nat = fuzz.nat.randomRange(min_, max_);
-          bufaux.add(randNat);
-          cc := cc+1;
-          let ms = TrieSet.toArray<Nat>(TrieSet.fromArray<Nat>(Buffer.toArray<Nat>(bufaux),Hash.hash, Nat.equal)).size();
-          Debug.print(Nat.toText(cc)#":"#Nat.toText(ms));
-        };
+      if (withRepetition_ == false) {
+        // while (TrieSet.toArray<Nat>(TrieSet.fromArray<Nat>(Buffer.toArray<Nat>(bufaux),Hash.hash, Nat.equal)).size() < nsamples_) { 
+        //   let randNat: Nat = fuzz.nat.randomRange(min_, max_);
+        //   bufaux.add(randNat);
+        //   cc := cc+1;
+        //   let ms = TrieSet.toArray<Nat>(TrieSet.fromArray<Nat>(Buffer.toArray<Nat>(bufaux),Hash.hash, Nat.equal)).size();
+        //   Debug.print(Nat.toText(cc)#":"#Nat.toText(ms));
+        // };
+        let pos_vec = randomSamplePro(min_, max_, nsamples_, false, seed);
+        return pos_vec
       }
-      else {Debug.print("r2");
+      else {
         while (Buffer.toArray<Nat>(bufaux).size() < nsamples_) { 
           let randNat: Nat = fuzz.nat.randomRange(min_, max_);
           bufaux.add(randNat);
         };
-      };Debug.print("r3");
-      let pos_vec = TrieSet.toArray<Nat>(TrieSet.fromArray<Nat>(Buffer.toArray<Nat>(bufaux),Hash.hash, Nat.equal)); Debug.print("r4");
+      };
+      let pos_vec = TrieSet.toArray<Nat>(TrieSet.fromArray<Nat>(Buffer.toArray<Nat>(bufaux),Hash.hash, Nat.equal)); 
       return pos_vec;
     };
 
@@ -1160,10 +1158,9 @@ module {
       for (i in Iter.range(0, ntrees-1)) {
         let ntotal = x.size();
         let nsamples: Nat = Nat64.toNat(Nat64.fromIntWrap(Float.toInt(Float.fromInt(ntotal)*pct_train)));
-        //let nsamples2: Nat = Nat64.toNat(Float.toInt(Float.fromInt(ntotal)*pct_train));
-        Debug.print("before rs:"#Nat.toText(nsamples));
+        
         let pos_vec = randomSamplePro(0, ntotal-1, nsamples, false, seed);  //<----IMHERE!!!
-        Debug.print("before rs:"#Nat.toText(nsamples));
+        
         let xtrain = rows(pos_vec, x); 
         let ytrain = rowsVector(pos_vec, y); 
         let fitclas_return = await fitClassificationAsync(xtrain,
@@ -1237,8 +1234,15 @@ module {
       let vecs_array_t = transpose(vecs_array);
       let probsize = vecs_array[0].size();
       let probs_buf = Buffer.Buffer<Float>(probsize);
+      Debug.print("ntrees:"#Nat.toText(ntrees));
       for (i in Iter.range(0, probsize-1)) {
+        for (j in Iter.range(0, vecs_array_t[i].size()-1)) {
+          Debug.print(Nat.toText(j)#":vecs_array_t[i][j]:"#Float.toText(vecs_array_t[i][j]));
+        };
         let norm_prob = Array.foldLeft<Float, Float>(vecs_array_t[i], 0, func(sumSoFar, x) = sumSoFar + x)/Float.fromInt(ntrees);
+        let aux = Array.foldLeft<Float, Float>(vecs_array_t[i], 0, func(sumSoFar, x) = sumSoFar + x);
+        Debug.print("sumprob:"#Float.toText(aux));
+        Debug.print("normprob:"#Float.toText(norm_prob));
         probs_buf.add(norm_prob);
       };
       return Buffer.toArray(probs_buf);
