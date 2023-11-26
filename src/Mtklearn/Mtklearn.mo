@@ -596,7 +596,13 @@ module {
       for (i in Iter.range(0, y_uniques.size() - 1)) { 
           let num_ys: Nat = Array.filter<Text>(y, func x = x == y_uniques[i]).size();
           let prob = Float.fromInt(num_ys) / Float.fromInt(y.size());
-          probs.add(prob);
+          if (Float.isNaN(prob)) {Debug.print("isnan");
+            probs.add((1:Float)/Float.fromInt(y_uniques.size()));
+          } 
+          else {//prevents nan's
+            probs.add(prob);
+          };
+          //probs.add(prob);
         };
      
       let node_entropy = entropy(y, y_uniques);
@@ -696,7 +702,12 @@ module {
       for (i in Iter.range(0, y_uniques.size() - 1)) { 
           let num_ys: Nat = Array.filter<Text>(y, func x = x == y_uniques[i]).size();
           let prob = Float.fromInt(num_ys) / Float.fromInt(y.size());
-          probs.add(prob);
+          if (Float.isNaN(prob)) {Debug.print("isnan");
+            probs.add((1:Float)/Float.fromInt(y_uniques.size()));
+          } 
+          else {//prevents nan's
+            probs.add(prob);
+          };
         };
      
       let node_entropy = entropy(y, y_uniques);
