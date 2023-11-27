@@ -24,7 +24,6 @@ actor {
   };
   
   public func doClassificationComp() : async (Nat64) {
-
     let seed = 123456789; 
     let nsamples: Nat = 1000;
     let alldata = data.digit_data;
