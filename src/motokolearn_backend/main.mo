@@ -195,7 +195,7 @@ actor {
       case (#ok(yvec)) {
         let myiter = Iter.range(0, xcols.size()-1);
         let col_ids = Iter.toArray(myiter);
-        let ret_tree = mtkl.fitRegressionOLD(xtrain, yvec, 0, max_depth, min_num_samples, col_ids);
+        let ret_tree = mtkl.fitRegression(xtrain, yvec, 0, max_depth, min_num_samples, col_ids, seed);
         Debug.print("Tree created");
         switch(ret_tree) {
           case (#ok(mytree)) {
@@ -255,13 +255,13 @@ actor {
     let ytest = mtkl.dataMemberVectorToTextVector(yauxtest);
     
     switch(ytest) {
-      case (#ok(yvectest)) {Debug.print("1");
+      case (#ok(yvectest)) {
         var ncorrect: Nat = 0; 
-        let mytree: mtkl.BinTree = rf_classifier_vec[0];Debug.print("12");
-        var y_uniques: [Text] = [];Debug.print("13");
+        let mytree: mtkl.BinTree = rf_classifier_vec[0];
+        var y_uniques: [Text] = [];
         switch(ytrain) {
           case (#ok(yvec)) {
-            y_uniques := mtkl.uniquesText(yvec);Debug.print("14");
+            y_uniques := mtkl.uniquesText(yvec);
           };
           case (_) {
             //
@@ -269,28 +269,20 @@ actor {
         };
         for (i in Iter.range(0, xtest.size() - 1)) {
           //return mytree;
-          let sample: [mtkl.dataMember] = xtest[i];Debug.print("15"#":"#Nat.toText(xtest.size())#":"#Nat.toText(i));
-          let vec = mtkl.predictRFClassification(sample,rf_classifier_vec);Debug.print("16");
-          let myindex = Array.indexOf<Float>(mtkl.max(vec), vec, Float.equal);Debug.print("17");
+          let sample: [mtkl.dataMember] = xtest[i];
+          let vec = mtkl.predictRFClassification(sample,rf_classifier_vec);
+          let myindex = Array.indexOf<Float>(mtkl.max(vec), vec, Float.equal);
           let xindex: Nat = switch(myindex) {
             case (?Nat) Nat; 
             case _ 10;
           };
-          let text_sample = mtkl.printSample(sample);Debug.print("171"#":"#Nat.toText(xindex)#":"#Nat.toText(y_uniques.size()));
-          //Debug.print("sample: " # text_sample);
-          for (i in Iter.range(0, y_uniques.size() - 1)) {
-             Debug.print(y_uniques[i]);
-          };
-          Debug.print("max:"#Float.toText(mtkl.max(vec)));
-          for (i in Iter.range(0, vec.size() - 1)) {
-             Debug.print(Float.toText(vec[i]));
-          };
-          if (Text.equal(y_uniques[xindex], yvectest[i])) {Debug.print("172");
-            Debug.print("correct");
+          let text_sample = mtkl.printSample(sample);
+
+          if (Text.equal(y_uniques[xindex], yvectest[i])) {
             ncorrect := ncorrect + 1;  
           }
-          else {Debug.print("173");
-            //Debug.print("wrong"#y_uniques[xindex]#":"#yvectest[i]); 
+          else {
+            //
           };
         };
         Debug.print("Percentage correct predictions:"#Float.toText(100*Float.fromInt(ncorrect)/Float.fromInt(yvectest.size())));
@@ -304,10 +296,10 @@ actor {
   public func doRFClassifier() : async () {
 
     let seed = 123456789; 
-    let ntrees = 10;
+    let ntrees = 100;
     let max_depth: Nat = 10;
     let min_num_samples: Nat = 5;
-    let pct_train: Float = 0.9;
+    let pct_train: Float = 0.99;
     let nsamples: Nat = 1000;
     let alldata = data.digit_data;
     let pos_vec = mtkl.randomSample(0, alldata.size()-1, nsamples, false, seed);
@@ -330,9 +322,7 @@ actor {
         let myiter = Iter.range(0, xcols.size()-1);
         let col_ids = Iter.toArray(myiter);
         var ret_tree: mtkl.BinTree = mtkl.nilTree(); 
-        for (i in Iter.range(0, y_uniques.size() - 1)) {
-          Debug.print(y_uniques[i]);
-        };
+
         let rfreturn = await mtkl.fitRandomForestClassifier(xtrain, 
                                                             yvec, 
                                                             y_uniques, 
@@ -353,8 +343,7 @@ actor {
         };
       }; 
       case (_) {
-        //return 0;
-        //TBD
+        //
       };
     };
   };
@@ -382,13 +371,10 @@ actor {
       case (#ok(yvectest)) {
         var total_rmse: Float = 0; 
         for (i in Iter.range(0, xtest.size() - 1)) {
-          //return mytree;
-          //Debug.print(Nat.toText(i));
           let sample: [mtkl.dataMember] = xtest[i]; 
           let y_hat = mtkl.predictRFRegression(sample, rf_regression_vec)[0];
           let sample_error = mtkl.rmse(y_hat, yvectest[i]);
           total_rmse := total_rmse + sample_error;
-          //Debug.print(Nat.toText(i)#":sample error: " # Float.toText(sample_error));
         };
         Debug.print("Total RMSE:"#Float.toText(total_rmse/Float.fromInt(xtest.size())));
       };
@@ -404,6 +390,7 @@ actor {
     let ntrees = 100;
     let max_depth: Nat = 10;
     let min_num_samples: Nat = 5;
+    let pct_train = 0.9;
     let nsamples: Nat = 300;
     let alldata = data.diabetes_data;
     let pos_vec = mtkl.randomSample(0, alldata.size()-1, nsamples, false, seed);
@@ -433,6 +420,7 @@ actor {
                                                             min_num_samples, 
                                                             max_depth, 
                                                             col_ids, 
+                                                            pct_train,
                                                             seed+1);
         switch(rfreturn) {
           case (#ok(tree_vec)) {
@@ -444,27 +432,11 @@ actor {
         };
       }; 
       case (_) {
-        //return 0;
-        //TBD
+        //
       };
     };
   };
 
-  public func test1() : async () {
-    let vec: [Nat] = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23];
-    let aux = mtkl.randomShuffle(vec,123);
-    for (i in Iter.range(0, aux.size() - 1)) {
-      Debug.print(Nat.toText(aux[i]));
-    };
-  };
-    // How to create a classifiation tree manually
-    // let LeftLeftTree: mtkl.BinTree  = mtkl.setLeftRightBranch(null, null, #symbol([1,0]), mtkl.nilTree(), mtkl.nilTree());
-    // let LeftRightTree: mtkl.BinTree = mtkl.setLeftRightBranch(null, null, #symbol([0,1]), mtkl.nilTree(), mtkl.nilTree());
-    // let LeftTopTree: mtkl.BinTree   = mtkl.setLeftRightBranch(?1, ?(3.5), #symbol([0.5,0.5]), LeftLeftTree, LeftRightTree);
-    // let RightLeftTree: mtkl.BinTree  = mtkl.setLeftRightBranch(null, null, #symbol([0,1]), mtkl.nilTree(), mtkl.nilTree());
-    // let RightRightTree: mtkl.BinTree = mtkl.setLeftRightBranch(null, null, #symbol([1,0]), mtkl.nilTree(), mtkl.nilTree());
-    // let RightTopTree: mtkl.BinTree   = mtkl.setLeftRightBranch(?1, ?(3.5), #symbol([0.5,0.5]), RightLeftTree, RightRightTree);
-    // let TopTree: mtkl.BinTree   = mtkl.setLeftRightBranch(?0, ?(2.5), #symbol([0.5,0.5]), LeftTopTree, RightTopTree);  
 
 
 };

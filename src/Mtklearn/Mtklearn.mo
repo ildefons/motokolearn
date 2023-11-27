@@ -240,13 +240,6 @@ module {
       let fuzz = Fuzz.fromSeed(seed);
       var cc: Nat = 0;
       if (withRepetition_ == false) {
-        // while (TrieSet.toArray<Nat>(TrieSet.fromArray<Nat>(Buffer.toArray<Nat>(bufaux),Hash.hash, Nat.equal)).size() < nsamples_) { 
-        //   let randNat: Nat = fuzz.nat.randomRange(min_, max_);
-        //   bufaux.add(randNat);
-        //   cc := cc+1;
-        //   let ms = TrieSet.toArray<Nat>(TrieSet.fromArray<Nat>(Buffer.toArray<Nat>(bufaux),Hash.hash, Nat.equal)).size();
-        //   Debug.print(Nat.toText(cc)#":"#Nat.toText(ms));
-        // };
         let pos_vec = randomSamplePro(min_, max_, nsamples_, false, seed);
         return pos_vec
       }
@@ -596,7 +589,7 @@ module {
       for (i in Iter.range(0, y_uniques.size() - 1)) { 
           let num_ys: Nat = Array.filter<Text>(y, func x = x == y_uniques[i]).size();
           let prob = Float.fromInt(num_ys) / Float.fromInt(y.size());
-          if (Float.isNaN(prob)) {Debug.print("isnan");
+          if (Float.isNaN(prob)) {//Debug.print("isnan");
             probs.add((1:Float)/Float.fromInt(y_uniques.size()));
           } 
           else {//prevents nan's
@@ -702,7 +695,7 @@ module {
       for (i in Iter.range(0, y_uniques.size() - 1)) { 
           let num_ys: Nat = Array.filter<Text>(y, func x = x == y_uniques[i]).size();
           let prob = Float.fromInt(num_ys) / Float.fromInt(y.size());
-          if (Float.isNaN(prob)) {Debug.print("isnan");
+          if (Float.isNaN(prob)) {//Debug.print("isnan");
             probs.add((1:Float)/Float.fromInt(y_uniques.size()));
           } 
           else {//prevents nan's
@@ -788,12 +781,12 @@ module {
     };   
 
     public func fitRegression(x : [[dataMember]], 
-                           y : [Float], 
-                           current_depth : Nat,  
-                           max_depth: Nat, 
-                           min_node_data_size: Nat,
-                           col_ids: [Nat],
-                           seed: Nat): Result.Result<BinTree, MotokoLearnError> {
+                              y : [Float], 
+                              current_depth : Nat,  
+                              max_depth: Nat, 
+                              min_node_data_size: Nat,
+                              col_ids: [Nat],
+                              seed: Nat): Result.Result<BinTree, MotokoLearnError> {
 
       // For regression predictive modeling problems the cost function that is minimized to choose split points is the sum squared error 
       //     across all training samples that fall within the rectangle: sum(y – prediction)^2
@@ -815,7 +808,7 @@ module {
       let xt = transpose(x);
       let mses = Buffer.Buffer<Float>(xt.size());
       let ths = Buffer.Buffer<Float>(xt.size());
-      //<---------IMHERE  
+      
       let num_features = Nat.min(MAX_FEATURE_VALIDATIONS, xt.size());
       let pos_vector: [Nat] = randomSample(0, xt.size()-1, num_features, false, seed);
 
@@ -881,100 +874,6 @@ module {
       let rightNode_aux  = switch (rsize_zero) {
         case (true) #ok(nilTree());
         case _ fitRegression(x_right, y_right, current_depth + 1, max_depth, min_node_data_size, next_col_ids, seed+2);
-      };
-      
-      let leftNode = switch leftNode_aux {
-         case (#ok(leftNode)) leftNode;
-         case (#err(err)) return leftNode_aux;
-      };
-      let rightNode = switch rightNode_aux {
-         case (#ok(rightNode)) rightNode;
-         case (#err(err)) return rightNode_aux;
-      };
-
-      let thisNode: BinTree = setLeftRightBranch(?true_colid, ?bestth, #number(y_mean), leftNode, rightNode);
-      return #ok(thisNode);
-    };   
-
-    public func fitRegressionOLD(x : [[dataMember]], 
-                           y : [Float], 
-                           current_depth : Nat,  
-                           max_depth: Nat, 
-                           min_node_data_size: Nat,
-                           col_ids: [Nat]): Result.Result<BinTree, MotokoLearnError> {
-
-      // For regression predictive modeling problems the cost function that is minimized to choose split points is the sum squared error 
-      //     across all training samples that fall within the rectangle: sum(y – prediction)^2
-     
-      let y_mean: Float = mean(y); 
-
-      let x_ncols = transpose(x).size();
-      if (x.size() <= min_node_data_size or current_depth >= max_depth or x_ncols == 1) {
-         let leafNode: BinTree  = setLeftRightBranch(null, null, #number(y_mean), nilTree(), nilTree());
-         return #ok(leafNode);
-      }; 
-      // create node  
-      // for all features
-      let xt = transpose(x);
-      let mses = Buffer.Buffer<Float>(xt.size());
-      let ths = Buffer.Buffer<Float>(xt.size());
-      for (i in Iter.range(0, xt.size() - 1)) {
-        let xcol = xt[i];
-        let mse = computeFeatureMSE(xcol,y); 
-        switch (mse) {
-          case (#ok(gini_float, th_float)) {
-            mses.add(gini_float);
-            ths.add(th_float);
-          };
-          case (#err(err)) {
-            return #err(err);
-          };
-        }; 
-      }; 
-      // // compute gini index of the
-      let mses_array = Buffer.toArray(mses);
-      let ths_array: [Float] = Buffer.toArray(ths);
-      let bestgini = min(mses_array);
-      let bestcol: ?Nat = Array.indexOf<Float>(bestgini, mses_array, Float.equal);
-      if (bestcol==null) {
-         return #err(#noBestGiniError);
-      };
-      let xbestcol : Nat = switch bestcol {
-         case null 0;
-         case (?Nat) Nat;
-      };
-      let bestth = ths_array[xbestcol];
-      
-      // recursive call left and right and connect to node and return 
-      let myx = transpose(cols<dataMember>([xbestcol], x))[0];
-      
-      let (left_rows,right_rows) = switch (myx[0]) {
-         case (#number(num)) computeThLeftRightNumeric(myx, bestth);
-         case (#symbol(sym)) computeLeftRightSymbolic(myx);
-      };
-
-      let x2 = removeRows([xbestcol], x);      
-      // pick the true col_id from col_ids
-      let true_colid: Nat = col_ids[xbestcol];
-      // remove "true_colid" from col_ids before passing recursively
-      let next_col_ids: [Nat] = removeRowsVector([xbestcol], col_ids);
-  
-      let next_x: [[dataMember]] = transpose(removeRows([xbestcol], transpose(x)));
-
-      let x_left = rows(left_rows,next_x);
-      let y_left = rowsVector(left_rows,y);
-      let x_right = rows(right_rows,next_x);
-      let y_right = rowsVector(right_rows,y);
-
-      let lsize_zero:Bool = Nat.equal(x_left.size(),0);
-      let leftNode_aux  = switch (lsize_zero) {
-        case (true) #ok(nilTree());
-        case (false) fitRegressionOLD(x_left, y_left, current_depth + 1, max_depth, min_node_data_size, next_col_ids);
-      };
-      let rsize_zero:Bool = Nat.equal(x_right.size(),0);
-      let rightNode_aux  = switch (rsize_zero) {
-        case (true) #ok(nilTree());
-        case _ fitRegressionOLD(x_right, y_right, current_depth + 1, max_depth, min_node_data_size, next_col_ids);
       };
       
       let leftNode = switch leftNode_aux {
@@ -1083,7 +982,7 @@ module {
                    return vec;
                 };
                 case (#number(num)) {
-                  return [num];
+                  return [num]; // actual prediction
                 };
               };
             };
@@ -1169,9 +1068,7 @@ module {
       for (i in Iter.range(0, ntrees-1)) {
         let ntotal = x.size();
         let nsamples: Nat = Nat64.toNat(Nat64.fromIntWrap(Float.toInt(Float.fromInt(ntotal)*pct_train)));
-        
-        let pos_vec = randomSamplePro(0, ntotal-1, nsamples, false, seed);  //<----IMHERE!!!
-        
+        let pos_vec = randomSamplePro(0, ntotal-1, nsamples, false, seed+i);
         let xtrain = rows(pos_vec, x); 
         let ytrain = rowsVector(pos_vec, y); 
         let fitclas_return = await fitClassificationAsync(xtrain,
@@ -1205,13 +1102,19 @@ module {
                                           max_depth: Nat, 
                                           min_node_data_size: Nat,
                                           col_ids: [Nat],
+                                          pct_train: Float,
                                           seed: Nat): async (Result.Result<[BinTree], MotokoLearnError>) {  
 
       // iterate ntree times and return a vector of regression trees
       let ret_buf = Buffer.Buffer<BinTree>(ntrees);
       for (i in Iter.range(0, ntrees-1)) {
-        let ret = await fitRegressionAsync(x,
-                                           y,
+        let ntotal = x.size();
+        let nsamples: Nat = Nat64.toNat(Nat64.fromIntWrap(Float.toInt(Float.fromInt(ntotal)*pct_train)));
+        let pos_vec = randomSamplePro(0, ntotal-1, nsamples, false, seed+i);  
+        let xtrain = rows(pos_vec, x); 
+        let ytrain = rowsVector(pos_vec, y); 
+        let ret = await fitRegressionAsync(xtrain,
+                                           ytrain,
                                            current_depth,
                                            max_depth,
                                            min_node_data_size,
@@ -1229,7 +1132,6 @@ module {
           };
         };
       }; 
-
       return #ok(Buffer.toArray(ret_buf));
     };
 
@@ -1245,15 +1147,10 @@ module {
       let vecs_array_t = transpose(vecs_array);
       let probsize = vecs_array[0].size();
       let probs_buf = Buffer.Buffer<Float>(probsize);
-      Debug.print("ntrees:"#Nat.toText(ntrees));
+      
       for (i in Iter.range(0, probsize-1)) {
-        for (j in Iter.range(0, vecs_array_t[i].size()-1)) {
-          Debug.print(Nat.toText(j)#":vecs_array_t[i][j]:"#Float.toText(vecs_array_t[i][j]));
-        };
         let norm_prob = Array.foldLeft<Float, Float>(vecs_array_t[i], 0, func(sumSoFar, x) = sumSoFar + x)/Float.fromInt(ntrees);
         let aux = Array.foldLeft<Float, Float>(vecs_array_t[i], 0, func(sumSoFar, x) = sumSoFar + x);
-        Debug.print("sumprob:"#Float.toText(aux));
-        Debug.print("normprob:"#Float.toText(norm_prob));
         probs_buf.add(norm_prob);
       };
       return Buffer.toArray(probs_buf);
