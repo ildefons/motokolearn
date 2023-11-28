@@ -241,7 +241,7 @@ actor {
 
   public func doRegression_diabetes() : async () {
 
-    let seed = 123456789;
+    let seed = 12345678;
     let nsamples: Nat = 300;
     let max_depth: Nat = 10;
     let min_num_samples: Nat = 5;
