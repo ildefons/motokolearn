@@ -4,6 +4,25 @@
 
 If you want to start working on your project right away, you might want to try the following commands:
 
+
+## Package installation using github
+
+1) Install mops package manager: https://docs.mops.one/quick-start
+2) Install the Motoko Base library in your project using mops:
+```bash
+mops add base
+```
+3) Install fuzz package:
+```bash
+mops add fuzz
+```
+3) Clone this repository in the base of your project:
+```
+cd <yourproject>
+git clone https://github.com/ildefons/motokolearn.git
+``` 
+
+
 ```bash
 cd motokolearn/
 dfx help
