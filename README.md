@@ -1,8 +1,12 @@
 # motokolearn
 
-[Description]
+Motokolearn is a Motoko package meant to facilitate on-chain training and inference of machine learning models where having a large GPU powered server farms is not a requirement. 
 
-If you want to start working on your project right away, you might want to try the following commands:
+### Why do we care about small to mid-sized data problems not requiring a GPU?​
+
+- Small to medium size data problems of heterogenous "tabular" data is often better solved with ensemble of boosted trees​
+
+- From personal experience, 1) many Kaggle challenges (including those I won) are better solved with ensembles of trees. 2) Last year alone, I consulted with three medium sized startups and all projects involved data bases below 100 megabytes and none of them required the use of deep learning.
 
 ## Package installation using github
 
@@ -32,6 +36,14 @@ git clone https://github.com/ildefons/motokolearn.git
 ### Random forest regression
 
 ## Model inference
+
+### CART classifier tree
+
+### CART regression tree
+
+### Random forest classifier
+
+### Random forest regression
 
 If you want to test your project locally, you can use the following commands:
 
