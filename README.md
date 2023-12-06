@@ -313,7 +313,7 @@ dfx canister call motokolearn_backend setTrainingData '(vec { vec {variant {numb
 
 ### Copy/paste custom dataset from your device to your canister code 
 
-In case you have a large dataset in csv format, you can use the python notebook to read and convert the dataset into a motoko compatible dataset. then you can copy/paste it into your canister code: ```motokolearn/notebooks/sklearn_ds_generation.ipynb```
+In case you have a large dataset in csv format, you can use the python notebook to read and convert the dataset into a motoko compatible dataset. then you can copy/paste it into your canister code: ```<yourproject>/motokolearn/notebooks/sklearn_ds_generation.ipynb```
 
 
 
