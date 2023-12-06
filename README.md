@@ -16,20 +16,21 @@ mops add base
 ```bash
 mops add fuzz
 ```
-3) Clone this repository in the base of your project:
+4) Clone this repository in the base of your project:
 ```
 cd <yourproject>
 git clone https://github.com/ildefons/motokolearn.git
 ``` 
 
+## Fitting a model 
 
-```bash
-cd motokolearn/
-dfx help
-dfx canister --help
-```
+### Fitting a classifier tree ()
 
-## Running the project locally
+### Fitting a regression tree
+
+### Fitting a random forest classifier
+
+### Fitting Running the project locally
 
 If you want to test your project locally, you can use the following commands:
 
