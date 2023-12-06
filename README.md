@@ -1,6 +1,6 @@
 # motokolearn
 
-Motokolearn is a Motoko package meant to facilitate on-chain training and inference of machine learning models where having a large GPU powered server farms is not a requirement. 
+Motokolearn is a Motoko package meant to facilitate on-chain training and inference of machine learning models where having a large GPU is not a requirement. 
 
 ### Why on-chain training and inference of machine learning models is interesting?​
 
