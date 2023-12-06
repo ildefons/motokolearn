@@ -4,9 +4,9 @@ Motokolearn is a Motoko package meant to facilitate on-chain training and infere
 
 ### Why on-chain training and inference of machine learning models is interesting?​
 
-- Service implemented using these models can inherit security and verification capabilities from the underlying protocol ​
+- Web3 services using these on-chain trained models can inherit security and verification capabilities from the underlying Internet Computer protocol ​
 
-- Overall dapp architecture can be simplified (eliminate dependency from external web2 providers, and/or using pre-compiled WASM modules of pre-trained models)
+- Overall dapp architecture can be simplified by eeliminate dependencies with external web2 providers and/or avoid using pre-compiled WASM modules of pre-trained machine learning models
 
 ### Why do we care about small to mid-sized data problems not requiring a GPU?​
 
