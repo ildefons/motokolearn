@@ -71,7 +71,108 @@ actor {
 
 ### CART regression tree
 
+```
+import mtkl "../motokolearn/src/Mtklearn/Mtklearn";
+import data "../motokolearn/src/Mtklearn/Datasets";
+
+actor {
+  let seed = 123456789;
+  let max_depth: Nat = 10;
+  let min_num_samples: Nat = 5;
+  let nsamples: Nat = 300;
+  let alldata = data.diabetes_data;
+  let pos_vec = mtkl.randomSample(0, alldata.size()-1, nsamples, false, seed);
+
+  let train = mtkl.rows(pos_vec, alldata); 
+  let test = mtkl.removeRows(pos_vec, alldata); 
+    
+  let xcols = Iter.toArray(Iter.range(0, mtkl.transpose(train).size()-2));
+  let ycol = mtkl.transpose(train).size()-1;
+  let xtrain = mtkl.cols(xcols, train);
+  let yaux = mtkl.transpose(mtkl.cols([ycol], train))[0];
+  let ytrain = mtkl.dataMemberVectorToTextVector(yaux);
+  let xtest = mtkl.cols(xcols, test);
+  let yauxtest = mtkl.transpose(mtkl.cols([ycol], test))[0];
+  let ytest = mtkl.dataMemberVectorToTextVector(yauxtest);
+
+  switch(ytrain) {
+      case (#ok(yvec)) {
+        let y_uniques = mtkl.uniquesText(yvec);
+        let myiter = Iter.range(0, xcols.size()-1);
+        let col_ids = Iter.toArray(myiter);
+        let ret_tree = mtkl.fitRegression(xtrain, yvec, 0, y_uniques, min_num_samples, max_depth, col_ids, seed);
+      };
+  };
+};
+
+``` 
+
 ### Random forest classifier
+
+```
+import mtkl "../motokolearn/src/Mtklearn/Mtklearn";
+import data "../motokolearn/src/Mtklearn/Datasets";
+
+actor {
+
+var rf_classifier_vec: [mtkl.BinTree] = [mtkl.nilTree()];
+
+public func doRFClassifier() {
+    let seed = 123456789; 
+    let ntrees = 100;
+    let max_depth: Nat = 10;
+    let min_num_samples: Nat = 5;
+    let pct_train: Float = 0.99;
+    let nsamples: Nat = 1000;
+    let alldata = data.digit_data;
+    let pos_vec = mtkl.randomSample(0, alldata.size()-1, nsamples, false, seed);
+
+    let train = mtkl.rows(pos_vec, alldata); 
+    let test = mtkl.removeRows(pos_vec, alldata); 
+    
+    let xcols = Iter.toArray(Iter.range(0, mtkl.transpose(train).size()-2));
+    let ycol = mtkl.transpose(train).size()-1;
+    let xtrain = mtkl.cols(xcols, train);
+    let yaux = mtkl.transpose(mtkl.cols([ycol], train))[0];
+    let ytrain = mtkl.dataMemberVectorToTextVector(yaux);
+    let xtest = mtkl.cols(xcols, test);
+    let yauxtest = mtkl.transpose(mtkl.cols([ycol], test))[0];
+    let ytest = mtkl.dataMemberVectorToTextVector(yauxtest);
+   
+    switch(ytrain) {
+      case (#ok(yvec)) {
+        let y_uniques = mtkl.uniquesText(yvec);
+        let myiter = Iter.range(0, xcols.size()-1);
+        let col_ids = Iter.toArray(myiter);
+        var ret_tree: mtkl.BinTree = mtkl.nilTree(); 
+
+        let rfreturn = await mtkl.fitRandomForestClassifier(xtrain, 
+                                                            yvec, 
+                                                            y_uniques, 
+                                                            ntrees, 
+                                                            0, 
+                                                            min_num_samples, 
+                                                            max_depth, 
+                                                            col_ids, 
+                                                            pct_train,
+                                                            seed+1);
+        switch(rfreturn) {
+          case (#ok(tree_vec)) {
+            rf_classifier_vec := tree_vec;
+          };
+          case (_) {
+            //
+          };
+        };
+      }; 
+      case (_) {
+        //
+      };
+    };
+  };
+```
+
+
 
 ### Random forest regression
 
