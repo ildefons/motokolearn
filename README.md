@@ -4,7 +4,6 @@
 
 If you want to start working on your project right away, you might want to try the following commands:
 
-
 ## Package installation using github
 
 1) Install mops package manager: https://docs.mops.one/quick-start
@@ -22,15 +21,17 @@ cd <yourproject>
 git clone https://github.com/ildefons/motokolearn.git
 ``` 
 
-## Fitting a model 
+## Model training 
 
-### Fitting a classifier tree ()
+### CART (Classification And Regression Tree) classifier tree
 
-### Fitting a regression tree
+### CART regression tree
 
-### Fitting a random forest classifier
+### Random forest classifier
 
-### Fitting Running the project locally
+### Random forest regression
+
+## Model inference
 
 If you want to test your project locally, you can use the following commands:
 
