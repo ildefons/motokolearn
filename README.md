@@ -10,7 +10,7 @@ Motokolearn is a Motoko package meant to facilitate on-chain training and infere
 
 ### Why do we care about small to mid-sized data problems not requiring a GPU?​
 
-- Small to medium size data problems of heterogenous "tabular" data is often better solved with ensemble of boosted trees​
+- Small to medium size data problems of heterogenous "tabular" data are often better solved with ensemble of boosted trees​
 
 - From personal experience, 1) many Kaggle challenges (including those I won) are better solved with ensembles of trees; and 2) last year alone, I consulted with three medium sized startups and all projects involved data bases below 100 megabytes and none of them required the use of large neural network nor GPUs.
 
@@ -288,6 +288,14 @@ let sample: [mtkl.dataMember] = xtest[i];
 let y_hat = mtkl.predictRFRegression(sample, rf_regression_vec)[0];
 let sample_rmse = mtkl.rmse(y_hat, yvectest[i]);
 ```
+
+## Example of how to instantiate a classification tree
+
+``` 
+let leftLeaf: mtkl.BinTree = ?(null, null, #symbol([0.05,0.9,0.05]), mtkl.nilTree(), mtkl.nilTree());
+let rightLeaf: mtkl.BinTree  = ?(null, null, #symbol([0.9,0.1,0.0]), mtkl.nilTree(), mtkl.nilTree());
+let treeRoot: mtkl.BinTree  = ?(?2, ?0.3, #symbol([0.33,0.33,0.33]), leftLeaf, rightLeaf); // tree node evaluate sample based on 2nd feature and th value 0.3
+``` 
 
 ## Data 
 

@@ -1081,7 +1081,7 @@ module {
                                                           seed+i); 
         switch(fitclas_return) {
           case (#ok(mytree)) {
-            Debug.print("adding tree");
+            Debug.print("adding tree number " # Nat.toText(i+1));
             ret.add(mytree);
             Debug.print("Tree added");
           };
@@ -1122,7 +1122,7 @@ module {
                                            seed+i); 
         switch(ret) {
           case (#ok(mytree)) {
-            Debug.print("adding tree");
+            Debug.print("adding tree number " # Nat.toText(i+1));
             ret_buf.add(mytree);
             Debug.print("Tree added");
           };
@@ -1168,4 +1168,19 @@ module {
       let ret = mean(yhats_array);
       return [ret];
     };
+
+
+    // public type leafValue = {#number: Float;
+    //                          #symbol: [Float]}; 
+    // public type BinTree = ?(?Nat, ?Float, leafValue, BinTree, BinTree); 
+    // public func nilTree() : BinTree = null;
+    // public func isTreeNil(bintree : BinTree) : Bool {
+    //   switch bintree {
+    //     case null { true };
+    //     case _ { false }
+    //   }
+    // };
+    // let leftLeaf: BinTree = ?(null, null, #symbol([0.05,0.9,0.05]), nilTree(), nilTree());
+    // let rightLeaf: BinTree  = ?(null, null, #symbol([0.9,0.1,0.0]), nilTree(), nilTree());
+    // let treeRoot: BinTree  = ?(?2, ?0.3, #symbol([0.33,0.33,0.33]), leftLeaf, rightLeaf);
 };

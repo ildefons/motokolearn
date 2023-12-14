@@ -101,7 +101,7 @@ actor {
     };
   };
 
-  public func doClassification_Wine() : async () {
+  public func doClassification_Wine() : async (Float) {
 
     let seed = 123456789;
     let nsamples: Nat = 100;
@@ -125,7 +125,7 @@ actor {
         let y_uniques = mtkl.uniquesText(yvec);
         let myiter = Iter.range(0, xcols.size()-1);
         let col_ids = Iter.toArray(myiter);
-        let ret_tree = mtkl.fitClassification_OLD(xtrain, yvec, 0, y_uniques, 3, 10, col_ids);
+        let ret_tree = mtkl.fitClassification(xtrain, yvec, 0, y_uniques, 3, 10, col_ids, seed);
         Debug.print("Tree created");
         switch(ret_tree) {
           case (#ok(mytree)) {
@@ -152,25 +152,30 @@ actor {
                   };
                 };
                 Debug.print("Percentage correct predictions:"#Float.toText(100*Float.fromInt(ncorrect)/Float.fromInt(yvectest.size())));
+                let ret = 100*Float.fromInt(ncorrect)/Float.fromInt(yvectest.size());
+                return ret;
               };
               case (_) {
+                return -1;
                 //TBD
               }
             };
             //
           };
           case (_) {
+            return -1;
             //
           };
         }
       };
       case (_) {
+        return -1;
         //
       };
     };
   };
 
-  public func doClassification_Iris() : async () {
+  public func doClassification_Iris() : async (Float) {
 
     let seed = 123456789;
     let nsamples: Nat = 100;
@@ -194,7 +199,7 @@ actor {
         let y_uniques = mtkl.uniquesText(yvec);
         let myiter = Iter.range(0, xcols.size()-1);
         let col_ids = Iter.toArray(myiter);
-        let ret_tree = mtkl.fitClassification_OLD(xtrain, yvec, 0, y_uniques, 3, 10, col_ids);
+        let ret_tree = mtkl.fitClassification(xtrain, yvec, 0, y_uniques, 3, 10, col_ids, seed);
         Debug.print("Tree created");
         switch(ret_tree) {
           case (#ok(mytree)) {
@@ -221,25 +226,30 @@ actor {
                   };
                 };
                 Debug.print("Percentage correct predictions:"#Float.toText(100*Float.fromInt(ncorrect)/Float.fromInt(yvectest.size())));
+                let ret = 100*Float.fromInt(ncorrect)/Float.fromInt(yvectest.size());
+                return ret;
               };
               case (_) {
+                return -1;
                 //TBD
               }
             };
             //
           };
           case (_) {
+            return -1;
             //
           };
         }
       };
       case (_) {
+        return -1;
         //
       };
     };
   };
 
-  public func doRegression_diabetes() : async () {
+  public func doRegression_diabetes() : async (Float) {
 
     let seed = 12345678;
     let nsamples: Nat = 300;
@@ -279,19 +289,24 @@ actor {
                   //Debug.print("sample error: " # Float.toText(sample_error));
                 };
                 Debug.print("Total RMSE:"#Float.toText(total_rmse/Float.fromInt(xtest.size())));
+                let ret = total_rmse/Float.fromInt(xtest.size());
+                return ret;
               };
               case (_) {
+                return -1;
                 //TBD
               }
             };
             //
           };
           case (_) {
+            return -1;
             //r
           };
         }
       };
       case (_) {
+        return -1;
         //
       };
     };
